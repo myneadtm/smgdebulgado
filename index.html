@@ -70,7 +70,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   display:flex;align-items:center;justify-content:center;
   font-size:1.3rem;font-weight:800;color:#fff;
   border:2px solid rgba(168,85,247,0.4);margin-bottom:10px;
-  position:relative;}
+  position:relative;overflow:hidden;}
+.sb-av img{width:48px;height:48px;border-radius:50%;object-fit:cover;display:block;}
 .sb-dot{position:absolute;bottom:1px;right:1px;width:10px;height:10px;
   border-radius:50%;background:var(--green);border:2px solid var(--s1);}
 .sb-nm{font-size:0.82rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -828,7 +829,24 @@ if(sess.term)         g('st').value = sess.term;
 if(sess.course)       g('sc').value = sess.course;
 if(sess.academicYear && sess.term && sess.course) loadS();
 
-onAuthStateChanged(auth, u => { if(u) loadGrades(u.uid); });
+onAuthStateChanged(auth, u => {
+  if(u) {
+    loadGrades(u.uid);
+    // Update sidebar avatar with real Google photo
+    const av = g('sb-av');
+    if(av && u.photoURL) {
+      av.innerHTML = `<img src="${u.photoURL}" alt=""><div class="sb-dot"></div>`;
+    }
+    // Update topbar + sidebar name from Google displayName if available
+    const displayName = u.displayName || sess.name || sess.email || 'Student';
+    const dn2 = sess.firstName && sess.surname
+      ? sess.surname+', '+sess.firstName
+      : displayName;
+    g('tb-nm').textContent = dn2;
+    g('sb-nm').textContent = dn2;
+    if(g('sb-em')) g('sb-em').textContent = u.email || sess.email || '';
+  }
+});
 
 // ── SUBJECTS FOR GRADES ──
 const GRADE_SUBJECTS = [
