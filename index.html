@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Student Portal — SMGDecode</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -336,6 +337,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   padding:7px 14px;color:var(--muted);font-family:var(--font);font-weight:700;
   font-size:0.78rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .btn-back-subj:hover{color:var(--text);border-color:var(--border);}
+.btn-grade-pdf{background:linear-gradient(135deg,var(--purple),var(--blue));
+  color:#fff;border:none;border-radius:10px;padding:9px 18px;
+  font-family:var(--font);font-weight:800;font-size:0.8rem;cursor:pointer;
+  transition:all 0.2s;box-shadow:0 4px 14px rgba(168,85,247,0.3);}
+.btn-grade-pdf:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(168,85,247,0.5);}
+.btn-grade-pdf:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
 
 /* Student profile strip */
 .gp-strip{display:flex;align-items:center;gap:14px;
@@ -670,12 +677,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
       <!-- Grades detail (shown after clicking a subject) -->
       <div id="grade-detail" style="display:none;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
           <button class="btn-back-subj" onclick="backToSubjectList()">← Back</button>
-          <div>
+          <div style="flex:1;min-width:0;">
             <div id="gd-subj-title" style="font-size:1rem;font-weight:800;"></div>
             <div id="gd-subj-meta" style="font-size:0.72rem;color:var(--muted);margin-top:2px;"></div>
           </div>
+          <button class="btn-grade-pdf" id="btn-grade-pdf" onclick="downloadGradesPDF()">⬇ Download Grades PDF</button>
         </div>
         <div id="gc"><div class="g-load"><span class="spin">⟳</span> Loading grades...</div></div>
       </div>
@@ -1226,6 +1234,167 @@ function startClock() {
 window.addEventListener('load', () => { startStarfield(); });
 
 window.showT=showT;
+
+// ── DOWNLOAD GRADES PDF ──
+window.downloadGradesPDF = async function() {
+  const btn = document.getElementById('btn-grade-pdf');
+  if(btn){ btn.disabled=true; btn.textContent='⟳ Generating PDF...'; }
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+    const W = 210, M = 14;
+    let y = 18;
+
+    // ── helpers ──
+    const line = (col=[30,50,80]) => {
+      pdf.setDrawColor(...col); pdf.setLineWidth(0.25);
+      pdf.line(M, y, W-M, y); y += 4;
+    };
+    const section = (txt) => {
+      pdf.setFontSize(9); pdf.setFont('helvetica','bold');
+      pdf.setTextColor(162,85,247);
+      pdf.text(txt, M, y); y += 4;
+      line([42,30,80]);
+    };
+    const kv = (label, value, vc=[226,232,255]) => {
+      pdf.setFontSize(8.5); pdf.setFont('helvetica','normal'); pdf.setTextColor(90,116,153);
+      pdf.text(label, M, y);
+      pdf.setTextColor(...vc); pdf.setFont('helvetica','bold');
+      pdf.text(String(value||'—'), M+55, y);
+      y += 5;
+    };
+
+    // ── gather data ──
+    const sess = JSON.parse(localStorage.getItem('student_session')||'{}');
+    const subjectTitle = document.getElementById('gd-subj-title')?.textContent||'Computer Fundamentals and Programming';
+    const subjectMeta  = document.getElementById('gd-subj-meta')?.textContent||'BES 125 · DEBULGADO, S.M.G';
+
+    // Grade values
+    const getGrade = id => { const el=document.getElementById(id); return el?el.textContent.trim():'—'; };
+    const prelim   = getGrade('gd-prelim-val');
+    const midterm  = getGrade('gd-mid-val');
+    const finals   = getGrade('gd-finals-val');
+    const semestral= getGrade('gd-sem-val');
+
+    // Fallback: read from grade cards via gcard
+    const readCard = cls => {
+      const el = document.querySelector('.gc-score');
+      return el ? el.textContent.trim() : '—';
+    };
+    const gcards = document.querySelectorAll('.gc-score');
+    const g = (i) => gcards[i]?.textContent?.trim()||'—';
+    const p=g(0), m=g(1), f=g(2), s=g(3);
+
+    const gradeColor = v => {
+      if(!v||v==='—') return [90,116,153];
+      const n=parseFloat(v);
+      return n>=75?[58,249,195]:n>=60?[249,195,58]:[249,58,122];
+    };
+    const gradeStatus = v => {
+      if(!v||v==='—') return 'Not Yet Released';
+      return parseFloat(v)>=75 ? 'PASSED' : 'FAILED';
+    };
+
+    // ── HEADER BLOCK ──
+    pdf.setFillColor(8,16,28); pdf.rect(0,0,W,34,'F');
+    pdf.setFontSize(16); pdf.setFont('helvetica','bold'); pdf.setTextColor(255,255,255);
+    pdf.text('Official Grade Report', M, 13);
+    pdf.setFontSize(8); pdf.setTextColor(90,116,153); pdf.setFont('helvetica','normal');
+    pdf.text('SMGDecode LMS · Academia de Tecnologia in Mindanao, Inc.', M, 20);
+    pdf.text('DEBULGADO, S.M.G · Computer Fundamentals and Programming', M, 26);
+    pdf.setFontSize(7); pdf.setTextColor(52,72,104);
+    pdf.text('Generated: ' + new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'}), M, 31);
+    y = 44;
+
+    // ── STUDENT INFO ──
+    section('Student Information');
+    kv('Full Name',     sess.name||'—');
+    kv('Gmail',         sess.email||'—');
+    kv('Student ID',    sess.studentId||'—');
+    kv('Course',        sess.course||'—');
+    kv('Academic Year', sess.academicYear||'—');
+    kv('Term',          sess.term||'—');
+    y += 3;
+
+    // ── SUBJECT ──
+    section('Subject');
+    kv('Subject',    subjectTitle);
+    kv('Details',    subjectMeta);
+    y += 4;
+
+    // ── GRADE TABLE ──
+    section('Official Grades');
+
+    // Grade boxes
+    const boxes = [
+      {label:'PRELIM', value:p},
+      {label:'MIDTERM', value:m},
+      {label:'FINALS', value:f},
+      {label:'SEMESTRAL', value:s},
+    ];
+    const bw = (W - M*2 - 9) / 4;
+    boxes.forEach((b, i) => {
+      const bx = M + i*(bw+3);
+      const by = y;
+      const col = gradeColor(b.value);
+      // Box background
+      pdf.setFillColor(13,22,38); pdf.setDrawColor(...col);
+      pdf.setLineWidth(0.5); pdf.roundedRect(bx, by, bw, 28, 3, 3, 'FD');
+      // Label
+      pdf.setFontSize(7); pdf.setFont('helvetica','bold');
+      pdf.setTextColor(90,116,153);
+      pdf.text(b.label, bx + bw/2, by+7, {align:'center'});
+      // Value
+      pdf.setFontSize(18); pdf.setFont('helvetica','bold');
+      pdf.setTextColor(...col);
+      pdf.text(b.value||'—', bx + bw/2, by+18, {align:'center'});
+      // Status
+      pdf.setFontSize(6); pdf.setFont('helvetica','normal');
+      pdf.setTextColor(90,116,153);
+      pdf.text(gradeStatus(b.value), bx + bw/2, by+24, {align:'center'});
+    });
+    y += 34;
+
+    // ── ASSESSMENT SCORES ──
+    section('Assessment Scores');
+    const arows = document.querySelectorAll('.arow');
+    if(arows.length) {
+      arows.forEach(row => {
+        const lbl = row.querySelector('.arow-l')?.textContent?.trim()||'';
+        const scores = row.querySelectorAll('.arow-score');
+        const sc  = scores[0]?.textContent?.trim()||'—';
+        const pct = scores[1]?.textContent?.trim()||'—';
+        const pn  = parseFloat(pct)||0;
+        const vc  = pn>=75?[58,249,195]:pn>=50?[249,195,58]:[249,58,122];
+        pdf.setFontSize(8.5); pdf.setFont('helvetica','normal'); pdf.setTextColor(90,116,153);
+        pdf.text(lbl, M, y);
+        pdf.setTextColor(...vc); pdf.setFont('helvetica','bold');
+        pdf.text(sc + '   ' + pct, M+80, y);
+        y += 5;
+      });
+    } else {
+      pdf.setFontSize(8); pdf.setTextColor(52,72,104);
+      pdf.text('No assessment data available.', M, y); y+=5;
+    }
+    y += 4;
+
+    // ── FOOTER ──
+    pdf.setFillColor(8,16,28); pdf.rect(0,278,W,20,'F');
+    pdf.setFontSize(7); pdf.setTextColor(52,72,104);
+    pdf.text('This is an unofficial copy generated from SMGDecode LMS for reference only.', M, 286);
+    pdf.text('For official records, contact your instructor: DEBULGADO, S.M.G', M, 291);
+
+    const fname = (sess.name||'Student').replace(/\s+/g,'_');
+    pdf.save('GradeReport_' + fname + '_' + new Date().toLocaleDateString('en-PH').replace(/\//g,'-') + '.pdf');
+
+    if(btn){ btn.disabled=false; btn.textContent='⬇ Download Grades PDF'; }
+  } catch(e) {
+    console.error(e);
+    if(btn){ btn.disabled=false; btn.textContent='⬇ Download Grades PDF'; }
+    alert('PDF error: ' + e.message);
+  }
+};
 </script>
 <!-- GRADE PERIOD MODAL -->
 <div id="grade-period-modal" onclick="if(event.target===this)closeGradePeriodModal()"
