@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Student Portal — Learning Management System</title>
+<title>Student Portal — SMGDecode</title>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -13,580 +13,775 @@
   --purple:#a855f7;--cyan:#22d3ee;--blue:#3b82f6;
   --orange:#fb923c;--teal:#14b8a6;--rose:#f43f5e;
   --text:#e2eeff;--muted:#5a7499;--dim:#344868;
-  --font:'Outfit',sans-serif;--mono:'Fira Code',monospace;
+  --sw:230px;--font:'Outfit',sans-serif;--mono:'Fira Code',monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{min-height:100dvh;}
 body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:linear-gradient(rgba(59,130,246,0.025) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(59,130,246,0.025) 1px,transparent 1px);
+  background-image:linear-gradient(rgba(59,130,246,0.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,0.022) 1px,transparent 1px);
   background-size:48px 48px;}
-body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(ellipse 60% 40% at 10% 0%,rgba(168,85,247,0.08),transparent 55%),
-    radial-gradient(ellipse 50% 35% at 90% 100%,rgba(34,211,238,0.06),transparent 55%);}
 
-/* ── TOPBAR ── */
-.topbar{position:sticky;top:0;z-index:200;
-  background:rgba(6,11,20,0.94);backdrop-filter:blur(20px);
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;
+  background:rgba(6,11,20,0.97);backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 32px;height:62px;}
-.tb-brand{display:flex;align-items:center;gap:10px;}
-.tb-icon{width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;padding:0 20px;gap:14px;}
+.tb-ham{width:34px;height:34px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;cursor:pointer;
+  border-radius:8px;transition:background 0.2s;flex-shrink:0;}
+.tb-ham:hover{background:var(--s2);}
+.tb-ham span{display:block;width:18px;height:2px;background:var(--muted);border-radius:2px;}
+.tb-brand{display:flex;align-items:center;gap:8px;}
+.tb-brand-ic{width:30px;height:30px;border-radius:8px;
   background:linear-gradient(135deg,var(--purple),var(--blue));
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--mono);font-size:0.7rem;font-weight:700;color:#fff;flex-shrink:0;}
-.tb-school{font-size:0.62rem;color:var(--muted);letter-spacing:1px;}
-.tb-name{font-size:0.82rem;font-weight:800;}
-.tb-right{display:flex;align-items:center;gap:10px;}
-.tb-user{display:flex;align-items:center;gap:8px;font-size:0.76rem;color:var(--muted);
-  background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:5px 12px;}
-.tb-avatar{width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(58,249,195,0.4);}
-.tb-uname{color:var(--text);font-weight:600;max-width:140px;
+  font-family:var(--mono);font-size:0.64rem;font-weight:700;color:#fff;flex-shrink:0;}
+.tb-brand-name{font-weight:900;font-size:0.9rem;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tb-brand-sub{font-size:0.58rem;color:var(--muted);}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.tb-user{display:flex;align-items:center;gap:7px;background:var(--s2);
+  border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:0.74rem;}
+.tb-uname{color:var(--text);font-weight:700;max-width:120px;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.btn-logout{background:transparent;color:var(--muted);border:1px solid var(--border);
+.btn-lo{background:transparent;color:var(--muted);border:1px solid var(--border);
   border-radius:8px;padding:5px 12px;font-family:var(--font);font-weight:600;
   font-size:0.72rem;cursor:pointer;transition:all 0.2s;}
-.btn-logout:hover{color:var(--red);border-color:rgba(249,58,122,0.4);}
+.btn-lo:hover{color:var(--red);border-color:rgba(249,58,122,0.4);}
 
-/* ── PAGE ── */
-.page{max-width:1080px;margin:0 auto;padding:36px 28px 80px;position:relative;z-index:1;}
+/* LAYOUT */
+.layout{display:flex;padding-top:58px;min-height:100dvh;}
 
-/* ── HERO ── */
-.hero{margin-bottom:36px;}
-.hero-tag{font-size:0.62rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;
-  color:var(--muted);margin-bottom:10px;}
-.hero-title{font-size:2rem;font-weight:900;letter-spacing:-0.5px;line-height:1.1;margin-bottom:8px;}
-.hero-title span{background:linear-gradient(90deg,var(--purple),var(--cyan));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hero-sub{font-size:0.88rem;color:var(--muted);line-height:1.7;}
+/* SIDEBAR */
+.sidebar{width:var(--sw);flex-shrink:0;position:fixed;
+  top:58px;left:0;bottom:0;z-index:200;overflow-y:auto;
+  background:var(--s1);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  transition:transform 0.3s cubic-bezier(.4,0,.2,1);}
+.sidebar.hide{transform:translateX(calc(-1 * var(--sw)));}
 
-/* ── FILTER BAR ── */
-.filter-bar{
-  background:var(--s1);border:1.5px solid var(--border2);
-  border-radius:18px;padding:22px 24px;margin-bottom:32px;
-  display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;
-  position:relative;overflow:hidden;
-}
-.filter-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent));}
-.filter-group{display:flex;flex-direction:column;gap:6px;flex:1;min-width:180px;}
-.filter-label{font-size:0.65rem;font-weight:800;color:var(--purple);
-  letter-spacing:2px;text-transform:uppercase;}
-.filter-select{
-  background:var(--s2);border:1.5px solid var(--border2);border-radius:10px;
-  padding:11px 14px;color:var(--text);font-family:var(--font);font-size:0.88rem;
-  outline:none;cursor:pointer;transition:border-color 0.2s;width:100%;}
-.filter-select:focus{border-color:var(--purple);}
-.filter-select option{background:var(--s2);}
-.btn-view{
+.sb-prof{padding:20px 18px 16px;border-bottom:1px solid var(--border);}
+.sb-av{width:48px;height:48px;border-radius:50%;
   background:linear-gradient(135deg,var(--purple),var(--blue));
-  color:#fff;border:none;border-radius:10px;padding:11px 24px;
-  font-family:var(--font);font-weight:800;font-size:0.88rem;
-  cursor:pointer;transition:all 0.2s;white-space:nowrap;
-  box-shadow:0 4px 16px rgba(168,85,247,0.3);flex-shrink:0;align-self:flex-end;}
-.btn-view:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(168,85,247,0.5);}
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;font-weight:800;color:#fff;
+  border:2px solid rgba(168,85,247,0.4);margin-bottom:10px;
+  position:relative;}
+.sb-dot{position:absolute;bottom:1px;right:1px;width:10px;height:10px;
+  border-radius:50%;background:var(--green);border:2px solid var(--s1);}
+.sb-nm{font-size:0.82rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-em{font-size:0.64rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-ctag{display:inline-block;margin-top:5px;font-size:0.6rem;font-weight:700;
+  background:rgba(168,85,247,0.1);color:var(--purple);
+  border:1px solid rgba(168,85,247,0.2);border-radius:8px;padding:2px 8px;}
 
-/* ── SECTION HEAD ── */
-.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
-.sec-head-label{font-size:0.62rem;font-weight:800;color:var(--muted);
-  letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
-.sec-head-badge{font-size:0.68rem;font-weight:700;padding:3px 10px;border-radius:20px;
+.sb-nav{flex:1;padding:10px;}
+.sb-sec{font-size:0.58rem;font-weight:800;color:var(--dim);
+  letter-spacing:2px;text-transform:uppercase;padding:6px 8px 3px;}
+.sb-it{display:flex;align-items:center;gap:10px;padding:9px 12px;
+  border-radius:10px;cursor:pointer;transition:all 0.18s;
+  color:var(--muted);font-size:0.82rem;font-weight:600;margin-bottom:2px;}
+.sb-it:hover{background:var(--s2);color:var(--text);}
+.sb-it.on{background:linear-gradient(135deg,rgba(168,85,247,0.15),rgba(59,130,246,0.1));
+  color:var(--text);border:1px solid rgba(168,85,247,0.25);}
+.sb-it.on .si{color:var(--purple);}
+.si{font-size:1rem;width:20px;text-align:center;flex-shrink:0;}
+.sb-div{height:1px;background:var(--border);margin:8px 10px;}
+.sb-ft{padding:10px;border-top:1px solid var(--border);}
+.sb-ver{font-size:0.6rem;color:var(--dim);text-align:center;}
+
+/* MAIN */
+.main{flex:1;margin-left:var(--sw);transition:margin-left 0.3s cubic-bezier(.4,0,.2,1);
+  min-height:calc(100dvh - 58px);position:relative;z-index:1;}
+.main.full{margin-left:0;}
+
+/* TAB PANELS */
+.tpanel{display:none;animation:fi 0.3s ease;}
+.tpanel.on{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* HOME TAB */
+#th{min-height:calc(100dvh - 58px);display:none;flex-direction:column;
+  align-items:center;justify-content:center;padding:40px 24px;text-align:center;
+  background:radial-gradient(ellipse 70% 60% at 50% 30%,rgba(168,85,247,0.07),transparent 65%);}
+#th.on{display:flex;}
+.h-logo{font-size:2.8rem;font-weight:900;font-family:var(--mono);letter-spacing:-2px;
+  background:linear-gradient(135deg,var(--purple),var(--cyan),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:6px;line-height:1;}
+.h-logo-sub{font-size:0.64rem;font-weight:700;letter-spacing:4px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:24px;}
+.td-wrap{position:relative;display:inline-block;margin-bottom:24px;}
+.td-img{width:170px;height:auto;border-radius:20px;
+  border:2px solid rgba(168,85,247,0.35);
+  box-shadow:0 0 60px rgba(168,85,247,0.2);
+  animation:flt 4s ease-in-out infinite;}
+@keyframes flt{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.td-glow{position:absolute;inset:-20px;border-radius:30px;
+  background:radial-gradient(ellipse,rgba(168,85,247,0.12),transparent 70%);pointer-events:none;}
+.h-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:18px;}
+.htag{padding:6px 16px;border-radius:20px;font-size:0.74rem;font-weight:700;
+  border:1px solid;display:flex;align-items:center;gap:6px;}
+.ht1{background:rgba(168,85,247,0.1);color:var(--purple);border-color:rgba(168,85,247,0.25);}
+.ht2{background:rgba(34,211,238,0.1);color:var(--cyan);border-color:rgba(34,211,238,0.25);}
+.ht3{background:rgba(249,195,58,0.1);color:var(--accent);border-color:rgba(249,195,58,0.25);}
+.ht4{background:rgba(58,249,195,0.1);color:var(--green);border-color:rgba(58,249,195,0.25);}
+.ht5{background:rgba(251,146,60,0.1);color:var(--orange);border-color:rgba(251,146,60,0.25);}
+.h-desc{font-size:0.84rem;color:var(--muted);line-height:1.8;max-width:460px;}
+
+/* CONTENT PADDING */
+.cpad{padding:32px 28px 80px;}
+.ph{margin-bottom:26px;}
+.ph-tag{font-size:0.6rem;font-weight:800;color:var(--muted);
+  letter-spacing:3px;text-transform:uppercase;margin-bottom:7px;}
+.ph-title{font-size:1.5rem;font-weight:900;letter-spacing:-0.3px;}
+.ph-title span{background:linear-gradient(90deg,var(--purple),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ph-sub{font-size:0.8rem;color:var(--muted);margin-top:5px;line-height:1.6;}
+
+/* FILTER */
+.fb{background:var(--s1);border:1.5px solid var(--border2);border-radius:16px;
+  padding:20px 22px;margin-bottom:26px;display:flex;align-items:flex-end;
+  gap:14px;flex-wrap:wrap;position:relative;overflow:hidden;}
+.fb::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent));}
+.fg{display:flex;flex-direction:column;gap:5px;flex:1;min-width:150px;}
+.fl{font-size:0.6rem;font-weight:800;color:var(--purple);letter-spacing:2px;text-transform:uppercase;}
+.fs{background:var(--s2);border:1.5px solid var(--border2);border-radius:10px;
+  padding:10px 12px;color:var(--text);font-family:var(--font);font-size:0.84rem;
+  outline:none;cursor:pointer;transition:border-color 0.2s;width:100%;}
+.fs:focus{border-color:var(--purple);}
+.fs option{background:var(--s2);}
+.btn-vw{background:linear-gradient(135deg,var(--purple),var(--blue));color:#fff;
+  border:none;border-radius:10px;padding:10px 20px;font-family:var(--font);
+  font-weight:800;font-size:0.84rem;cursor:pointer;transition:all 0.2s;
+  white-space:nowrap;flex-shrink:0;align-self:flex-end;}
+.btn-vw:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(168,85,247,0.5);}
+
+/* SEC HEAD */
+.sh{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.sh-lbl{font-size:0.6rem;font-weight:800;color:var(--muted);letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
+.sh-bg{font-size:0.64rem;font-weight:700;padding:3px 10px;border-radius:20px;
   background:rgba(168,85,247,0.1);color:var(--purple);border:1px solid rgba(168,85,247,0.2);}
-.sec-head-line{flex:1;height:1px;background:var(--border);}
+.sh-ln{flex:1;height:1px;background:var(--border);}
 
-/* ── SUBJECT GRID ── */
-.subject-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
-
-/* ── SUBJECT CARD ── */
-.subj-card{
-  background:var(--s1);border:1.5px solid var(--border2);
-  border-radius:16px;padding:22px;cursor:pointer;
-  transition:all 0.25s;position:relative;overflow:hidden;
-  display:flex;flex-direction:column;gap:0;
-}
-.subj-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;
-  border-radius:0;transition:width 0.25s;}
-.subj-card:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,0,0,0.4);}
-.subj-card.locked{cursor:default;opacity:0.45;}
-.subj-card.locked:hover{transform:none;box-shadow:none;}
-
-/* Card accent colors */
-.subj-card.cpp::before{background:linear-gradient(180deg,var(--accent),#f0a84b);}
-.subj-card.cpp{border-color:rgba(249,195,58,0.2);}
-.subj-card.cpp:hover{border-color:rgba(249,195,58,0.5);}
-
-.subj-card.blue-c::before{background:linear-gradient(180deg,var(--blue),var(--cyan));}
-.subj-card.blue-c:hover{border-color:rgba(59,130,246,0.4);}
-.subj-card.green-c::before{background:linear-gradient(180deg,var(--green),var(--teal));}
-.subj-card.green-c:hover{border-color:rgba(58,249,195,0.4);}
-.subj-card.purple-c::before{background:linear-gradient(180deg,var(--purple),var(--rose));}
-.subj-card.purple-c:hover{border-color:rgba(168,85,247,0.4);}
-.subj-card.orange-c::before{background:linear-gradient(180deg,var(--orange),var(--accent));}
-.subj-card.orange-c:hover{border-color:rgba(251,146,60,0.4);}
-
-.subj-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
-.subj-icon{width:42px;height:42px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
-.subj-icon.yi{background:rgba(249,195,58,0.12);}
-.subj-icon.bi{background:rgba(59,130,246,0.12);}
-.subj-icon.gi{background:rgba(58,249,195,0.12);}
-.subj-icon.pi{background:rgba(168,85,247,0.12);}
-.subj-icon.oi{background:rgba(251,146,60,0.12);}
-
-.subj-status{font-size:0.62rem;font-weight:700;padding:3px 10px;border-radius:20px;
-  letter-spacing:0.5px;white-space:nowrap;}
-.ss-open{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.25);}
-.ss-locked{background:rgba(90,116,153,0.1);color:var(--muted);border:1px solid var(--border);}
-.ss-you{background:rgba(249,195,58,0.1);color:var(--accent);border:1px solid rgba(249,195,58,0.25);}
-
-.subj-code{font-family:var(--mono);font-size:0.68rem;color:var(--muted);margin-bottom:5px;}
-.subj-title{font-size:0.98rem;font-weight:800;line-height:1.3;margin-bottom:6px;}
-.subj-desc{font-size:0.76rem;color:var(--muted);line-height:1.6;margin-bottom:14px;}
-
-.subj-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
-.smeta{font-size:0.65rem;color:var(--dim);background:var(--s2);
-  border:1px solid var(--border);border-radius:6px;padding:3px 8px;}
-
-.subj-footer{display:flex;align-items:center;justify-content:space-between;
-  margin-top:auto;padding-top:12px;border-top:1px solid var(--border);}
-.subj-inst{font-size:0.72rem;color:var(--muted);}
-.subj-inst strong{color:var(--text);}
-.btn-enter{font-size:0.76rem;font-weight:700;color:var(--accent);
-  display:flex;align-items:center;gap:4px;transition:gap 0.2s;}
-.subj-card:hover .btn-enter{gap:8px;}
-.btn-enter-locked{font-size:0.76rem;color:var(--dim);}
-
-/* ── EMPTY STATE ── */
-.empty-state{text-align:center;padding:60px 20px;color:var(--muted);}
-.empty-icon{font-size:3rem;margin-bottom:14px;opacity:0.4;}
-.empty-title{font-size:1rem;font-weight:700;margin-bottom:6px;}
-.empty-sub{font-size:0.82rem;color:var(--dim);}
-
-/* ── NOTICE ── */
-.notice-bar{
-  background:rgba(249,195,58,0.05);border:1px solid rgba(249,195,58,0.15);
-  border-radius:12px;padding:12px 16px;margin-bottom:24px;
-  font-size:0.78rem;color:var(--muted);display:flex;align-items:center;gap:10px;}
-.notice-bar strong{color:var(--accent);}
-
-/* ── MY SUBJECT HIGHLIGHT ── */
-.my-subj-section{margin-bottom:32px;}
-.highlight-card{
-  background:linear-gradient(135deg,rgba(249,195,58,0.06),rgba(168,85,247,0.04));
-  border:1.5px solid rgba(249,195,58,0.25);border-radius:16px;padding:20px 22px;
-  display:flex;align-items:center;gap:16px;cursor:pointer;
-  transition:all 0.25s;position:relative;overflow:hidden;
-}
-.highlight-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+/* HIGHLIGHT CARD */
+.hc{background:linear-gradient(135deg,rgba(249,195,58,0.06),rgba(168,85,247,0.04));
+  border:1.5px solid rgba(249,195,58,0.25);border-radius:14px;padding:18px 20px;
+  display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.22s;
+  position:relative;overflow:hidden;margin-bottom:24px;}
+.hc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
   background:linear-gradient(90deg,var(--accent),var(--purple));}
-.highlight-card:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(249,195,58,0.1);}
-.hc-icon{width:52px;height:52px;border-radius:14px;
+.hc:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(249,195,58,0.1);}
+.hc-ic{width:50px;height:50px;border-radius:12px;
   background:rgba(249,195,58,0.12);display:flex;align-items:center;
-  justify-content:center;font-size:1.6rem;flex-shrink:0;}
-.hc-body{flex:1;min-width:0;}
-.hc-tag{font-size:0.6rem;font-weight:800;color:var(--accent);letter-spacing:2px;
-  text-transform:uppercase;margin-bottom:4px;}
-.hc-title{font-size:1.05rem;font-weight:800;margin-bottom:3px;}
-.hc-sub{font-size:0.76rem;color:var(--muted);}
-.hc-arrow{font-size:1.4rem;color:var(--accent);flex-shrink:0;
-  transition:transform 0.2s;}
-.highlight-card:hover .hc-arrow{transform:translateX(4px);}
+  justify-content:center;font-size:1.5rem;flex-shrink:0;}
+.hc-b{flex:1;min-width:0;}
+.hc-tg{font-size:0.58rem;font-weight:800;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;}
+.hc-ttl{font-size:0.98rem;font-weight:800;margin-bottom:3px;}
+.hc-sb{font-size:0.72rem;color:var(--muted);}
+.hc-arr{font-size:1.4rem;color:var(--accent);flex-shrink:0;transition:transform 0.2s;}
+.hc:hover .hc-arr{transform:translateX(4px);}
 
-/* ── MOBILE ── */
-@media(max-width:700px){
-  .topbar{padding:0 14px;height:58px;}
-  .tb-name{font-size:0.74rem;}
-  .tb-school{display:none;}
-  .page{padding:20px 14px 60px;}
-  .hero-title{font-size:1.5rem;}
-  .filter-bar{padding:16px;gap:12px;}
-  .filter-group{min-width:140px;}
-  .subject-grid{grid-template-columns:1fr;}
-  .btn-view{width:100%;}
-}
-@media(max-width:480px){
-  .topbar{height:auto;flex-direction:column;align-items:stretch;padding:10px 12px 0;}
-  .tb-brand{padding-bottom:8px;}
-  .tb-right{flex-direction:row;padding:8px 0 9px;border-top:1px solid var(--border);
-    justify-content:space-between;overflow-x:auto;}
-  .filter-group{min-width:120px;}
+/* SUBJECT GRID */
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px;}
+.sc{background:var(--s1);border:1.5px solid var(--border2);border-radius:12px;
+  padding:18px;cursor:pointer;transition:all 0.22s;position:relative;
+  overflow:hidden;display:flex;flex-direction:column;}
+.sc::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;}
+.sc:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,0.4);}
+.sc.lk{cursor:default;opacity:0.45;}.sc.lk:hover{transform:none;box-shadow:none;}
+.sc.cpp::before{background:linear-gradient(180deg,var(--accent),#f0a84b);}
+.sc.cpp{border-color:rgba(249,195,58,0.2);}.sc.cpp:hover{border-color:rgba(249,195,58,0.5);}
+.sc.bc::before{background:linear-gradient(180deg,var(--blue),var(--cyan));}
+.sc.bc:hover{border-color:rgba(59,130,246,0.4);}
+.sc.gc::before{background:linear-gradient(180deg,var(--green),var(--teal));}
+.sc.gc:hover{border-color:rgba(58,249,195,0.4);}
+.sc.pc::before{background:linear-gradient(180deg,var(--purple),var(--rose));}
+.sc.pc:hover{border-color:rgba(168,85,247,0.4);}
+.sc.oc::before{background:linear-gradient(180deg,var(--orange),var(--accent));}
+.sc.oc:hover{border-color:rgba(251,146,60,0.4);}
+.sc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+.sc-ic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.ic-y{background:rgba(249,195,58,0.12);}.ic-b{background:rgba(59,130,246,0.12);}
+.ic-g{background:rgba(58,249,195,0.12);}.ic-p{background:rgba(168,85,247,0.12);}
+.ic-o{background:rgba(251,146,60,0.12);}
+.ss{font-size:0.62rem;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.ss-on{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.25);}
+.ss-lk{background:rgba(90,116,153,0.1);color:var(--muted);border:1px solid var(--border);}
+.ss-ac{background:rgba(249,195,58,0.1);color:var(--accent);border:1px solid rgba(249,195,58,0.25);}
+.sc-code{font-family:var(--mono);font-size:0.64rem;color:var(--muted);margin-bottom:4px;}
+.sc-ttl{font-size:0.9rem;font-weight:800;line-height:1.3;margin-bottom:5px;}
+.sc-dsc{font-size:0.72rem;color:var(--muted);line-height:1.6;margin-bottom:10px;}
+.sc-meta{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;}
+.sm{font-size:0.61rem;color:var(--dim);background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:2px 7px;}
+.sc-ft{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:10px;border-top:1px solid var(--border);}
+.sc-inst{font-size:0.68rem;color:var(--muted);}
+.sc-inst strong{color:var(--text);}
+.ent{font-size:0.72rem;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:4px;transition:gap 0.2s;}
+.sc:hover .ent{gap:8px;}
+.ent-lk{font-size:0.7rem;color:var(--dim);}
+.nb{background:rgba(249,195,58,0.05);border:1px solid rgba(249,195,58,0.15);
+  border-radius:10px;padding:10px 14px;margin-bottom:20px;
+  font-size:0.74rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
+.nb strong{color:var(--accent);}
+.es{text-align:center;padding:50px 20px;color:var(--muted);}
+.es-ic{font-size:2.6rem;margin-bottom:10px;opacity:0.3;}
+.es-t{font-size:0.92rem;font-weight:700;margin-bottom:5px;}
+.es-s{font-size:0.78rem;color:var(--dim);}
+
+/* GRADES */
+.gc-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;overflow:hidden;margin-bottom:14px;}
+.gcc-h{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.gcc-s{font-size:0.86rem;font-weight:800;}
+.gcc-t{font-size:0.68rem;color:var(--muted);}
+.gcc-b{padding:14px 18px;}
+.gr{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);}
+.gr:last-child{border-bottom:none;}
+.gr-l{font-size:0.76rem;color:var(--muted);}
+.gr-v{font-size:0.86rem;font-weight:800;font-family:var(--mono);}
+.gv-hi{color:var(--green);}.gv-mid{color:var(--accent);}.gv-lo{color:var(--red);}.gv-na{color:var(--dim);}
+.gbg{padding:3px 12px;border-radius:20px;font-size:0.7rem;font-weight:800;}
+.gbg-p{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.25);}
+.gbg-f{background:rgba(249,58,122,0.1);color:var(--red);border:1px solid rgba(249,58,122,0.25);}
+.gbg-n{background:rgba(90,116,153,0.1);color:var(--muted);border:1px solid var(--border);}
+.g-empty{text-align:center;padding:50px 20px;}
+.ge-ic{font-size:2.8rem;margin-bottom:12px;opacity:0.3;}
+.ge-t{font-size:0.92rem;font-weight:700;color:var(--muted);margin-bottom:5px;}
+.ge-s{font-size:0.78rem;color:var(--dim);line-height:1.7;}
+.g-load{text-align:center;padding:40px;color:var(--muted);font-size:0.84rem;}
+.spin{display:inline-block;animation:sp 0.85s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
+
+/* CURRICULUM */
+.cv-empty{background:var(--s1);border:1.5px dashed var(--border2);border-radius:14px;padding:44px 24px;text-align:center;}
+.cv-ic{font-size:2.8rem;margin-bottom:12px;opacity:0.3;}
+.cv-t{font-size:0.92rem;font-weight:700;color:var(--muted);margin-bottom:5px;}
+.cv-s{font-size:0.78rem;color:var(--dim);line-height:1.7;margin-bottom:18px;}
+.cv-note{display:inline-flex;align-items:center;gap:6px;
+  background:rgba(249,58,122,0.08);border:1px solid rgba(249,58,122,0.25);
+  color:var(--red);border-radius:10px;padding:8px 16px;
+  font-family:var(--font);font-weight:700;font-size:0.78rem;}
+.cv-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:12px;
+  padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:12px;
+  cursor:pointer;transition:all 0.2s;}
+.cv-card:hover{border-color:rgba(249,58,122,0.4);transform:translateY(-1px);}
+.cv-pdf{width:42px;height:42px;border-radius:10px;background:rgba(249,58,122,0.1);
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.cv-b{flex:1;min-width:0;}
+.cv-nm{font-size:0.86rem;font-weight:700;margin-bottom:2px;}
+.cv-mt{font-size:0.7rem;color:var(--muted);}
+.cv-dl{font-size:0.74rem;color:var(--red);font-weight:700;flex-shrink:0;}
+
+/* OVERLAY */
+.ov{display:none;position:fixed;inset:0;z-index:190;
+  background:rgba(0,0,0,0.5);backdrop-filter:blur(2px);}
+.ov.show{display:block;}
+
+/* MOBILE */
+@media(max-width:768px){
+  .sidebar{transform:translateX(calc(-1 * var(--sw)));}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0!important;}
+  .cpad{padding:20px 14px 60px;}
+  #th{padding:28px 14px;}
+  .fb{padding:14px;gap:10px;}
+  .fg{min-width:130px;}
+  .btn-vw{width:100%;}
+  .td-img{width:130px;}
+  .h-logo{font-size:2.2rem;}
+  .sg{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
+<!-- LOGIN GUARD -->
+<script>
+(function(){
+  try{var s=JSON.parse(localStorage.getItem('student_session')||'{}');
+    if(!s.loggedIn)window.location.replace('login.html');
+  }catch(e){window.location.replace('login.html');}
+})();
+</script>
 
 <!-- TOPBAR -->
 <div class="topbar">
+  <div class="tb-ham" onclick="toggleSB()">
+    <span></span><span></span><span></span>
+  </div>
   <div class="tb-brand">
-    <div class="tb-icon">SMGD</div>
+    <div class="tb-brand-ic">SMG</div>
     <div>
-      <div class="tb-school">Academia de Tecnologia in Mindanao, Inc.</div>
-      <div class="tb-name">Student Portal</div>
+      <div class="tb-brand-name">SMGDecode</div>
+      <div class="tb-brand-sub">Student Portal</div>
     </div>
   </div>
   <div class="tb-right">
-    <div class="tb-user" id="tb-user">
+    <div class="tb-user">
       <span>👤</span>
-      <span class="tb-uname" id="tb-uname">Loading...</span>
+      <span class="tb-uname" id="tb-nm">—</span>
     </div>
-    <button class="btn-logout" onclick="doLogout()">⏻ Logout</button>
+    <button class="btn-lo" onclick="doLogout()">⏻ Logout</button>
   </div>
 </div>
 
-<!-- PAGE -->
-<div class="page">
+<div class="ov" id="ov" onclick="closeSB()"></div>
 
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-tag">📚 Student Portal</div>
-    <h1 class="hero-title">Select Your <span>Academic Term</span></h1>
-    <p class="hero-sub">Choose your academic year and semester to see the subjects enrolled for that term.</p>
-  </div>
-
-  <!-- FILTER BAR -->
-  <div class="filter-bar">
-    <div class="filter-group">
-      <label class="filter-label">🗓 Academic Year</label>
-      <select class="filter-select" id="sel-year" onchange="onFilterChange()">
-        <option value="">— Select Academic Year —</option>
-        <option value="2025-2026">2025-2026</option>
-        <option value="2026-2027">2026-2027</option>
-        <option value="2027-2028">2027-2028</option>
-        <option value="2028-2029">2028-2029</option>
-        <option value="2029-2030">2029-2030</option>
-        <option value="2030-2031">2030-2031</option>
-        <option value="2031-2032">2031-2032</option>
-        <option value="2032-2033">2032-2033</option>
-        <option value="2033-2034">2033-2034</option>
-        <option value="2034-2035">2034-2035</option>
-      </select>
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sb">
+    <div class="sb-prof">
+      <div class="sb-av" id="sb-av">?<div class="sb-dot"></div></div>
+      <div class="sb-nm" id="sb-nm">—</div>
+      <div class="sb-em" id="sb-em">—</div>
+      <div class="sb-ctag" id="sb-ctag">—</div>
     </div>
-    <div class="filter-group">
-      <label class="filter-label">📋 Semester</label>
-      <select class="filter-select" id="sel-term" onchange="onFilterChange()">
-        <option value="">— Select Semester —</option>
-        <option value="1st Semester">1st Semester</option>
-        <option value="2nd Semester">2nd Semester</option>
-      </select>
+    <div class="sb-nav">
+      <div class="sb-sec">Main Menu</div>
+      <div class="sb-it on" id="ni-home" onclick="showT('home')">
+        <span class="si">🏠</span><span>Home</span>
+      </div>
+      <div class="sb-it" id="ni-tx" onclick="showT('tx')">
+        <span class="si">📚</span><span>Transactions</span>
+      </div>
+      <div class="sb-it" id="ni-gr" onclick="showT('gr')">
+        <span class="si">📊</span><span>Grades</span>
+      </div>
+      <div class="sb-it" id="ni-cv" onclick="showT('cv')">
+        <span class="si">📄</span><span>Curriculum</span>
+      </div>
+      <div class="sb-div"></div>
+      <div class="sb-sec">Account</div>
+      <div class="sb-it" onclick="window.location.href='profile.html'">
+        <span class="si">👤</span><span>My Profile</span>
+      </div>
+      <div class="sb-it" onclick="doLogout()">
+        <span class="si">⏻</span><span style="color:var(--red)">Logout</span>
+      </div>
     </div>
-    <button class="btn-view" onclick="loadSubjects()">🔍 View Subjects</button>
-  </div>
-
-  <!-- CONTENT AREA -->
-  <div id="content-area">
-    <!-- default state -->
-    <div class="empty-state">
-      <div class="empty-icon">🎓</div>
-      <div class="empty-title">Select an Academic Year and Semester</div>
-      <p class="empty-sub">Use the dropdowns above to view the list of subjects for your chosen term.</p>
+    <div class="sb-ft">
+      <div class="sb-ver">SMGDecode Portal v1.0</div>
     </div>
   </div>
 
-</div><!-- end page -->
+  <!-- MAIN -->
+  <div class="main" id="main">
+
+    <!-- HOME -->
+    <div id="th" class="on">
+      <div class="td-wrap">
+        <div class="td-glow"></div>
+        <img class="td-img" src="teacher-d.png" alt="Teacher D"
+          onerror="this.style.display='none'">
+      </div>
+      <div class="h-logo">SMGDecode</div>
+      <div class="h-logo-sub">Academia de Tecnologia in Mindanao, Inc.</div>
+      <div class="h-tags">
+        <div class="htag ht1">💻 Software Engineer</div>
+        <div class="htag ht2">🎓 Mentor</div>
+        <div class="htag ht3">🧠 Guru</div>
+        <div class="htag ht4">🛠 Developer</div>
+        <div class="htag ht5">📖 Educator</div>
+      </div>
+      <p class="h-desc">Welcome to the SMGDecode Student Portal.<br>
+      Select <strong style="color:var(--text)">Transactions</strong> to view your subjects,
+      <strong style="color:var(--text)">Grades</strong> for your scores, or
+      <strong style="color:var(--text)">Curriculum</strong> to download your program checklist.</p>
+    </div>
+
+    <!-- TRANSACTIONS -->
+    <div id="ttx" class="tpanel cpad">
+      <div class="ph">
+        <div class="ph-tag">📚 Transactions</div>
+        <h1 class="ph-title">Select Your <span>Academic Term</span></h1>
+        <p class="ph-sub">Choose your Academic Year, Semester, and Course to see your enrolled subjects.</p>
+      </div>
+      <div class="fb">
+        <div class="fg">
+          <label class="fl">🗓 Academic Year</label>
+          <select class="fs" id="sy" onchange="chg()">
+            <option value="">— Academic Year —</option>
+            <option>2025-2026</option><option>2026-2027</option><option>2027-2028</option>
+            <option>2028-2029</option><option>2029-2030</option><option>2030-2031</option>
+            <option>2031-2032</option><option>2032-2033</option><option>2033-2034</option>
+            <option>2034-2035</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl">📋 Semester</label>
+          <select class="fs" id="st" onchange="chg()">
+            <option value="">— Semester —</option>
+            <option>1st Semester</option><option>2nd Semester</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl">🎓 Course</label>
+          <select class="fs" id="sc" onchange="chg()">
+            <option value="">— Select Course —</option>
+            <option>BS IN ACCOUNTING INFORMATION SYSTEM</option>
+            <option>BS IN CRIMINOLOGY</option>
+            <option>BS IN HOSPITALITY MANAGEMENT</option>
+            <option>BS IN SOCIAL WORK</option>
+            <option>BS IN CIVIL ENGINEERING</option>
+            <option>BS IN SECONDARY EDUCATION</option>
+            <option>BACHELOR OF ELEMENTARY EDUCATION</option>
+          </select>
+        </div>
+        <button class="btn-vw" onclick="loadS()">🔍 View Subjects</button>
+      </div>
+      <div id="sa">
+        <div class="es"><div class="es-ic">🎓</div>
+          <div class="es-t">Select Academic Year, Semester and Course</div>
+          <p class="es-s">Your subjects will appear here.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRADES -->
+    <div id="tgr" class="tpanel cpad">
+      <div class="ph">
+        <div class="ph-tag">📊 Grades</div>
+        <h1 class="ph-title">My <span>Grades</span></h1>
+        <p class="ph-sub">Your assessment scores recorded by your instructor.</p>
+      </div>
+      <div id="gc"><div class="g-load"><span class="spin">⟳</span> Loading grades...</div></div>
+    </div>
+
+    <!-- CURRICULUM -->
+    <div id="tcv" class="tpanel cpad">
+      <div class="ph">
+        <div class="ph-tag">📄 Curriculum</div>
+        <h1 class="ph-title">Program <span>Curriculum</span></h1>
+        <p class="ph-sub">Download your program checklist and curriculum documents.</p>
+      </div>
+      <div id="cvc">
+        <div class="cv-empty">
+          <div class="cv-ic">📁</div>
+          <div class="cv-t">Curriculum Files Coming Soon</div>
+          <p class="cv-s">The instructor will upload your program curriculum files here.<br>
+          You will be able to download them once available.</p>
+          <div class="cv-note">📬 Check back later for uploaded documents</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp }  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged }
+                          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, getDoc }
+                          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
+  authDomain: "cfp2526-database.firebaseapp.com",
+  projectId: "cfp2526-database",
+  storageBucket: "cfp2526-database.firebasestorage.app",
+  messagingSenderId: "111042690196",
+  appId: "1:111042690196:web:cd63203bd29b350cea8881",
+  measurementId: "G-Y7CMBZM1G1"
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const g    = id => document.getElementById(id);
+const esc  = s  => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+let sess = {};
+try { sess = JSON.parse(localStorage.getItem('student_session')||'{}'); } catch(e){}
+
+// Topbar + sidebar
+const dn = sess.firstName && sess.surname ? sess.surname+', '+sess.firstName : sess.name||sess.email||'Student';
+g('tb-nm').textContent = dn;
+g('sb-nm').textContent = dn;
+g('sb-em').textContent = sess.email||'';
+g('sb-ctag').textContent = shortC(sess.course)||'—';
+g('sb-av').firstChild.textContent = (sess.firstName||sess.name||'?')[0].toUpperCase();
+
+// Auto-fill
+if(sess.academicYear) g('sy').value = sess.academicYear;
+if(sess.term)         g('st').value = sess.term;
+if(sess.course)       g('sc').value = sess.course;
+if(sess.academicYear && sess.term && sess.course) loadS();
+
+onAuthStateChanged(auth, u => { if(u) loadGrades(u.uid); });
+
+async function loadGrades(uid) {
+  const gc = g('gc');
+  try {
+    const [q1,q2,p1,p2,ag] = await Promise.all([
+      getDoc(doc(db,'quiz_submissions',uid)).catch(()=>null),
+      getDoc(doc(db,'quiz2_submissions',uid)).catch(()=>null),
+      getDoc(doc(db,'practical_submissions',uid)).catch(()=>null),
+      getDoc(doc(db,'practical2_submissions',uid)).catch(()=>null),
+      getDoc(doc(db,'student_grades',uid)).catch(()=>null),
+    ]);
+    const items=[];
+    if(q1?.exists()) items.push({l:'Week 1 — Theory Quiz',s:q1.data().score,p:q1.data().percent,t:q1.data().timestamp});
+    if(q2?.exists()) items.push({l:'Week 2 — Theory Quiz',s:q2.data().score,p:q2.data().percent,t:q2.data().timestamp});
+    if(p1?.exists()) items.push({l:'Week 1 — Practical',s:p1.data().score,p:p1.data().percent,t:p1.data().timestamp});
+    if(p2?.exists()) items.push({l:'Week 2 — Practical',s:p2.data().score,p:p2.data().percent,t:p2.data().timestamp});
+
+    if(!items.length && !ag?.exists()){
+      gc.innerHTML=`<div class="g-empty"><div class="ge-ic">📊</div>
+        <div class="ge-t">No Grades Yet</div>
+        <p class="ge-s">Complete your assessments and scores will appear here.</p></div>`;
+      return;
+    }
+
+    let html='';
+    if(items.length){
+      const avgs=items.map(i=>parseFloat((i.p||'0').replace('%',''))).filter(n=>n>0);
+      const avg=avgs.length?(avgs.reduce((a,b)=>a+b,0)/avgs.length).toFixed(1):0;
+      const ac=avg>=75?'hi':avg>=60?'mid':'lo';
+      html+=`<div class="gc-card">
+        <div class="gcc-h">
+          <div><div class="gcc-s">📝 Computer Fundamentals and Programming</div>
+          <div class="gcc-t">BES 125 · ${esc(sess.academicYear||'')} · ${esc(sess.term||'')}</div></div>
+          <span class="gbg ${avg>=75?'gbg-p':avg>0?'gbg-f':'gbg-n'}">${avg>=75?'✅ Passing':avg>0?'❌ Below Passing':'—'}</span>
+        </div>
+        <div class="gcc-b">
+          ${items.map(i=>{const p=parseFloat((i.p||'0').replace('%',''));const c=p>=75?'gv-hi':p>=60?'gv-mid':p>0?'gv-lo':'gv-na';
+            return`<div class="gr"><span class="gr-l">${esc(i.l)}</span>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="gr-v ${c}">${esc(i.s||'—')}</span>
+              <span class="gr-v ${c}" style="font-size:0.74rem">${esc(i.p||'—')}</span>
+            </div></div>`;}).join('')}
+          <div class="gr" style="background:rgba(255,255,255,0.02);padding:9px 6px;border-radius:8px;margin-top:4px;">
+            <span class="gr-l" style="font-weight:700;color:var(--text)">Average</span>
+            <span class="gr-v ${ac}" style="font-size:1.05rem">${avg}%</span>
+          </div>
+        </div>
+      </div>`;
+    }
+    if(ag?.exists()){
+      const d=ag.data();
+      html+=`<div class="gc-card">
+        <div class="gcc-h">
+          <div><div class="gcc-s">📋 Official Grades — Instructor</div>
+          <div class="gcc-t">Entered by: DEBULGADO, S.M.G</div></div>
+        </div>
+        <div class="gcc-b">
+          ${Object.entries(d).filter(([k])=>!['uid','gmail','updatedAt'].includes(k)).map(([k,v])=>{
+            const p=parseFloat(v)||0;const c=p>=75?'gv-hi':p>=60?'gv-mid':p>0?'gv-lo':'gv-na';
+            return`<div class="gr"><span class="gr-l">${esc(k)}</span>
+              <span class="gr-v ${c}">${esc(v)}</span></div>`;}).join('')}
+        </div>
+      </div>`;
+    }
+    gc.innerHTML=html;
+  } catch(e){
+    gc.innerHTML=`<div class="g-empty"><div class="ge-ic">⚙️</div>
+      <div class="ge-t">Grades Unavailable</div>
+      <p class="ge-s">Complete Firebase setup to load grades.<br><small style="color:var(--dim)">${e.message}</small></p></div>`;
+  }
+}
+window._loadGrades=loadGrades;
+</script>
 
 <script>
-// ─────────────────────────────────────────
-//  SESSION CHECK
-// ─────────────────────────────────────────
-let session = {};
-try { session = JSON.parse(localStorage.getItem('student_session') || '{}'); } catch(e){}
-
-if (!session.loggedIn) {
-  window.location.replace('login.html');
-}
-
-// Set topbar user
-const tbUname = document.getElementById('tb-uname');
-if (session.firstName && session.surname) {
-  tbUname.textContent = session.surname + ', ' + session.firstName;
-} else {
-  tbUname.textContent = session.name || session.email || 'Student';
-}
-
-// Auto-fill filters from student's registered term
-const selYear = document.getElementById('sel-year');
-const selTerm = document.getElementById('sel-term');
-if (session.academicYear) selYear.value = session.academicYear;
-if (session.term)         selTerm.value = session.term;
-
-// Auto-load if both are set
-if (session.academicYear && session.term) {
-  loadSubjects();
-}
-
-function doLogout() {
-  localStorage.removeItem('student_session');
-  localStorage.removeItem('firebase_user');
-  window.location.href = 'login.html';
-}
-
-function onFilterChange() {
-  // Auto load when both are selected
-  if (selYear.value && selTerm.value) loadSubjects();
-}
-
-// ─────────────────────────────────────────
-//  SUBJECTS DATABASE
-//  Add more subjects here as needed
-// ─────────────────────────────────────────
-const SUBJECTS = [
-  {
-    id:      'cfp',
-    code:    'BES 125',
-    title:   'Computer Fundamentals and Programming',
-    desc:    'Introduction to C++ programming, control structures, pseudocode, flowcharts, functions, and arrays. Laboratory exercises included.',
-    icon:    '💻',
-    iconCls: 'yi',
-    cardCls: 'cpp',
-    units:   3,
-    lec:     2,
-    lab:     3,
-    instructor: 'DEBULGADO, S.M.G',
-    dept:    'BS Civil Engineering',
-    open:    true,
-    link:    'bes125.html',
-    weeks:   2,
-    courses: ['BS IN CIVIL ENGINEERING'],
-    years:   ['2025-2026','2026-2027','2027-2028','2028-2029'],
-    terms:   ['2nd Semester'],
-  },
-  {
-    id:      'math1',
-    code:    'MATH 101',
-    title:   'Mathematics in the Modern World',
-    desc:    'Nature of mathematics, mathematical language, sets, relations, functions, statistics, and data management.',
-    icon:    '📐',
-    iconCls: 'bi',
-    cardCls: 'blue-c',
-    units:   3,
-    lec:     3,
-    lab:     0,
-    instructor: 'TBA',
-    dept:    'General Education',
-    open:    false,
-    link:    null,
-    weeks:   0,
-    courses: null, // all courses
-    years:   null,
-    terms:   null,
-  },
-  {
-    id:      'eng1',
-    code:    'ENGL 101',
-    title:   'Purposive Communication',
-    desc:    'Communication skills in multicultural settings — writing, speaking, reading, and listening for academic and professional purposes.',
-    icon:    '📝',
-    iconCls: 'gi',
-    cardCls: 'green-c',
-    units:   3,
-    lec:     3,
-    lab:     0,
-    instructor: 'TBA',
-    dept:    'General Education',
-    open:    false,
-    link:    null,
-    weeks:   0,
-    courses: null,
-    years:   null,
-    terms:   null,
-  },
-  {
-    id:      'nat1',
-    code:    'SCI 101',
-    title:   'The Contemporary World',
-    desc:    'Globalization, geopolitics, global economy, global culture, and global governance in the modern world.',
-    icon:    '🌏',
-    iconCls: 'pi',
-    cardCls: 'purple-c',
-    units:   3,
-    lec:     3,
-    lab:     0,
-    instructor: 'TBA',
-    dept:    'General Education',
-    open:    false,
-    link:    null,
-    weeks:   0,
-    courses: null,
-    years:   null,
-    terms:   null,
-  },
-  {
-    id:      'pe1',
-    code:    'PE 101',
-    title:   'Physical Education 1',
-    desc:    'Physical fitness, wellness, and sport activities promoting lifelong health and physical well-being.',
-    icon:    '🏃',
-    iconCls: 'oi',
-    cardCls: 'orange-c',
-    units:   2,
-    lec:     0,
-    lab:     2,
-    instructor: 'TBA',
-    dept:    'Physical Education',
-    open:    false,
-    link:    null,
-    weeks:   0,
-    courses: null,
-    years:   null,
-    terms:   null,
-  },
-  {
-    id:      'nstp',
-    code:    'NSTP 101',
-    title:   'National Service Training Program',
-    desc:    'Civic welfare training, community service, and national defense preparation for Filipino students.',
-    icon:    '🇵🇭',
-    iconCls: 'gi',
-    cardCls: 'green-c',
-    units:   3,
-    lec:     3,
-    lab:     0,
-    instructor: 'TBA',
-    dept:    'General Education',
-    open:    false,
-    link:    null,
-    weeks:   0,
-    courses: null,
-    years:   null,
-    terms:   null,
-  },
+const SUBS=[
+  {id:'cfp',code:'BES 125',title:'Computer Fundamentals and Programming',
+   desc:'Introduction to C++ programming, pseudocode, flowcharts, control structures, functions, and arrays. With laboratory exercises.',
+   icon:'💻',ic:'ic-y',cc:'cpp',units:3,lec:2,lab:3,
+   inst:'DEBULGADO, S.M.G',dept:'BS Civil Engineering',
+   open:true,link:'bes125.html',
+   courses:['BS IN CIVIL ENGINEERING'],terms:['2nd Semester'],years:null},
+  {id:'nstp',code:'NSTP 101',title:'National Service Training Program',
+   desc:'Civic welfare training, community service, and national defense preparation for Filipino students.',
+   icon:'🇵🇭',ic:'ic-g',cc:'gc',units:3,lec:3,lab:0,
+   inst:'TBA',dept:'BS Accounting Information System',
+   open:false,link:null,
+   courses:['BS IN ACCOUNTING INFORMATION SYSTEM'],terms:null,years:null},
+  {id:'pe1',code:'PE 101',title:'Physical Education 1',
+   desc:'Physical fitness, wellness, and sport activities promoting lifelong health and physical well-being.',
+   icon:'🏃',ic:'ic-o',cc:'oc',units:2,lec:0,lab:2,
+   inst:'TBA',dept:'BS Accounting Information System',
+   open:false,link:null,
+   courses:['BS IN ACCOUNTING INFORMATION SYSTEM'],terms:null,years:null},
+  {id:'math1',code:'MATH 101',title:'Mathematics in the Modern World',
+   desc:'Nature of mathematics, mathematical language, sets, relations, functions, statistics, and data management.',
+   icon:'📐',ic:'ic-b',cc:'bc',units:3,lec:3,lab:0,
+   inst:'TBA',dept:'General Education',
+   open:false,link:null,courses:null,terms:null,years:null},
+  {id:'eng1',code:'ENGL 101',title:'Purposive Communication',
+   desc:'Communication skills in multicultural settings — writing, speaking, reading, and listening for academic and professional purposes.',
+   icon:'📝',ic:'ic-g',cc:'gc',units:3,lec:3,lab:0,
+   inst:'TBA',dept:'General Education',
+   open:false,link:null,courses:null,terms:null,years:null},
+  {id:'sci1',code:'SCI 101',title:'The Contemporary World',
+   desc:'Globalization, geopolitics, global economy, global culture, and global governance in the modern world.',
+   icon:'🌏',ic:'ic-p',cc:'pc',units:3,lec:3,lab:0,
+   inst:'TBA',dept:'General Education',
+   open:false,link:null,courses:null,terms:null,years:null},
 ];
 
-// ─────────────────────────────────────────
-//  LOAD SUBJECTS
-// ─────────────────────────────────────────
-function loadSubjects() {
-  const year = selYear.value;
-  const term = selTerm.value;
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-  if (!year || !term) {
-    document.getElementById('content-area').innerHTML = `
-      <div class="notice-bar">⚠ <strong>Please select</strong> both an Academic Year and a Semester to view subjects.</div>`;
-    return;
+function chg(){
+  if(g('sy').value&&g('st').value&&g('sc').value) loadS();
+}
+window.chg=chg;
+
+function loadS(){
+  const yr=g('sy').value,tm=g('st').value,cr=g('sc').value;
+  const ar=g('sa');
+  if(!yr||!tm||!cr){
+    ar.innerHTML=`<div class="nb">⚠ <strong>Please select</strong> all three filters.</div>`;return;
   }
-
-  // Filter subjects for this year + term
-  const filtered = SUBJECTS.filter(s => {
-    const yearOk = !s.years || s.years.includes(year);
-    const termOk = !s.terms || s.terms.includes(term);
-    return yearOk && termOk;
+  const filt=SUBS.filter(s=>{
+    const cOk=!s.courses||s.courses.includes(cr);
+    const tOk=!s.terms||s.terms.includes(tm);
+    const yOk=!s.years||s.years.includes(yr);
+    return cOk&&tOk&&yOk;
   });
+  const feat=filt.find(s=>s.open&&s.link);
+  let html=`<div class="nb">📅 <strong>${esc(yr)}</strong> · <strong>${esc(tm)}</strong> · <strong>${esc(cr)}</strong> — <strong>${filt.length}</strong> subject${filt.length!==1?'s':''} found</div>`;
 
-  // Find CFP (the featured subject)
-  const cfp = filtered.find(s => s.id === 'cfp');
-  // Student's enrolled course
-  const stuCourse = session.course || '';
-
-  // Build HTML
-  let html = '';
-
-  // ── NOTICE BAR ──
-  html += `<div class="notice-bar">
-    📅 Showing subjects for <strong>${year}</strong> · <strong>${term}</strong>
-    ${stuCourse ? ' &nbsp;|&nbsp; Your course: <strong>'+escH(stuCourse)+'</strong>' : ''}
-  </div>`;
-
-  // ── FEATURED: Computer Fundamentals & Programming ──
-  if (cfp) {
-    html += `<div class="my-subj-section">
-      <div class="sec-head">
-        <span class="sec-head-label">⭐ Your Active Subject</span>
-        <span class="sec-head-badge">Now Open</span>
-        <div class="sec-head-line"></div>
+  if(feat){
+    html+=`<div class="sh"><span class="sh-lbl">⭐ Active Subject</span><span class="sh-bg">Now Open</span><div class="sh-ln"></div></div>
+    <div class="hc" onclick="enterS('${feat.id}')">
+      <div class="hc-ic">${feat.icon}</div>
+      <div class="hc-b">
+        <div class="hc-tg">${esc(feat.code)} · ${esc(yr)} · ${esc(tm)}</div>
+        <div class="hc-ttl">${esc(feat.title)}</div>
+        <div class="hc-sb">Instructor: ${esc(feat.inst)} · ${feat.units} Units · Lec ${feat.lec}hrs / Lab ${feat.lab}hrs</div>
       </div>
-      <div class="highlight-card" onclick="enterSubject('${cfp.id}')">
-        <div class="hc-icon">💻</div>
-        <div class="hc-body">
-          <div class="hc-tag">${escH(cfp.code)} · ${escH(year)} · ${escH(term)}</div>
-          <div class="hc-title">${escH(cfp.title)}</div>
-          <div class="hc-sub">Instructor: ${escH(cfp.instructor)} &nbsp;·&nbsp; ${cfp.units} Units &nbsp;·&nbsp; Lec ${cfp.lec}hrs / Lab ${cfp.lab}hrs</div>
-        </div>
-        <div class="hc-arrow">→</div>
-      </div>
+      <div class="hc-arr">→</div>
     </div>`;
   }
 
-  // ── ALL SUBJECTS GRID ──
-  html += `<div class="sec-head">
-    <span class="sec-head-label">📚 All Subjects This Term</span>
-    <span class="sec-head-badge">${filtered.length} Subjects</span>
-    <div class="sec-head-line"></div>
-  </div>
-  <div class="subject-grid">`;
+  if(!filt.length){
+    html+=`<div class="es"><div class="es-ic">📭</div>
+      <div class="es-t">No subjects found</div>
+      <p class="es-s">No subjects listed for ${esc(cr)} in ${esc(yr)} · ${esc(tm)}.</p></div>`;
+    ar.innerHTML=html;return;
+  }
 
-  filtered.forEach(s => {
-    const isLocked  = !s.open;
-    const isCFP     = s.id === 'cfp';
-    const statusCls = isCFP ? 'ss-you' : isLocked ? 'ss-locked' : 'ss-open';
-    const statusLbl = isCFP ? '● Active' : isLocked ? '🔒 Coming Soon' : '● Open';
-    const cardCls   = isLocked ? s.cardCls + ' locked' : s.cardCls;
-    const clickAttr = isCFP ? `onclick="enterSubject('${s.id}')"` : '';
+  html+=`<div class="sh"><span class="sh-lbl">📚 All Subjects This Term</span>
+    <span class="sh-bg">${filt.length} Subjects</span><div class="sh-ln"></div></div>
+    <div class="sg">`;
 
-    html += `
-    <div class="subj-card ${cardCls}" ${clickAttr}>
-      <div class="subj-card-top">
-        <div class="subj-icon ${s.iconCls}">${s.icon}</div>
-        <span class="subj-status ${statusCls}">${statusLbl}</span>
+  filt.forEach(s=>{
+    const cl=s.open?'ss-ac':'ss-lk';
+    const lb=s.open?'● Active':'🔒 Coming Soon';
+    const ca=s.open&&s.link?`onclick="enterS('${s.id}')"`:'';
+    html+=`<div class="sc ${s.cc}${!s.open?' lk':''}" ${ca}>
+      <div class="sc-top">
+        <div class="sc-ic ${s.ic}">${s.icon}</div>
+        <span class="ss ${cl}">${lb}</span>
       </div>
-      <div class="subj-code">${escH(s.code)}</div>
-      <div class="subj-title">${escH(s.title)}</div>
-      <div class="subj-desc">${escH(s.desc)}</div>
-      <div class="subj-meta">
-        <span class="smeta">📖 ${s.units} Units</span>
-        ${s.lec ? `<span class="smeta">🏫 Lec: ${s.lec}hrs</span>` : ''}
-        ${s.lab ? `<span class="smeta">🔬 Lab: ${s.lab}hrs</span>` : ''}
+      <div class="sc-code">${esc(s.code)}</div>
+      <div class="sc-ttl">${esc(s.title)}</div>
+      <div class="sc-dsc">${esc(s.desc)}</div>
+      <div class="sc-meta">
+        <span class="sm">📖 ${s.units} Units</span>
+        ${s.lec?`<span class="sm">🏫 Lec: ${s.lec}hrs</span>`:''}
+        ${s.lab?`<span class="sm">🔬 Lab: ${s.lab}hrs</span>`:''}
       </div>
-      <div class="subj-footer">
-        <div class="subj-inst">
-          <strong>${escH(s.instructor)}</strong><br>
-          <span style="font-size:0.68rem">${escH(s.dept)}</span>
-        </div>
-        ${isCFP
-          ? `<div class="btn-enter">Open Course →</div>`
-          : isLocked
-            ? `<div class="btn-enter-locked">Not yet available</div>`
-            : `<div class="btn-enter">Open Course →</div>`
-        }
+      <div class="sc-ft">
+        <div class="sc-inst"><strong>${esc(s.inst)}</strong><br><span style="font-size:0.64rem">${esc(s.dept)}</span></div>
+        ${s.open?`<div class="ent">Open Course →</div>`:`<div class="ent-lk">Not yet available</div>`}
       </div>
     </div>`;
   });
 
-  html += '</div>'; // end grid
+  html+='</div>';
+  ar.innerHTML=html;
+}
+window.loadS=loadS;
 
-  if (!filtered.length) {
-    html += `<div class="empty-state">
-      <div class="empty-icon">📭</div>
-      <div class="empty-title">No subjects found for this term</div>
-      <p class="empty-sub">There are no subjects listed for ${year} · ${term} yet. Please check back later.</p>
-    </div>`;
+function enterS(id){
+  const s=SUBS.find(x=>x.id===id);if(!s||!s.link)return;
+  try{
+    const sess=JSON.parse(localStorage.getItem('student_session')||'{}');
+    sess.activeYear=g('sy').value;sess.activeTerm=g('st').value;
+    sess.activeSubject=s.title;
+    localStorage.setItem('student_session',JSON.stringify(sess));
+  }catch(e){}
+  window.location.href=s.link;
+}
+window.enterS=enterS;
+
+function g(id){return document.getElementById(id);}
+
+function shortC(c){
+  return({
+    'BS IN ACCOUNTING INFORMATION SYSTEM':'BSAIS',
+    'BS IN CRIMINOLOGY':'BSCrim',
+    'BS IN HOSPITALITY MANAGEMENT':'BSHM',
+    'BS IN SOCIAL WORK':'BSSW',
+    'BS IN CIVIL ENGINEERING':'BSCE',
+    'BS IN SECONDARY EDUCATION':'BSEd',
+    'BACHELOR OF ELEMENTARY EDUCATION':'BEEd'
+  })[c]||c||'—';
+}
+window.shortC=shortC;
+
+function doLogout(){
+  localStorage.removeItem('student_session');
+  localStorage.removeItem('firebase_user');
+  window.location.href='login.html';
+}
+window.doLogout=doLogout;
+
+// SIDEBAR
+function toggleSB(){
+  const sb=document.getElementById('sb');
+  const ov=document.getElementById('ov');
+  const main=document.getElementById('main');
+  if(window.innerWidth<=768){
+    sb.classList.toggle('open');ov.classList.toggle('show');
+  } else {
+    sb.classList.toggle('hide');main.classList.toggle('full');
   }
-
-  document.getElementById('content-area').innerHTML = html;
 }
-
-// ─────────────────────────────────────────
-//  ENTER SUBJECT
-// ─────────────────────────────────────────
-function enterSubject(id) {
-  const s = SUBJECTS.find(x => x.id === id);
-  if (!s || !s.link) return;
-  // Save selected term to session
-  try {
-    const sess = JSON.parse(localStorage.getItem('student_session') || '{}');
-    sess.activeYear    = selYear.value;
-    sess.activeTerm    = selTerm.value;
-    sess.activeSubject = s.title;
-    localStorage.setItem('student_session', JSON.stringify(sess));
-  } catch(e){}
-  window.location.href = s.link;
+function closeSB(){
+  document.getElementById('sb').classList.remove('open');
+  document.getElementById('ov').classList.remove('show');
 }
+window.toggleSB=toggleSB;window.closeSB=closeSB;
 
-function escH(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+// TAB SWITCHER
+function showT(name){
+  // Hide all
+  document.getElementById('th').classList.remove('on');
+  ['tx','gr','cv'].forEach(t=>{
+    const el=document.getElementById('t'+t);
+    if(el)el.classList.remove('on');
+  });
+  // Remove all nav active
+  ['home','tx','gr','cv'].forEach(t=>{
+    const el=document.getElementById('ni-'+t);
+    if(el)el.classList.remove('on');
+  });
+  // Show selected
+  if(name==='home'){
+    document.getElementById('th').classList.add('on');
+    document.getElementById('ni-home').classList.add('on');
+  } else {
+    const el=document.getElementById('t'+name);
+    if(el)el.classList.add('on');
+    const ni=document.getElementById('ni-'+name);
+    if(ni)ni.classList.add('on');
+  }
+  if(window.innerWidth<=768)closeSB();
+  // Load grades when switching to it
+  if(name==='gr'&&window._loadGrades){
+    try{
+      const {getAuth}=window._fbAuth||{};
+      // will auto-load from onAuthStateChanged above
+    }catch(e){}
+  }
 }
+window.showT=showT;
 </script>
 </body>
 </html>
