@@ -421,7 +421,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 <script type="module">
 import { initializeApp }  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth }        from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, collection, getDocs, doc, getDoc, setDoc, serverTimestamp }
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc, deleteDoc, serverTimestamp }
                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -684,7 +684,8 @@ window.renderCards = function() {
       r.fb ? '<span class="scb scb-done">Feedback ✓</span>' : '',
       r.grades ? '<span class="scb scb-done">Grades ✓</span>' : '',
     ].join('');
-    return `<div class="student-card" onclick="openModal('${r.uid}')">
+    return `<div class="student-card" style="position:relative;" onclick="openModal('${r.uid}')">
+      <button class="btn-delete-card" onclick="event.stopPropagation();confirmDelete('${r.uid}')">🗑 Delete</button>
       <div class="sc-top">
         <div class="sc-av">${esc(init)}</div>
         <div class="sc-info">
@@ -926,6 +927,79 @@ window.saveGrades = async function(uid, subjId) {
   }
 };
 
+// ── DELETE STUDENT ──
+let _deleteUid = null;
+
+window.confirmDelete = function(uid) {
+  const r = allData[uid];
+  if(!r) return;
+  _deleteUid = uid;
+  const init = (r.firstName||r.name||'?')[0].toUpperCase();
+  g('del-av').textContent = init;
+  g('del-nm').textContent = r.name || '—';
+  g('del-em').textContent = r.gmail || '—';
+  g('del-overlay').classList.add('show');
+  // Close the student modal if open
+  g('modal-ov').classList.remove('show');
+};
+
+window.closeDelModal = function() {
+  g('del-overlay').classList.remove('show');
+  _deleteUid = null;
+};
+
+window.executeDelete = async function() {
+  if(!_deleteUid) return;
+  const uid  = _deleteUid;
+  const r    = allData[uid];
+  const btn  = g('btn-del-confirm');
+  btn.disabled = true;
+  btn.textContent = '⟳ Deleting...';
+
+  const collections = [
+    'student_profiles',
+    'quiz_submissions',
+    'quiz2_submissions',
+    'practical_submissions',
+    'practical2_submissions',
+    'quiz_feedback',
+    'student_grades',
+    'student_ids',
+  ];
+
+  // Delete from Firestore
+  const results = await Promise.allSettled(
+    collections.map(col => deleteDoc(doc(db, col, uid)).catch(()=>null))
+  );
+
+  // Also remove student_ids entry keyed by studentId
+  if(r?.studentId) {
+    const idKey = r.studentId.toLowerCase().replace(/\s+/g,'');
+    await deleteDoc(doc(db,'student_ids',idKey)).catch(()=>null);
+  }
+
+  // Remove from local cache
+  delete allData[uid];
+
+  // Close modal & refresh
+  closeDelModal();
+  btn.disabled = false;
+  btn.textContent = '🗑 Yes, Delete Student';
+
+  // Refresh stats + cards
+  applyFilter();
+
+  // Show brief toast
+  const toast = document.createElement('div');
+  toast.textContent = '✅ Student record deleted.';
+  toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);' +
+    'background:var(--s1);border:1px solid var(--green);color:var(--green);' +
+    'padding:10px 22px;border-radius:10px;font-size:0.82rem;font-weight:700;' +
+    'z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.5);';
+  document.body.appendChild(toast);
+  setTimeout(()=>toast.remove(), 3000);
+};
+
 // ── CLOSE MODAL ──
 window.closeModal = () => g('modal-ov').classList.remove('show');
 window.closeModalBg = e => { if(e.target===g('modal-ov')) closeModal(); };
@@ -950,5 +1024,31 @@ window.exportCSV = function() {
   a.click();
 };
 </script>
+<!-- DELETE CONFIRM MODAL -->
+<div id="del-overlay" onclick="if(event.target===this)closeDelModal()">
+  <div class="del-box">
+    <div class="del-top"></div>
+    <div class="del-head">
+      <div class="del-title">🗑 Delete Student Record</div>
+      <div class="del-sub">This will permanently remove all data for this student.</div>
+    </div>
+    <div class="del-student">
+      <div class="del-av" id="del-av">?</div>
+      <div>
+        <div class="del-nm" id="del-nm">—</div>
+        <div class="del-em" id="del-em">—</div>
+      </div>
+    </div>
+    <div class="del-warning">
+      <strong>⚠ Warning — This action cannot be undone.</strong><br>
+      The following data will be permanently deleted:<br>
+      Quiz submissions · Practical submissions · Feedback · Grades · Profile
+    </div>
+    <div class="del-foot">
+      <button class="btn-del-cancel" onclick="closeDelModal()">✕ Cancel</button>
+      <button class="btn-del-confirm" id="btn-del-confirm" onclick="executeDelete()">🗑 Yes, Delete Student</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
