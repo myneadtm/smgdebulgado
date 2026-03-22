@@ -219,6 +219,24 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .fb-rv{font-size:0.82rem;color:var(--text);}
 
 /* GRADE FORM */
+/* Subject step in modal */
+.ms-subj-list{display:flex;flex-direction:column;gap:8px;margin-bottom:4px;}
+.ms-subj-item{display:flex;align-items:center;gap:12px;
+  background:var(--s2);border:1.5px solid var(--border2);border-radius:12px;
+  padding:13px 16px;cursor:pointer;transition:all 0.2s;}
+.ms-subj-item:hover{border-color:rgba(168,85,247,0.5);transform:translateY(-1px);}
+.msi-icon{font-size:1.4rem;flex-shrink:0;}
+.msi-body{flex:1;min-width:0;}
+.msi-code{font-family:var(--mono);font-size:0.66rem;color:var(--muted);margin-bottom:3px;}
+.msi-name{font-size:0.86rem;font-weight:800;}
+.msi-meta{font-size:0.7rem;color:var(--dim);margin-top:2px;}
+.msi-status{font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:20px;flex-shrink:0;}
+.msi-ok{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.2);}
+.msi-no{background:rgba(90,116,153,0.1);color:var(--muted);border:1px solid var(--border);}
+.btn-back-step{background:var(--s2);border:1.5px solid var(--border2);border-radius:8px;
+  padding:6px 14px;color:var(--muted);font-family:var(--font);font-weight:700;
+  font-size:0.76rem;cursor:pointer;transition:all 0.2s;margin-bottom:14px;display:inline-block;}
+.btn-back-step:hover{color:var(--text);}
 .grade-form{background:var(--s2);border:1.5px solid var(--border2);
   border-radius:12px;padding:18px;margin-top:6px;}
 .gf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
@@ -687,23 +705,50 @@ window.renderCards = function() {
 };
 
 // ── OPEN MODAL ──
+const ADMIN_SUBJECTS = [
+  { id:'BES125', code:'BES 125', name:'Computer Fundamentals and Programming',
+    icon:'💻', instructor:'DEBULGADO, S.M.G', dept:'BS Civil Engineering' },
+];
+
+let _currentModalUid = null;
+let _currentSubjectId = null;
+
 window.openModal = function(uid) {
   const r = allData[uid];
   if(!r) return;
+  _currentModalUid = uid;
+  _currentSubjectId = null;
 
   g('modal-ttl').textContent = r.name || r.gmail;
 
-  const scoreCell = (label,d) => {
-    if(!d) return `<div class="status-cell">
-      <div class="sc-lbl">${label}</div>
-      <div class="sc-val sv-na">Not submitted</div>
+  // STEP 1: Show subject selection
+  const allGrades = r.grades || {};
+  const subjectRows = ADMIN_SUBJECTS.map(s => {
+    const sg = allGrades[s.id] || allGrades;
+    const hasSem = !!(allGrades[s.id] ? sg.semestral : sg.semestral);
+    const hasSome = !!(allGrades[s.id] ? (sg.prelim||sg.midterm||sg.finals) : (sg.prelim||sg.midterm||sg.finals));
+    return `<div class="ms-subj-item" onclick="selectSubjectForGrades('${uid}','${s.id}')">
+      <div class="msi-icon">${s.icon}</div>
+      <div class="msi-body">
+        <div class="msi-code">${esc(s.code)}</div>
+        <div class="msi-name">${esc(s.name)}</div>
+        <div class="msi-meta">${esc(s.instructor)} · ${esc(s.dept)}</div>
+      </div>
+      <span class="msi-status ${hasSome?'msi-ok':'msi-no'}">
+        ${hasSem?'✅ Grades Set':hasSome?'⏳ Partial':'📭 No Grades'}
+      </span>
     </div>`;
+  }).join('');
+
+  // Profile row
+  const scoreCell = (label,d) => {
+    if(!d) return `<div class="status-cell"><div class="sc-lbl">${label}</div><div class="sc-val sv-na">Not submitted</div></div>`;
     const p=pctN(d.percent);
     const cls=p>=75?'sv-hi':p>=50?'sv-mid':'sv-lo';
     const barCol=p>=75?'var(--green)':p>=50?'var(--accent)':'var(--red)';
     return `<div class="status-cell">
       <div class="sc-lbl">${label}</div>
-      <div class="sc-val ${cls}">${esc(d.score||'—')} &nbsp;<span style="font-size:0.76rem">${esc(d.percent||'—')}</span></div>
+      <div class="sc-val ${cls}">${esc(d.score||'—')} <span style="font-size:0.76rem">${esc(d.percent||'—')}</span></div>
       ${d.timeTaken?`<div class="sc-ts">⏱ ${esc(d.timeTaken)}</div>`:''}
       <div class="sc-ts">${(d.timestamp||'').split(',')[0]||'—'}</div>
       <div class="sc-bar-wrap"><div class="sc-bar-track">
@@ -712,23 +757,13 @@ window.openModal = function(uid) {
     </div>`;
   };
 
-  // Grades
-  const gr = r.grades||{};
-  const prelim   = gr.prelim   || '';
-  const midterm  = gr.midterm  || '';
-  const finals   = gr.finals   || '';
-  const semestral= gr.semestral|| '';
-
-  // Feedback
   const fb = r.fb;
   const fbHtml = fb ? `
-    <div class="ms-title">💬 Quiz Feedback</div>
+    <div class="ms-title">💬 Feedback</div>
     <div class="fb-row"><div class="fb-rl">⭐ Rating</div><div class="fb-rv">${esc(fb.starRating||'—')}</div></div>
     <div class="fb-row"><div class="fb-rl">Difficulty</div><div class="fb-rv">${esc(fb.difficulty||'—')}</div></div>
-    <div class="fb-row"><div class="fb-rl">Pace</div><div class="fb-rv">${esc(fb.pace||'—')}</div></div>
-    <div class="fb-row"><div class="fb-rl">Confusing Topic</div><div class="fb-rv">${esc(fb.confusingTopic||'—')}</div></div>
     <div class="fb-row"><div class="fb-rl">Comment</div><div class="fb-rv">${esc(fb.comment||'(none)')}</div></div>
-  ` : `<div class="ms-title">💬 Quiz Feedback</div><div style="font-size:0.78rem;color:var(--dim);padding:8px 0">No feedback submitted yet.</div>`;
+  ` : '';
 
   g('modal-body').innerHTML = `
     <div class="mp-row">
@@ -736,25 +771,53 @@ window.openModal = function(uid) {
       <div>
         <div class="mp-name">${esc(r.name||'—')}</div>
         <div class="mp-email">${esc(r.gmail)}</div>
-        <div class="mp-meta">
-          🎓 ${esc(r.course||'—')} &nbsp;|&nbsp;
-          📋 ${esc(r.academicYear||'—')} · ${esc(r.term||'—')} &nbsp;|&nbsp;
-          🪪 ${esc(r.studentId||'—')}
-        </div>
+        <div class="mp-meta">🎓 ${esc(r.course||'—')} · 📋 ${esc(r.academicYear||'—')} ${esc(r.term||'')} · 🪪 ${esc(r.studentId||'—')}</div>
       </div>
     </div>
 
     <div class="ms-title">📝 Assessment Status</div>
     <div class="status-grid">
-      ${scoreCell('W1 Quiz (20 pts)',r.q1)}
-      ${scoreCell('W2 Quiz (30 pts)',r.q2)}
-      ${scoreCell('W1 Practical',r.p1)}
-      ${scoreCell('W2 Practical',r.p2)}
+      ${scoreCell('W1 Quiz',r.q1)}${scoreCell('W2 Quiz',r.q2)}
+      ${scoreCell('W1 Practical',r.p1)}${scoreCell('W2 Practical',r.p2)}
     </div>
 
     ${fbHtml}
 
-    <div class="ms-title">📊 Official Grades — Enter Below</div>
+    <div class="ms-title">📚 Select Subject to Enter Grades</div>
+    <div class="ms-subj-list">${subjectRows}</div>
+  `;
+
+  g('modal-ov').classList.add('show');
+};
+
+// ── STEP 2: Subject selected → show grade input popup ──
+window.selectSubjectForGrades = function(uid, subjId) {
+  const r = allData[uid];
+  const s = ADMIN_SUBJECTS.find(x=>x.id===subjId);
+  if(!r||!s) return;
+  _currentSubjectId = subjId;
+
+  const allGrades = r.grades||{};
+  // Support both flat and nested grade structures
+  const sg = allGrades[subjId] || allGrades;
+  const prelim   = sg.prelim    || '';
+  const midterm  = sg.midterm   || '';
+  const finals   = sg.finals    || '';
+  const semestral= sg.semestral || '';
+
+  g('modal-body').innerHTML = `
+    <button class="btn-back-step" onclick="openModal('${uid}')">← Back to Subjects</button>
+
+    <div class="mp-row" style="margin-bottom:14px;">
+      <div class="msi-icon">${s.icon}</div>
+      <div>
+        <div class="mp-name" style="font-size:0.92rem">${esc(s.name)}</div>
+        <div class="mp-email">${esc(s.code)} · ${esc(s.instructor)}</div>
+        <div class="mp-meta">📋 ${esc(r.academicYear||'—')} · ${esc(r.term||'—')}</div>
+      </div>
+    </div>
+
+    <div class="ms-title">📊 Grade Entry — ${esc(r.name||r.gmail)}</div>
     <div class="grade-form">
       <div class="gf-grid">
         <div class="gf-group">
@@ -773,24 +836,21 @@ window.openModal = function(uid) {
             placeholder="e.g. 90.00" value="${esc(finals)}">
         </div>
         <div class="gf-group">
-          <label class="gf-label">🏆 Semestral Grade (auto)</label>
+          <label class="gf-label">🏆 Semestral (auto)</label>
           <input class="gf-input" id="gf-semestral" type="number" min="0" max="100" step="0.01"
             placeholder="Auto-computed" value="${esc(semestral)}" style="color:var(--accent)">
         </div>
       </div>
-      <button class="btn-save-grades" id="btn-save" onclick="saveGrades('${uid}')">
-        💾 Save Grades
+      <button class="btn-save-grades" id="btn-save" onclick="saveGrades('${uid}','${subjId}')">
+        💾 Save Grades for ${esc(s.code)}
       </button>
       <div class="save-msg" id="save-msg"></div>
     </div>
   `;
 
-  // Auto-compute semestral when prelim/midterm/finals change
   ['gf-prelim','gf-midterm','gf-finals'].forEach(id => {
-    g(id).addEventListener('input', computeSemestral);
+    const el = g(id); if(el) el.addEventListener('input', computeSemestral);
   });
-
-  g('modal-ov').classList.add('show');
 };
 
 function computeSemestral() {
@@ -808,58 +868,61 @@ function computeSemestral() {
 }
 
 // ── SAVE GRADES ──
-window.saveGrades = async function(uid) {
+window.saveGrades = async function(uid, subjId) {
   const btn = g('btn-save');
   const msg = g('save-msg');
   const prelim   = g('gf-prelim')?.value?.trim();
   const midterm  = g('gf-midterm')?.value?.trim();
   const finals   = g('gf-finals')?.value?.trim();
   const semestral= g('gf-semestral')?.value?.trim();
+  const r        = allData[uid];
+  const sKey     = subjId || 'BES125';
 
   if(!prelim && !midterm && !finals) {
     msg.className='save-msg save-err';
-    msg.textContent='⚠ Enter at least one grade before saving.';
-    return;
+    msg.textContent='⚠ Enter at least one grade before saving.'; return;
   }
-
-  btn.disabled=true;
-  btn.textContent='⟳ Saving...';
-  msg.textContent='';
+  btn.disabled=true; btn.textContent='⟳ Saving...'; msg.textContent='';
 
   try {
-    const r = allData[uid];
-    const gradeData = {
-      uid, gmail: r?.gmail||'',
-      name: r?.name||'',
-      course: r?.course||'',
-      academicYear: r?.academicYear||'',
-      term: r?.term||'',
+    // Load existing grades first to preserve other subjects
+    const existing = await getDoc(doc(db,'student_grades',uid)).catch(()=>null);
+    const existingData = existing?.exists() ? existing.data() : {};
+
+    const subjectGrades = {
       prelim:    prelim    || null,
       midterm:   midterm   || null,
       finals:    finals    || null,
       semestral: semestral || null,
+      subjectCode: sKey,
       updatedAt: serverTimestamp(),
-      updatedBy: 'ADMIN — DEBULGADO S.M.G'
+    };
+
+    const gradeData = {
+      ...existingData,
+      uid, gmail: r?.gmail||'', name: r?.name||'',
+      course: r?.course||'', academicYear: r?.academicYear||'', term: r?.term||'',
+      // Save under subject key AND flat (for backward compat)
+      [sKey]: subjectGrades,
+      // Flat fields (for index.html fallback)
+      prelim:    prelim    || null,
+      midterm:   midterm   || null,
+      finals:    finals    || null,
+      semestral: semestral || null,
+      updatedBy: 'ADMIN — DEBULGADO S.M.G',
+      updatedAt: serverTimestamp(),
     };
 
     await setDoc(doc(db,'student_grades',uid), gradeData, {merge:true});
-
-    // Update local cache
     if(allData[uid]) allData[uid].grades = gradeData;
 
     msg.className='save-msg save-ok';
-    msg.textContent='✅ Grades saved! Student can now see them in their portal.';
-    btn.textContent='💾 Save Grades';
-    btn.disabled=false;
-
-    // Update the card badge
+    msg.textContent='✅ Grades saved! Student can see them in their portal.';
+    btn.textContent='💾 Save Grades for '+sKey; btn.disabled=false;
     renderCards();
-
   } catch(e) {
-    msg.className='save-msg save-err';
-    msg.textContent='❌ Save failed: '+e.message;
-    btn.textContent='💾 Save Grades';
-    btn.disabled=false;
+    msg.className='save-msg save-err'; msg.textContent='❌ '+e.message;
+    btn.textContent='💾 Save Grades'; btn.disabled=false;
   }
 };
 
