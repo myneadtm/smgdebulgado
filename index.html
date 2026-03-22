@@ -3,720 +3,389 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Student Portal — SMGDecode</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<title>My Dashboard — Computer Fundamentals and Programming</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#060b14;--s1:#0b1120;--s2:#101828;--s3:#1a2436;
   --border:#1e2d42;--border2:#273648;
   --accent:#f9c33a;--green:#3af9c3;--red:#f93a7a;
   --purple:#a855f7;--cyan:#22d3ee;--blue:#3b82f6;
-  --orange:#fb923c;--teal:#14b8a6;--rose:#f43f5e;
-  --text:#e2eeff;--muted:#5a7499;--dim:#344868;
-  --sw:230px;--font:'Outfit',sans-serif;--mono:'Fira Code',monospace;
+  --text:#e2eeff;--muted:#5a7499;--dim:#3a4f6a;
+  --font:'Outfit',sans-serif;--mono:'Fira Code',monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{min-height:100dvh;}
-body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:linear-gradient(rgba(59,130,246,0.022) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(59,130,246,0.022) 1px,transparent 1px);
-  background-size:48px 48px;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);}
+body::before{content:'';position:fixed;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(59,130,246,0.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,0.025) 1px,transparent 1px);
+  background-size:48px 48px;pointer-events:none;}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 0%,rgba(168,85,247,0.08),transparent 55%),
+    radial-gradient(ellipse 50% 40% at 85% 100%,rgba(34,211,238,0.06),transparent 55%);}
 
-/* TOPBAR */
-.topbar{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;
-  background:rgba(6,11,20,0.97);backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;padding:0 20px;gap:14px;}
-.tb-ham{width:34px;height:34px;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:5px;cursor:pointer;
-  border-radius:8px;transition:background 0.2s;flex-shrink:0;}
-.tb-ham:hover{background:var(--s2);}
-.tb-ham span{display:block;width:18px;height:2px;background:var(--muted);border-radius:2px;}
-.tb-brand{display:flex;align-items:center;gap:8px;}
-.tb-brand-ic{width:30px;height:30px;border-radius:8px;
-  background:linear-gradient(135deg,var(--purple),var(--blue));
+/* NAV */
+nav{position:sticky;top:0;z-index:200;background:rgba(6,11,20,0.94);
+  backdrop-filter:blur(20px);border-bottom:1px solid var(--border);
+  padding:0 32px;display:flex;align-items:center;
+  justify-content:space-between;height:66px;}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-logo-icon{width:34px;height:34px;background:var(--accent);border-radius:8px;
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--mono);font-size:0.64rem;font-weight:700;color:#fff;flex-shrink:0;}
-.tb-brand-name{font-weight:900;font-size:0.9rem;
-  background:linear-gradient(90deg,var(--purple),var(--cyan));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.tb-brand-sub{font-size:0.58rem;color:var(--muted);}
-.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
-.tb-user{display:flex;align-items:center;gap:7px;background:var(--s2);
-  border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:0.74rem;}
-.tb-uname{color:var(--text);font-weight:700;max-width:120px;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.btn-lo{background:transparent;color:var(--muted);border:1px solid var(--border);
-  border-radius:8px;padding:5px 12px;font-family:var(--font);font-weight:600;
-  font-size:0.72rem;cursor:pointer;transition:all 0.2s;}
-.btn-lo:hover{color:var(--red);border-color:rgba(249,58,122,0.4);}
+  font-family:var(--mono);font-size:0.75rem;font-weight:600;color:#000;flex-shrink:0;}
+.nav-title{font-weight:700;font-size:0.82rem;line-height:1.3;}
+.nav-sub{font-size:0.62rem;color:var(--muted);line-height:1.3;}
+.nav-instructor{font-size:0.62rem;color:var(--accent);font-weight:600;line-height:1.3;}
+.nav-links{display:flex;gap:4px;align-items:center;}
+.nav-link{padding:6px 14px;border-radius:7px;font-size:0.78rem;font-weight:600;
+  color:var(--muted);text-decoration:none;border:1px solid var(--border);
+  background:var(--s2);transition:all 0.2s;display:inline-flex;align-items:center;gap:5px;}
+.nav-link:hover{color:var(--text);}
+.nav-link.active{color:var(--purple);border-color:rgba(168,85,247,0.4);background:rgba(168,85,247,0.07);}
+.nav-link.home-link{border-color:var(--border);}
+.nav-link.practical-link{border-color:rgba(0,255,247,0.3);color:#00fff7;}
+.nav-divider{width:1px;height:18px;background:var(--border);margin:0 4px;}
+.nav-userbadge{display:none;align-items:center;gap:5px;font-size:0.72rem;
+  color:var(--green);cursor:pointer;padding:4px 10px;
+  border:1px solid rgba(58,249,195,0.25);border-radius:7px;background:rgba(58,249,195,0.05);}
 
-/* LAYOUT */
-.layout{display:flex;padding-top:58px;min-height:100dvh;}
+/* PAGE */
+.page{max-width:860px;margin:0 auto;padding:36px 24px 80px;position:relative;z-index:1;}
 
-/* SIDEBAR */
-.sidebar{width:var(--sw);flex-shrink:0;position:fixed;
-  top:58px;left:0;bottom:0;z-index:200;overflow-y:auto;
-  background:var(--s1);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;
-  transition:transform 0.3s cubic-bezier(.4,0,.2,1);}
-.sidebar.hide{transform:translateX(calc(-1 * var(--sw)));}
+/* LOADING */
+#state-loading{text-align:center;padding:80px 20px;}
+.ring{width:48px;height:48px;border:4px solid var(--border2);border-top-color:var(--purple);
+  border-radius:50%;animation:spin 0.85s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-.sb-prof{padding:20px 18px 16px;border-bottom:1px solid var(--border);}
-.sb-av{width:48px;height:48px;border-radius:50%;
-  background:linear-gradient(135deg,var(--purple),var(--blue));
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.3rem;font-weight:800;color:#fff;
-  border:2px solid rgba(168,85,247,0.4);margin-bottom:10px;
-  position:relative;}
-.sb-dot{position:absolute;bottom:1px;right:1px;width:10px;height:10px;
-  border-radius:50%;background:var(--green);border:2px solid var(--s1);}
-.sb-nm{font-size:0.82rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sb-em{font-size:0.64rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sb-ctag{display:inline-block;margin-top:5px;font-size:0.6rem;font-weight:700;
-  background:rgba(168,85,247,0.1);color:var(--purple);
-  border:1px solid rgba(168,85,247,0.2);border-radius:8px;padding:2px 8px;}
+/* NO AUTH */
+#state-noauth{display:none;text-align:center;padding:80px 20px;}
+.na-icon{font-size:3.5rem;margin-bottom:14px;}
+.na-title{font-size:1.3rem;font-weight:800;margin-bottom:8px;}
+.na-sub{font-size:0.86rem;color:var(--muted);line-height:1.7;margin-bottom:24px;}
+.btn-go-login{background:linear-gradient(135deg,var(--purple),var(--blue));
+  color:#fff;border:none;border-radius:12px;padding:13px 28px;
+  font-family:var(--font);font-weight:700;font-size:0.9rem;cursor:pointer;
+  box-shadow:0 4px 20px rgba(168,85,247,0.35);transition:all 0.2s;}
+.btn-go-login:hover{transform:translateY(-2px);}
 
-.sb-nav{flex:1;padding:10px;}
-.sb-sec{font-size:0.58rem;font-weight:800;color:var(--dim);
-  letter-spacing:2px;text-transform:uppercase;padding:6px 8px 3px;}
-.sb-it{display:flex;align-items:center;gap:10px;padding:9px 12px;
-  border-radius:10px;cursor:pointer;transition:all 0.18s;
-  color:var(--muted);font-size:0.82rem;font-weight:600;margin-bottom:2px;}
-.sb-it:hover{background:var(--s2);color:var(--text);}
-.sb-it.on{background:linear-gradient(135deg,rgba(168,85,247,0.15),rgba(59,130,246,0.1));
-  color:var(--text);border:1px solid rgba(168,85,247,0.25);}
-.sb-it.on .si{color:var(--purple);}
-.si{font-size:1rem;width:20px;text-align:center;flex-shrink:0;}
-.sb-div{height:1px;background:var(--border);margin:8px 10px;}
-.sb-ft{padding:10px;border-top:1px solid var(--border);}
-.sb-ver{font-size:0.6rem;color:var(--dim);text-align:center;}
-
-/* MAIN */
-.main{flex:1;margin-left:var(--sw);transition:margin-left 0.3s cubic-bezier(.4,0,.2,1);
-  min-height:calc(100dvh - 58px);position:relative;z-index:1;}
-.main.full{margin-left:0;}
-
-/* TAB PANELS */
-.tpanel{display:none;animation:fi 0.3s ease;}
-.tpanel.on{display:block;}
-@keyframes fi{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-
-/* HOME TAB */
-/* HOME TAB — smgdebulgado aesthetic */
-#th{min-height:calc(100dvh - 58px);display:none;flex-direction:column;
-  align-items:center;justify-content:flex-start;padding:20px 20px 60px;
-  position:relative;overflow:hidden;}
-#th.on{display:flex;}
-
-/* Shimmer top line */
-.home-shimmer{position:absolute;top:0;left:0;right:0;height:3px;z-index:3;
-  background:linear-gradient(90deg,#7c3aed,#00e5ff,#f59e0b,#7c3aed);
-  background-size:300% 100%;animation:shimmer 3s linear infinite;}
-@keyframes shimmer{0%{background-position:0% center;}100%{background-position:300% center;}}
-
-/* Rising particles */
-#home-particles{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-.hpt{position:absolute;border-radius:50%;animation:hrise linear infinite;opacity:0;}
-@keyframes hrise{0%{opacity:0;transform:translateY(0);}10%{opacity:1;}90%{opacity:0.8;}100%{opacity:0;transform:translateY(-110vh);}}
-
-/* Ambient corner orbs */
-.home-orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:0.15;pointer-events:none;animation:orbf 9s ease-in-out infinite;}
-.ho1{width:280px;height:280px;background:#7c3aed;top:-80px;left:-80px;animation-delay:0s;}
-.ho2{width:220px;height:220px;background:#00e5ff;bottom:-60px;right:-60px;animation-delay:3s;}
-.ho3{width:160px;height:160px;background:#f59e0b;top:45%;left:60%;animation-delay:6s;}
-@keyframes orbf{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(10px,-20px) scale(1.06);}}
-
-.h-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;width:100%;max-width:400px;margin:0 auto;}
-
-/* Clock widget */
-.h-clock{width:100%;margin-bottom:16px;background:rgba(14,15,28,0.88);
-  border:1px solid #1a2444;border-radius:22px;padding:18px 20px 14px;
-  display:flex;flex-direction:column;align-items:center;
-  backdrop-filter:blur(8px);box-shadow:0 0 0 1px rgba(0,229,255,0.05),0 4px 30px rgba(0,0,0,0.6);}
-.h-clock-time{font-family:'Orbitron',monospace;font-size:42px;font-weight:900;
-  color:#fff;letter-spacing:0.04em;line-height:1;text-shadow:0 0 28px rgba(0,229,255,0.5);}
-.h-clock-colon{color:#00e5ff;animation:blink-c 1s step-end infinite;}
-@keyframes blink-c{0%,100%{opacity:1;}50%{opacity:0.2;}}
-.h-clock-ampm{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;
-  color:#f59e0b;letter-spacing:0.2em;margin-top:2px;}
-.h-clock-date{font-size:10px;color:#64748b;letter-spacing:0.1em;margin-top:5px;text-align:center;}
-.h-clock-greet{margin-top:10px;padding:6px 16px;background:rgba(0,229,255,0.07);
-  border:1px solid rgba(0,229,255,0.18);border-radius:100px;
-  font-size:9px;color:#00e5ff;letter-spacing:0.15em;text-transform:uppercase;}
+/* DASHBOARD */
+#state-dashboard{display:none;}
 
 /* Profile card */
-.h-card{position:relative;width:100%;background:rgba(14,15,28,0.85);
-  border:1px solid #1a2444;border-radius:24px;padding:20px 20px 22px;
-  display:flex;flex-direction:column;align-items:center;
-  box-shadow:0 0 0 1px rgba(0,229,255,0.05),0 8px 48px rgba(0,0,0,0.8);
-  animation:cardIn 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;backdrop-filter:blur(8px);}
-@keyframes cardIn{from{opacity:0;transform:scale(0.93) translateY(24px);}to{opacity:1;transform:scale(1) translateY(0);}}
-.h-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  border-radius:24px 24px 0 0;
-  background:linear-gradient(90deg,#7c3aed,#00e5ff,#f59e0b);}
-.h-bracket{position:absolute;width:16px;height:16px;border-color:#00e5ff;border-style:solid;opacity:0.4;}
-.hb-tl{top:10px;left:10px;border-width:2px 0 0 2px;}
-.hb-br{bottom:10px;right:10px;border-width:0 2px 2px 0;}
-
-.h-cs-badge{display:flex;align-items:center;gap:8px;
-  background:rgba(0,229,255,0.07);border:1px solid rgba(0,229,255,0.22);
-  border-radius:100px;padding:6px 18px;font-size:9px;letter-spacing:0.3em;
-  color:#00e5ff;text-transform:uppercase;margin-bottom:16px;}
-.h-cs-dot{width:5px;height:5px;border-radius:50%;background:#00e5ff;
-  animation:blink 2s infinite;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
-
-/* ROUNDED RECT Teacher D (not circle) */
-.td-wrap{position:relative;display:inline-block;margin-bottom:16px;}
-.td-rect-ring{position:absolute;inset:-3px;border-radius:15px;z-index:0;
-  background:conic-gradient(from 0deg,#7c3aed,#00e5ff,#f59e0b,#7c3aed);
-  animation:spin-ring 4s linear infinite;}
-@keyframes spin-ring{to{transform:rotate(360deg);}}
-.td-rect-bg{position:absolute;inset:0px;border-radius:12px;background:var(--bg);z-index:1;}
-.td-img{width:150px;height:170px;border-radius:12px;object-fit:cover;
-  object-position:top;position:relative;z-index:2;display:block;
-  box-shadow:0 0 24px rgba(124,58,237,0.4);
-  animation:flt 4s ease-in-out infinite;}
-@keyframes flt{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
-
-.h-logo{font-family:'Orbitron',monospace;font-size:2.2rem;font-weight:900;
-  color:#fff;letter-spacing:0.04em;text-align:center;margin-bottom:6px;
-  text-shadow:0 0 28px rgba(0,229,255,0.4);}
-.h-logo .hl-excl{color:#00e5ff;}
-.h-logo-sub{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;
-  letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,158,11,0.9);
-  display:flex;align-items:center;gap:8px;margin-bottom:14px;}
-.h-logo-dot{width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;}
-
-.h-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-bottom:0;}
-.htag{padding:5px 13px;border-radius:20px;font-family:'Rajdhani',sans-serif;
-  font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
-  border:1px solid;display:flex;align-items:center;gap:5px;}
-.ht1{background:rgba(124,58,237,0.12);color:#a78bfa;border-color:rgba(124,58,237,0.3);}
-.ht2{background:rgba(0,229,255,0.08);color:#00e5ff;border-color:rgba(0,229,255,0.25);}
-.ht3{background:rgba(245,158,11,0.1);color:#f59e0b;border-color:rgba(245,158,11,0.25);}
-.ht4{background:rgba(56,189,248,0.1);color:#38bdf8;border-color:rgba(56,189,248,0.25);}
-.ht5{background:rgba(167,139,250,0.1);color:#a78bfa;border-color:rgba(167,139,250,0.25);}
-.h-desc{display:none;}
-
-/* CONTENT PADDING */
-.cpad{padding:32px 28px 80px;}
-.ph{margin-bottom:26px;}
-.ph-tag{font-size:0.6rem;font-weight:800;color:var(--muted);
-  letter-spacing:3px;text-transform:uppercase;margin-bottom:7px;}
-.ph-title{font-size:1.5rem;font-weight:900;letter-spacing:-0.3px;}
-.ph-title span{background:linear-gradient(90deg,var(--purple),var(--cyan));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.ph-sub{font-size:0.8rem;color:var(--muted);margin-top:5px;line-height:1.6;}
-
-/* FILTER */
-.fb{background:var(--s1);border:1.5px solid var(--border2);border-radius:16px;
-  padding:20px 22px;margin-bottom:26px;display:flex;align-items:flex-end;
-  gap:14px;flex-wrap:wrap;position:relative;overflow:hidden;}
-.fb::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+.profile-card{
+  background:var(--s1);border:1.5px solid var(--border2);
+  border-radius:20px;padding:28px;margin-bottom:24px;
+  display:flex;align-items:center;gap:20px;
+  position:relative;overflow:hidden;
+}
+.profile-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
   background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent));}
-.fg{display:flex;flex-direction:column;gap:5px;flex:1;min-width:150px;}
-.fl{font-size:0.6rem;font-weight:800;color:var(--purple);letter-spacing:2px;text-transform:uppercase;}
-.fs{background:var(--s2);border:1.5px solid var(--border2);border-radius:10px;
-  padding:10px 12px;color:var(--text);font-family:var(--font);font-size:0.84rem;
-  outline:none;cursor:pointer;transition:border-color 0.2s;width:100%;}
-.fs:focus{border-color:var(--purple);}
-.fs option{background:var(--s2);}
-.btn-vw{background:linear-gradient(135deg,var(--purple),var(--blue));color:#fff;
-  border:none;border-radius:10px;padding:10px 20px;font-family:var(--font);
-  font-weight:800;font-size:0.84rem;cursor:pointer;transition:all 0.2s;
-  white-space:nowrap;flex-shrink:0;align-self:flex-end;}
-.btn-vw:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(168,85,247,0.5);}
-
-/* SEC HEAD */
-.sh{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
-.sh-lbl{font-size:0.6rem;font-weight:800;color:var(--muted);letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
-.sh-bg{font-size:0.64rem;font-weight:700;padding:3px 10px;border-radius:20px;
-  background:rgba(168,85,247,0.1);color:var(--purple);border:1px solid rgba(168,85,247,0.2);}
-.sh-ln{flex:1;height:1px;background:var(--border);}
-
-/* HIGHLIGHT CARD */
-.hc{background:linear-gradient(135deg,rgba(249,195,58,0.06),rgba(168,85,247,0.04));
-  border:1.5px solid rgba(249,195,58,0.25);border-radius:14px;padding:18px 20px;
-  display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.22s;
-  position:relative;overflow:hidden;margin-bottom:24px;}
-.hc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--accent),var(--purple));}
-.hc:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(249,195,58,0.1);}
-.hc-ic{width:50px;height:50px;border-radius:12px;
-  background:rgba(249,195,58,0.12);display:flex;align-items:center;
-  justify-content:center;font-size:1.5rem;flex-shrink:0;}
-.hc-b{flex:1;min-width:0;}
-.hc-tg{font-size:0.58rem;font-weight:800;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;}
-.hc-ttl{font-size:0.98rem;font-weight:800;margin-bottom:3px;}
-.hc-sb{font-size:0.72rem;color:var(--muted);}
-.hc-arr{font-size:1.4rem;color:var(--accent);flex-shrink:0;transition:transform 0.2s;}
-.hc:hover .hc-arr{transform:translateX(4px);}
-
-/* SUBJECT GRID */
-.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px;}
-.sc{background:var(--s1);border:1.5px solid var(--border2);border-radius:12px;
-  padding:18px;cursor:pointer;transition:all 0.22s;position:relative;
-  overflow:hidden;display:flex;flex-direction:column;}
-.sc::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;}
-.sc:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,0.4);}
-.sc.lk{cursor:default;opacity:0.45;}.sc.lk:hover{transform:none;box-shadow:none;}
-.sc.cpp::before{background:linear-gradient(180deg,var(--accent),#f0a84b);}
-.sc.cpp{border-color:rgba(249,195,58,0.2);}.sc.cpp:hover{border-color:rgba(249,195,58,0.5);}
-.sc.bc::before{background:linear-gradient(180deg,var(--blue),var(--cyan));}
-.sc.bc:hover{border-color:rgba(59,130,246,0.4);}
-.sc.gc::before{background:linear-gradient(180deg,var(--green),var(--teal));}
-.sc.gc:hover{border-color:rgba(58,249,195,0.4);}
-.sc.pc::before{background:linear-gradient(180deg,var(--purple),var(--rose));}
-.sc.pc:hover{border-color:rgba(168,85,247,0.4);}
-.sc.oc::before{background:linear-gradient(180deg,var(--orange),var(--accent));}
-.sc.oc:hover{border-color:rgba(251,146,60,0.4);}
-.sc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
-.sc-ic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
-.ic-y{background:rgba(249,195,58,0.12);}.ic-b{background:rgba(59,130,246,0.12);}
-.ic-g{background:rgba(58,249,195,0.12);}.ic-p{background:rgba(168,85,247,0.12);}
-.ic-o{background:rgba(251,146,60,0.12);}
-.ss{font-size:0.62rem;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;}
-.ss-on{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.25);}
-.ss-lk{background:rgba(90,116,153,0.1);color:var(--muted);border:1px solid var(--border);}
-.ss-ac{background:rgba(249,195,58,0.1);color:var(--accent);border:1px solid rgba(249,195,58,0.25);}
-.sc-code{font-family:var(--mono);font-size:0.64rem;color:var(--muted);margin-bottom:4px;}
-.sc-ttl{font-size:0.9rem;font-weight:800;line-height:1.3;margin-bottom:5px;}
-.sc-dsc{font-size:0.72rem;color:var(--muted);line-height:1.6;margin-bottom:10px;}
-.sc-meta{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;}
-.sm{font-size:0.61rem;color:var(--dim);background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:2px 7px;}
-.sc-ft{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:10px;border-top:1px solid var(--border);}
-.sc-inst{font-size:0.68rem;color:var(--muted);}
-.sc-inst strong{color:var(--text);}
-.ent{font-size:0.72rem;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:4px;transition:gap 0.2s;}
-.sc:hover .ent{gap:8px;}
-.ent-lk{font-size:0.7rem;color:var(--dim);}
-.nb{background:rgba(249,195,58,0.05);border:1px solid rgba(249,195,58,0.15);
-  border-radius:10px;padding:10px 14px;margin-bottom:20px;
-  font-size:0.74rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
-.nb strong{color:var(--accent);}
-.es{text-align:center;padding:50px 20px;color:var(--muted);}
-.es-ic{font-size:2.6rem;margin-bottom:10px;opacity:0.3;}
-.es-t{font-size:0.92rem;font-weight:700;margin-bottom:5px;}
-.es-s{font-size:0.78rem;color:var(--dim);}
-
-/* GRADES */
-/* ── GRADES TAB ── */
-.g-empty{text-align:center;padding:60px 20px;}
-.ge-ic{font-size:3rem;margin-bottom:14px;opacity:0.3;}
-.ge-t{font-size:1rem;font-weight:700;color:var(--muted);margin-bottom:6px;}
-.ge-s{font-size:0.82rem;color:var(--dim);line-height:1.7;}
-.g-load{text-align:center;padding:40px;color:var(--muted);font-size:0.86rem;}
-
-/* Grade subject selector */
-.sec-hd-g{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-.sec-hd-lbl-g{font-size:0.6rem;font-weight:800;color:var(--muted);letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
-.sec-hd-ln-g{flex:1;height:1px;background:var(--border);}
-.grade-subj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
-.grade-subj-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;
-  padding:18px 16px;cursor:pointer;transition:all 0.22s;position:relative;overflow:hidden;}
-.grade-subj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--purple),var(--cyan));}
-.grade-subj-card:hover{transform:translateY(-3px);border-color:rgba(168,85,247,0.5);
-  box-shadow:0 10px 30px rgba(0,0,0,0.4);}
-.gsj-icon{font-size:1.6rem;margin-bottom:8px;}
-.gsj-code{font-family:var(--mono);font-size:0.65rem;color:var(--muted);margin-bottom:4px;}
-.gsj-name{font-size:0.92rem;font-weight:800;margin-bottom:6px;line-height:1.3;}
-.gsj-meta{font-size:0.72rem;color:var(--dim);}
-.gsj-status{display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
-.gsj-dot{width:7px;height:7px;border-radius:50%;}
-.gsj-dot-ok{background:var(--green);}
-.gsj-dot-no{background:var(--dim);}
-.gsj-status-txt{font-size:0.7rem;font-weight:700;}
-.gsj-arrow{margin-left:auto;color:var(--accent);font-size:0.8rem;font-weight:700;transition:transform 0.2s;}
-.grade-subj-card:hover .gsj-arrow{transform:translateX(4px);}
-.btn-back-subj{background:var(--s2);border:1.5px solid var(--border2);border-radius:8px;
-  padding:7px 14px;color:var(--muted);font-family:var(--font);font-weight:700;
-  font-size:0.78rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
-.btn-back-subj:hover{color:var(--text);border-color:var(--border);}
-.btn-grade-pdf{background:linear-gradient(135deg,var(--purple),var(--blue));
-  color:#fff;border:none;border-radius:10px;padding:9px 18px;
-  font-family:var(--font);font-weight:800;font-size:0.8rem;cursor:pointer;
-  transition:all 0.2s;box-shadow:0 4px 14px rgba(168,85,247,0.3);}
-.btn-grade-pdf:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(168,85,247,0.5);}
-.btn-grade-pdf:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-
-/* Student profile strip */
-.gp-strip{display:flex;align-items:center;gap:14px;
-  background:var(--s2);border:1.5px solid var(--border2);border-radius:14px;
-  padding:16px 20px;margin-bottom:22px;position:relative;overflow:hidden;}
-.gp-strip::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--purple),var(--cyan));}
-.gp-av{width:52px;height:52px;border-radius:50%;flex-shrink:0;
+.p-avatar{width:72px;height:72px;border-radius:50%;flex-shrink:0;
+  border:3px solid rgba(168,85,247,0.4);box-shadow:0 0 24px rgba(168,85,247,0.2);}
+.p-avatar-ph{width:72px;height:72px;border-radius:50%;flex-shrink:0;
   background:linear-gradient(135deg,var(--purple),var(--blue));
   display:flex;align-items:center;justify-content:center;
-  font-size:1.4rem;font-weight:800;color:#fff;
-  border:2px solid rgba(168,85,247,0.4);}
-.gp-av img{width:52px;height:52px;border-radius:50%;object-fit:cover;}
-.gp-info{flex:1;min-width:0;}
-.gp-name{font-size:1rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.gp-email{font-size:0.76rem;color:var(--muted);margin-top:2px;}
-.gp-meta{font-size:0.7rem;color:var(--dim);margin-top:3px;}
-.gp-badge{font-size:0.64rem;font-weight:800;padding:3px 10px;border-radius:20px;
-  background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.2);flex-shrink:0;}
+  font-size:1.8rem;font-weight:700;color:#fff;
+  border:3px solid rgba(168,85,247,0.4);}
+.p-info{flex:1;min-width:0;}
+.p-name{font-size:1.2rem;font-weight:800;margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.p-email{font-size:0.78rem;color:var(--muted);margin-bottom:8px;}
+.p-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.tag{font-size:0.62rem;font-weight:700;padding:3px 10px;border-radius:20px;}
+.tag-g{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.2);}
+.tag-p{background:rgba(168,85,247,0.1);color:var(--purple);border:1px solid rgba(168,85,247,0.2);}
+.tag-m{background:rgba(90,116,153,0.12);color:var(--muted);border:1px solid var(--border);}
+.btn-out{background:transparent;color:var(--red);border:1px solid rgba(249,58,122,0.3);
+  border-radius:8px;padding:7px 14px;font-family:var(--font);font-weight:600;
+  font-size:0.75rem;cursor:pointer;transition:all 0.2s;flex-shrink:0;}
+.btn-out:hover{background:rgba(249,58,122,0.08);}
+.btn-pdf{background:linear-gradient(135deg,var(--purple),var(--blue));
+  color:#fff;border:none;border-radius:8px;padding:6px 14px;
+  font-family:var(--font);font-weight:700;font-size:0.74rem;cursor:pointer;
+  transition:all 0.2s;box-shadow:0 3px 12px rgba(168,85,247,0.3);}
+.btn-pdf:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(168,85,247,0.45);}
+.btn-pdf:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
 
-/* BIG GRADE CARDS */
-.grade-hero{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
-.gcard{background:var(--s1);border:1.5px solid var(--border2);border-radius:16px;
-  padding:22px 16px;text-align:center;position:relative;overflow:hidden;
+/* Summary */
+.sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
+.sum-box{
+  background:var(--s1);border:1.5px solid var(--border2);
+  border-radius:16px;padding:20px 16px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.sum-box::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.sum-box.sq::after{background:linear-gradient(90deg,var(--accent),#f0a84b);}
+.sum-box.sp::after{background:linear-gradient(90deg,var(--purple),var(--cyan));}
+.sum-box.sa::after{background:linear-gradient(90deg,var(--green),var(--blue));}
+.sb-icon{font-size:1.5rem;margin-bottom:8px;}
+.sb-val{font-size:1.8rem;font-weight:900;font-family:var(--mono);line-height:1;margin-bottom:4px;}
+.sb-label{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.sb-sub{font-size:0.68rem;color:var(--dim);margin-top:3px;}
+
+/* Section heading */
+/* PERIOD CARDS */
+.period-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:6px;}
+.period-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;
+  padding:16px 12px 14px;text-align:center;cursor:pointer;transition:all 0.22s;
+  position:relative;overflow:hidden;}
+.period-card:not(.pp-sem):hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,0.4);}
+.pp-sem{cursor:default;}
+.pc-stripe{height:3px;position:absolute;top:0;left:0;right:0;}
+.pp-prelim .pc-stripe{background:linear-gradient(90deg,var(--blue),var(--cyan));}
+.pp-mid .pc-stripe{background:linear-gradient(90deg,var(--purple),var(--cyan));}
+.pp-finals .pc-stripe{background:linear-gradient(90deg,var(--green),var(--blue));}
+.pp-sem .pc-stripe{background:linear-gradient(90deg,var(--accent),#f0a84b);}
+.pc-icon{font-size:1.4rem;margin:4px 0 6px;}
+.pc-name{font-size:0.64rem;font-weight:800;color:var(--muted);letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:8px;}
+.pc-grade{font-size:1.8rem;font-weight:900;font-family:var(--mono);line-height:1;margin-bottom:5px;}
+.pc-sub{font-size:0.64rem;color:var(--dim);}
+.pc-arrow{font-size:0.76rem;color:var(--accent);font-weight:700;margin-top:8px;
   transition:transform 0.2s;}
-.gcard:hover{transform:translateY(-2px);}
-.gcard::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
-.gc-prelim::after{background:linear-gradient(90deg,var(--blue),var(--cyan));}
-.gc-mid::after{background:linear-gradient(90deg,var(--purple),var(--cyan));}
-.gc-finals::after{background:linear-gradient(90deg,var(--green),var(--blue));}
-.gc-sem::after{background:linear-gradient(90deg,var(--accent),#f0a84b);}
-.gc-sem{border-color:rgba(249,195,58,0.3);background:linear-gradient(135deg,rgba(249,195,58,0.05),rgba(168,85,247,0.03));}
-.gc-label{font-size:0.65rem;font-weight:800;color:var(--muted);letter-spacing:2px;
-  text-transform:uppercase;margin-bottom:12px;}
-.gc-score{font-size:3rem;font-weight:900;font-family:var(--mono);line-height:1;
-  margin-bottom:6px;transition:color 0.3s;}
-.gc-score.hi{color:var(--green);}
-.gc-score.mid{color:var(--accent);}
-.gc-score.lo{color:var(--red);}
-.gc-score.na{color:var(--dim);}
-.gc-status{font-size:0.72rem;font-weight:700;padding:3px 12px;border-radius:20px;margin-top:4px;display:inline-block;}
-.gcs-p{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.25);}
-.gcs-f{background:rgba(249,58,122,0.1);color:var(--red);border:1px solid rgba(249,58,122,0.25);}
-.gcs-n{background:rgba(90,116,153,0.1);color:var(--muted);border:1px solid var(--border);}
+.period-card:hover .pc-arrow{transform:translateX(3px);}
+@media(max-width:520px){.period-grid{grid-template-columns:1fr 1fr;}}
 
-/* Assessment scores table */
-.assess-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;
-  overflow:hidden;margin-bottom:14px;}
-.assess-head{padding:14px 20px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;}
-.assess-title{font-size:0.9rem;font-weight:800;}
-.assess-sub{font-size:0.68rem;color:var(--muted);margin-top:2px;}
-.assess-body{padding:6px 20px 14px;}
-.arow{display:flex;justify-content:space-between;align-items:center;
-  padding:9px 0;border-bottom:1px solid var(--border);}
-.arow:last-child{border-bottom:none;}
-.arow-l{font-size:0.82rem;color:var(--muted);}
-.arow-r{display:flex;align-items:center;gap:10px;}
-.arow-score{font-size:0.9rem;font-weight:800;font-family:var(--mono);}
-.ar-hi{color:var(--green);}.ar-mid{color:var(--accent);}.ar-lo{color:var(--red);}.ar-na{color:var(--dim);}
-.avg-row{background:rgba(255,255,255,0.02);padding:10px 12px;border-radius:10px;
-  margin-top:8px;display:flex;justify-content:space-between;align-items:center;}
-.avg-lbl{font-size:0.84rem;font-weight:700;color:var(--text);}
-.avg-val{font-size:1.3rem;font-weight:900;font-family:var(--mono);}
+/* Period Detail Modal */
+.period-modal{display:none;position:fixed;inset:0;z-index:7000;
+  background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;padding:16px;}
+.period-modal.show{display:flex;}
+.pm-box{background:var(--s1);border:1.5px solid var(--border2);border-radius:18px;
+  width:100%;max-width:460px;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 24px 80px rgba(0,0,0,0.7);}
+.pm-top{height:3px;background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent));}
+.pm-head{padding:16px 20px 13px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.pm-title{font-size:0.98rem;font-weight:800;}
+.pm-close{background:var(--s2);border:1px solid var(--border);border-radius:8px;
+  width:28px;height:28px;cursor:pointer;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.pm-close:hover{color:var(--red);border-color:var(--red);}
+.pm-body{padding:18px 20px;overflow-y:auto;flex:1;}
+.pm-grade-big{text-align:center;padding:16px 0 18px;}
+.pm-grade-val{font-size:3.5rem;font-weight:900;font-family:var(--mono);line-height:1;}
+.pm-grade-lbl{font-size:0.72rem;color:var(--muted);margin-top:4px;letter-spacing:1px;text-transform:uppercase;}
+.pm-sec{font-size:0.6rem;font-weight:800;color:var(--purple);letter-spacing:2px;
+  text-transform:uppercase;margin:14px 0 8px;display:flex;align-items:center;gap:8px;}
+.pm-sec::after{content:'';flex:1;height:1px;background:rgba(168,85,247,0.2);}
+.pm-arow{display:flex;justify-content:space-between;align-items:center;
+  padding:9px 12px;background:var(--s2);border-radius:10px;margin-bottom:6px;}
+.pm-al{font-size:0.82rem;color:var(--muted);}
+.pm-ar{display:flex;gap:8px;align-items:center;}
+.pm-av{font-size:0.88rem;font-weight:800;font-family:var(--mono);}
+.pma-hi{color:var(--green);}.pma-mid{color:var(--accent);}.pma-lo{color:var(--red);}.pma-na{color:var(--dim);}
+.pm-empty{text-align:center;padding:30px 0;color:var(--dim);font-size:0.82rem;}
 
-/* Pending state */
-.grade-pending{background:var(--s2);border:1.5px dashed var(--border2);
-  border-radius:14px;padding:28px;text-align:center;margin-bottom:14px;}
-.gp-ic{font-size:2rem;margin-bottom:10px;opacity:0.4;}
-.gp-t{font-size:0.88rem;font-weight:700;color:var(--muted);margin-bottom:4px;}
-.gp-s{font-size:0.76rem;color:var(--dim);line-height:1.6;}
-.spin{display:inline-block;animation:sp 0.85s linear infinite;}
-@keyframes sp{to{transform:rotate(360deg);}}
+.sh{display:flex;align-items:center;gap:10px;margin:28px 0 14px;}
+.sh-line{flex:1;height:1px;background:var(--border);}
+.sh-text{font-size:0.65rem;font-weight:700;color:var(--muted);
+  letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
 
-/* CURRICULUM */
-.cv-empty{background:var(--s1);border:1.5px dashed var(--border2);border-radius:14px;padding:44px 24px;text-align:center;}
-.cv-ic{font-size:2.8rem;margin-bottom:12px;opacity:0.3;}
-.cv-t{font-size:0.92rem;font-weight:700;color:var(--muted);margin-bottom:5px;}
-.cv-s{font-size:0.78rem;color:var(--dim);line-height:1.7;margin-bottom:18px;}
-.cv-note{display:inline-flex;align-items:center;gap:6px;
-  background:rgba(249,58,122,0.08);border:1px solid rgba(249,58,122,0.25);
-  color:var(--red);border-radius:10px;padding:8px 16px;
-  font-family:var(--font);font-weight:700;font-size:0.78rem;}
-.cv-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:12px;
-  padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:12px;
-  cursor:pointer;transition:all 0.2s;}
-.cv-card:hover{border-color:rgba(249,58,122,0.4);transform:translateY(-1px);}
-.cv-pdf{width:42px;height:42px;border-radius:10px;background:rgba(249,58,122,0.1);
-  display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
-.cv-b{flex:1;min-width:0;}
-.cv-nm{font-size:0.86rem;font-weight:700;margin-bottom:2px;}
-.cv-mt{font-size:0.7rem;color:var(--muted);}
-.cv-dl{font-size:0.74rem;color:var(--red);font-weight:700;flex-shrink:0;}
+/* Assessment card */
+.acard{background:var(--s1);border:1.5px solid var(--border2);
+  border-radius:16px;padding:22px 22px 18px;margin-bottom:14px;
+  position:relative;overflow:hidden;}
+.acard::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;}
+.acard.aq::before{background:linear-gradient(180deg,var(--accent),#f0a84b);}
+.acard.ap::before{background:linear-gradient(180deg,var(--purple),var(--cyan));}
+.ac-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;}
+.ac-title{font-size:0.92rem;font-weight:800;}
+.ac-sub{font-size:0.7rem;color:var(--muted);margin-top:2px;}
+.badge{padding:5px 14px;border-radius:20px;font-size:0.7rem;font-weight:800;flex-shrink:0;}
+.badge-ok{background:rgba(58,249,195,0.12);color:var(--green);border:1px solid rgba(58,249,195,0.25);}
+.badge-no{background:rgba(249,58,122,0.12);color:var(--red);border:1px solid rgba(249,58,122,0.25);}
+.ac-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+.ac-cell{background:var(--s2);border-radius:10px;padding:10px 8px;text-align:center;}
+.ac-cv{font-size:0.98rem;font-weight:800;font-family:var(--mono);line-height:1.2;margin-bottom:2px;}
+.ac-cl{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
+.bar-wrap{margin-top:4px;}
+.bar-row{display:flex;justify-content:space-between;font-size:0.68rem;color:var(--muted);margin-bottom:4px;}
+.bar-track{background:var(--s3);border-radius:6px;height:8px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:6px;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+.ac-ts{margin-top:10px;font-size:0.7rem;color:var(--dim);}
 
-/* OVERLAY */
-.ov{display:none;position:fixed;inset:0;z-index:190;
-  background:rgba(0,0,0,0.5);backdrop-filter:blur(2px);}
-.ov.show{display:block;}
+/* Not attempted */
+.notdone{background:var(--s1);border:1.5px dashed var(--border);
+  border-radius:16px;padding:24px;text-align:center;margin-bottom:14px;}
+.nd-icon{font-size:2rem;margin-bottom:8px;opacity:0.35;}
+.nd-title{font-size:0.88rem;font-weight:700;color:var(--muted);margin-bottom:4px;}
+.nd-sub{font-size:0.74rem;color:var(--dim);margin-bottom:14px;}
+.btn-take{display:inline-flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  color:#fff;border:none;border-radius:9px;padding:9px 18px;
+  font-family:var(--font);font-weight:700;font-size:0.8rem;
+  cursor:pointer;text-decoration:none;transition:all 0.2s;}
+.btn-take:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(168,85,247,0.35);}
 
-/* MOBILE */
-@media(max-width:768px){
-  .grade-hero{grid-template-columns:1fr 1fr;}
-  .gc-score{font-size:2.2rem;}
-  .gp-strip{flex-wrap:wrap;}
-  .gcard{padding:16px 10px;}
-  .sidebar{transform:translateX(calc(-1 * var(--sw)));}
-  .sidebar.open{transform:translateX(0);}
-  .main{margin-left:0!important;}
-  .cpad{padding:20px 14px 60px;}
-  #th{padding:28px 14px;}
-  .fb{padding:14px;gap:10px;}
-  .fg{min-width:130px;}
-  .btn-vw{width:100%;}
-  .td-img{width:130px;}
-  .h-logo{font-size:2.2rem;}
-  .sg{grid-template-columns:1fr;}
+/* Activity log */
+.actcard{background:var(--s1);border:1.5px solid var(--border2);border-radius:16px;padding:22px 22px 10px;}
+.act-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.act-row:last-child{border-bottom:none;}
+.act-dot{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.dot-q{background:rgba(249,195,58,0.1);}
+.dot-p{background:rgba(168,85,247,0.1);}
+.act-body{flex:1;min-width:0;}
+.act-t{font-size:0.82rem;font-weight:700;}
+.act-d{font-size:0.7rem;color:var(--muted);margin-top:1px;}
+.act-pct{font-size:0.82rem;font-weight:800;font-family:var(--mono);
+  padding:3px 10px;border-radius:8px;flex-shrink:0;}
+.ap-hi{color:var(--green);background:rgba(58,249,195,0.08);}
+.ap-mid{color:var(--accent);background:rgba(249,195,58,0.08);}
+.ap-lo{color:var(--red);background:rgba(249,58,122,0.08);}
+.act-empty{text-align:center;padding:24px 0 14px;font-size:0.82rem;color:var(--muted);}
+
+/* Mobile nav */
+@media(max-width:600px){
+  nav{height:auto;padding:10px 12px 0;flex-direction:column;align-items:stretch;}
+  .nav-logo{gap:8px;padding-bottom:8px;}
+  .nav-logo-icon{width:28px;height:28px;font-size:0.65rem;}
+  .nav-title{font-size:0.76rem;}
+  .nav-sub,.nav-instructor{font-size:0.58rem;}
+  .nav-links{flex-direction:row;gap:4px;border-top:1px solid var(--border);
+    padding:8px 0 9px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .nav-links::-webkit-scrollbar{display:none;}
+  .nav-link{padding:6px 10px;font-size:0.7rem;white-space:nowrap;flex-shrink:0;}
+  .nav-divider{display:none;}
+  .page{padding:20px 12px 80px;}
+  .profile-card{flex-wrap:wrap;gap:14px;padding:20px 16px;}
+  .sum-grid{gap:8px;}
+  .sb-val{font-size:1.4rem;}
+  .ac-grid{grid-template-columns:1fr 1fr;gap:8px;}
+  .acard{padding:16px 14px 12px;}
+  .ac-top{flex-wrap:wrap;}
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-<!-- LOGIN GUARD -->
-<script>
-(function(){
-  try{var s=JSON.parse(localStorage.getItem('student_session')||'{}');
-    if(!s.loggedIn)window.location.replace('login.html');
-  }catch(e){window.location.replace('login.html');}
-})();
-</script>
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="tb-ham" onclick="toggleSB()">
-    <span></span><span></span><span></span>
-  </div>
-  <div class="tb-brand">
-    <div class="tb-brand-ic">SMG</div>
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">C++</div>
     <div>
-      <div class="tb-brand-name">SMGDecode</div>
-      <div class="tb-brand-sub">Student Portal</div>
+      <div class="nav-title">Computer Fundamentals and Programming</div>
+      <div class="nav-sub">BS Civil Engineering</div>
+      <div class="nav-instructor">Instructor: DEBULGADO, S.M.G</div>
     </div>
   </div>
-  <div class="tb-right">
-    <div class="tb-user">
-      <span>👤</span>
-      <span class="tb-uname" id="tb-nm">—</span>
-    </div>
-    <button class="btn-lo" onclick="doLogout()">⏻ Logout</button>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link" style="border-color:rgba(34,211,238,0.3);color:var(--cyan);">🏫 Portal</a>
+    <div class="nav-divider"></div>
+    <a href="bes125.html" class="nav-link home-link">🏠 BES 125</a>
+    <div class="nav-divider"></div>
+    <a href="lesson.html" class="nav-link">📘 Lesson</a>
+    <a href="quiz.html" class="nav-link">📝 Quiz</a>
+    <a href="practical.html" class="nav-link practical-link">💻 Practical</a>
+    <a href="profile.html" class="nav-link active">👤 Profile</a>
+    <div class="nav-divider"></div>
+    <span id="nav-userbadge" class="nav-userbadge"
+      onclick="window._signOut&&window._signOut()"
+      title="Click to sign out"></span>
+    <div class="nav-divider"></div>
+    <span id="nav-user-badge" onclick="window.firebaseSignOut&&window.firebaseSignOut()" title="Sign out"
+      style="display:none;align-items:center;gap:5px;font-size:0.72rem;color:var(--accent2);cursor:pointer;padding:4px 10px;border:1px solid rgba(58,249,195,0.25);border-radius:7px;background:rgba(58,249,195,0.05);">
+    </span>
   </div>
-</div>
+</nav>
 
-<div class="ov" id="ov" onclick="closeSB()"></div>
+<div class="page">
 
-<div class="layout">
-  <!-- SIDEBAR -->
-  <div class="sidebar" id="sb">
-    <div class="sb-prof">
-      <div class="sb-av" id="sb-av">?<div class="sb-dot"></div></div>
-      <div class="sb-nm" id="sb-nm">—</div>
-      <div class="sb-em" id="sb-em">—</div>
-      <div class="sb-ctag" id="sb-ctag">—</div>
-    </div>
-    <div class="sb-nav">
-      <div class="sb-sec">Main Menu</div>
-      <div class="sb-it on" id="ni-home" onclick="showT('home')">
-        <span class="si">🏠</span><span>Home</span>
-      </div>
-      <div class="sb-it" id="ni-tx" onclick="showT('tx')">
-        <span class="si">📚</span><span>Transactions</span>
-      </div>
-      <div class="sb-it" id="ni-gr" onclick="showT('gr')">
-        <span class="si">📊</span><span>Grades</span>
-      </div>
-      <div class="sb-it" id="ni-cv" onclick="showT('cv')">
-        <span class="si">📄</span><span>Curriculum</span>
-      </div>
-      <div class="sb-div"></div>
-      <div class="sb-sec">Account</div>
-      <div class="sb-it" onclick="window.location.href='profile.html'">
-        <span class="si">👤</span><span>My Profile</span>
-      </div>
-      <div class="sb-it" onclick="doLogout()">
-        <span class="si">⏻</span><span style="color:var(--red)">Logout</span>
-      </div>
-    </div>
-    <div class="sb-ft">
-      <div class="sb-ver">SMGDecode Portal v1.0</div>
-    </div>
+  <!-- LOADING -->
+  <div id="state-loading">
+    <div class="ring"></div>
+    <div style="font-size:0.86rem;color:var(--muted);">Loading your profile...</div>
   </div>
 
-  <!-- MAIN -->
-  <div class="main" id="main">
+  <!-- NO AUTH -->
+  <div id="state-noauth">
+    <div class="na-icon">🔒</div>
+    <div class="na-title">Sign In Required</div>
+    <p class="na-sub">Sign in with your Gmail to view your personal dashboard and score history.</p>
+    <button class="btn-go-login" onclick="window.location.href='login.html'">🔑 Sign In with Gmail</button>
+  </div>
 
-    <!-- HOME -->
-    <div id="th" class="on">
+  <!-- DASHBOARD -->
+  <div id="state-dashboard">
 
-      <!-- Shimmer line -->
-      <div class="home-shimmer"></div>
-
-      <!-- Ambient orbs -->
-      <div class="home-orb ho1"></div>
-      <div class="home-orb ho2"></div>
-      <div class="home-orb ho3"></div>
-
-      <!-- Rising particles -->
-      <div id="home-particles"></div>
-
-      <!-- Grid overlay (same as smgdebulgado) -->
-      <div style="position:absolute;inset:0;z-index:0;pointer-events:none;
-        background-image:linear-gradient(rgba(0,229,255,0.03) 1px,transparent 1px),
-          linear-gradient(90deg,rgba(0,229,255,0.03) 1px,transparent 1px);
-        background-size:36px 36px;"></div>
-
-      <!-- All content -->
-      <div class="h-content">
-
-        <!-- CLOCK WIDGET -->
-        <div class="h-clock">
-          <div class="h-clock-time">
-            <span id="hc-h">--</span><span class="h-clock-colon">:</span><span id="hc-m">--</span><span class="h-clock-colon">:</span><span id="hc-s">--</span>
-          </div>
-          <div class="h-clock-ampm" id="hc-ampm">AM</div>
-          <div class="h-clock-date" id="hc-date">Loading...</div>
-          <div class="h-clock-greet" id="hc-greet">Good Morning ☀️</div>
-        </div>
-
-        <!-- PROFILE CARD -->
-        <div class="h-card">
-          <div class="h-bracket hb-tl"></div>
-          <div class="h-bracket hb-br"></div>
-
-          <div class="h-cs-badge">
-            <span class="h-cs-dot"></span>
-            Computer Scientist
-            <span class="h-cs-dot"></span>
-          </div>
-
-          <!-- ROUNDED RECT Teacher D -->
-          <div class="td-wrap">
-            <div class="td-rect-ring"></div>
-            <div class="td-rect-bg"></div>
-            <img class="td-img" src="teacher-d.png" alt="Teacher D"
-              onerror="this.style.display='none'">
-          </div>
-
-          <!-- Name -->
-          <div class="h-logo">Teacher D<span class="hl-excl">!</span></div>
-          <div class="h-logo-sub">
-            <span class="h-logo-dot"></span>
-            Educator · Developer · Mentor
-            <span class="h-logo-dot"></span>
-          </div>
-
-          <!-- Tagline pills -->
-          <div class="h-tags">
-            <div class="htag ht1">💻 Software Engineer</div>
-            <div class="htag ht2">🎓 Mentor</div>
-            <div class="htag ht3">🧠 Guru</div>
-            <div class="htag ht4">🛠 Developer</div>
-            <div class="htag ht5">📖 Educator</div>
-          </div>
-        </div>
-
+    <!-- Profile Card -->
+    <div class="profile-card">
+      <div id="av-wrap"></div>
+      <div class="p-info">
+        <div class="p-name" id="p-name">—</div>
+        <div class="p-email" id="p-email">—</div>
+        <div class="p-tags" id="p-tags"></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-direction:column;align-items:flex-end;">
+        <button class="btn-out" onclick="window._signOut&&window._signOut()">⏻ Sign Out</button>
+        <button class="btn-pdf" id="btn-pdf-profile" onclick="downloadProfilePDF()">⬇ Download PDF</button>
       </div>
     </div>
 
-    <!-- TRANSACTIONS -->
-    <div id="ttx" class="tpanel cpad">
-      <div class="ph">
-        <div class="ph-tag">📚 Transactions</div>
-        <h1 class="ph-title">Select Your <span>Academic Term</span></h1>
-        <p class="ph-sub">Choose your Academic Year, Semester, and Course to see your enrolled subjects.</p>
+    <!-- Grade Period Cards — clickable -->
+    <div class="sh"><div class="sh-text">📊 Assessment Periods</div><div class="sh-line"></div></div>
+    <p style="font-size:0.76rem;color:var(--muted);margin-bottom:14px;">Click a period card to view quizzes and practicals taken.</p>
+
+    <div class="period-grid">
+      <div class="period-card pp-prelim" onclick="openPeriodDetail('prelim')">
+        <div class="pc-stripe"></div>
+        <div class="pc-icon">📘</div>
+        <div class="pc-name">Prelim</div>
+        <div class="pc-grade" id="pc-prelim-grade" style="color:var(--blue)">—</div>
+        <div class="pc-sub" id="pc-prelim-sub">Click to view</div>
+        <div class="pc-arrow">→</div>
       </div>
-      <div class="fb">
-        <div class="fg">
-          <label class="fl">🗓 Academic Year</label>
-          <select class="fs" id="sy" onchange="chg()">
-            <option value="">— Academic Year —</option>
-            <option>2025-2026</option><option>2026-2027</option><option>2027-2028</option>
-            <option>2028-2029</option><option>2029-2030</option><option>2030-2031</option>
-            <option>2031-2032</option><option>2032-2033</option><option>2033-2034</option>
-            <option>2034-2035</option>
-          </select>
-        </div>
-        <div class="fg">
-          <label class="fl">📋 Semester</label>
-          <select class="fs" id="st" onchange="chg()">
-            <option value="">— Semester —</option>
-            <option>1st Semester</option><option>2nd Semester</option>
-          </select>
-        </div>
-        <div class="fg">
-          <label class="fl">🎓 Course</label>
-          <select class="fs" id="sc" onchange="chg()">
-            <option value="">— Select Course —</option>
-            <option>BS IN ACCOUNTING INFORMATION SYSTEM</option>
-            <option>BS IN CRIMINOLOGY</option>
-            <option>BS IN HOSPITALITY MANAGEMENT</option>
-            <option>BS IN SOCIAL WORK</option>
-            <option>BS IN CIVIL ENGINEERING</option>
-            <option>BS IN SECONDARY EDUCATION</option>
-            <option>BACHELOR OF ELEMENTARY EDUCATION</option>
-          </select>
-        </div>
-        <button class="btn-vw" onclick="loadS()">🔍 View Subjects</button>
+      <div class="period-card pp-mid" onclick="openPeriodDetail('midterm')">
+        <div class="pc-stripe"></div>
+        <div class="pc-icon">📗</div>
+        <div class="pc-name">Midterm</div>
+        <div class="pc-grade" id="pc-mid-grade" style="color:var(--purple)">—</div>
+        <div class="pc-sub" id="pc-mid-sub">Click to view</div>
+        <div class="pc-arrow">→</div>
       </div>
-      <div id="sa">
-        <div class="es"><div class="es-ic">🎓</div>
-          <div class="es-t">Select Academic Year, Semester and Course</div>
-          <p class="es-s">Your subjects will appear here.</p>
-        </div>
+      <div class="period-card pp-finals" onclick="openPeriodDetail('finals')">
+        <div class="pc-stripe"></div>
+        <div class="pc-icon">📙</div>
+        <div class="pc-name">Finals</div>
+        <div class="pc-grade" id="pc-finals-grade" style="color:var(--green)">—</div>
+        <div class="pc-sub" id="pc-finals-sub">Click to view</div>
+        <div class="pc-arrow">→</div>
+      </div>
+      <div class="period-card pp-sem">
+        <div class="pc-stripe" style="background:linear-gradient(90deg,var(--accent),#f0a84b)"></div>
+        <div class="pc-icon">🏆</div>
+        <div class="pc-name">Semestral</div>
+        <div class="pc-grade" id="pc-sem-grade" style="color:var(--accent)">—</div>
+        <div class="pc-sub" id="pc-sem-sub">Final average</div>
       </div>
     </div>
 
-    <!-- GRADES -->
-    <div id="tgr" class="tpanel cpad">
-      <div class="ph">
-        <div class="ph-tag">📊 Grades</div>
-        <h1 class="ph-title">My <span>Grades</span></h1>
-        <p class="ph-sub">Select a subject below to view your official grades.</p>
-      </div>
+    <!-- Activity Log -->
+    <div class="sh" style="margin-top:24px;"><div class="sh-text">🕐 Activity Log</div><div class="sh-line"></div></div>
+    <div class="actcard"><div id="act-log"><div class="act-empty">No activity yet.</div></div></div>
 
-      <!-- Subject list for grades -->
-      <div id="grade-subject-list">
-        <div class="sec-hd-g">
-          <span class="sec-hd-lbl-g">📚 Enrolled Subjects</span>
-          <div class="sec-hd-ln-g"></div>
-        </div>
-        <div id="grade-subj-cards" class="grade-subj-grid">
-          <div class="g-load"><span class="spin">⟳</span> Loading subjects...</div>
-        </div>
-      </div>
-
-      <!-- Grades detail (shown after clicking a subject) -->
-      <div id="grade-detail" style="display:none;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
-          <button class="btn-back-subj" onclick="backToSubjectList()">← Back</button>
-          <div style="flex:1;min-width:0;">
-            <div id="gd-subj-title" style="font-size:1rem;font-weight:800;"></div>
-            <div id="gd-subj-meta" style="font-size:0.72rem;color:var(--muted);margin-top:2px;"></div>
-          </div>
-          <button class="btn-grade-pdf" id="btn-grade-pdf" onclick="downloadGradesPDF()">⬇ Download Grades PDF</button>
-        </div>
-        <div id="gc"><div class="g-load"><span class="spin">⟳</span> Loading grades...</div></div>
-      </div>
-    </div>
-
-    <!-- CURRICULUM -->
-    <div id="tcv" class="tpanel cpad">
-      <div class="ph">
-        <div class="ph-tag">📄 Curriculum</div>
-        <h1 class="ph-title">Program <span>Curriculum</span></h1>
-        <p class="ph-sub">Download your program checklist and curriculum documents.</p>
-      </div>
-      <div id="cvc">
-        <div class="cv-empty">
-          <div class="cv-ic">📁</div>
-          <div class="cv-t">Curriculum Files Coming Soon</div>
-          <p class="cv-s">The instructor will upload your program curriculum files here.<br>
-          You will be able to download them once available.</p>
-          <div class="cv-note">📬 Check back later for uploaded documents</div>
-        </div>
-      </div>
-    </div>
+    <!-- Hidden data containers -->
+    <div id="sec-quiz" style="display:none"></div>
+    <div id="sec-prac" style="display:none"></div>
 
   </div>
 </div>
 
 <script type="module">
 import { initializeApp }  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth, onAuthStateChanged }
+import { getAuth, onAuthStateChanged, signOut }
                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { getFirestore, doc, getDoc }
                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
+// ══════════════════════════════════════════
+//  🔧 PASTE YOUR FIREBASE CONFIG HERE
+// ══════════════════════════════════════════
 const firebaseConfig = {
   apiKey: "AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
   authDomain: "cfp2526-database.firebaseapp.com",
@@ -726,703 +395,270 @@ const firebaseConfig = {
   appId: "1:111042690196:web:cd63203bd29b350cea8881",
   measurementId: "G-Y7CMBZM1G1"
 };
+// ══════════════════════════════════════════
 
 const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
-const g    = id => document.getElementById(id);
-const esc  = s  => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-let sess = {};
-try { sess = JSON.parse(localStorage.getItem('student_session')||'{}'); } catch(e){}
+const g = id => document.getElementById(id);
 
-// Topbar + sidebar
-const dn = sess.firstName && sess.surname ? sess.surname+', '+sess.firstName : sess.name||sess.email||'Student';
-g('tb-nm').textContent = dn;
-g('sb-nm').textContent = dn;
-g('sb-em').textContent = sess.email||'';
-g('sb-ctag').textContent = shortC(sess.course)||'—';
-g('sb-av').firstChild.textContent = (sess.firstName||sess.name||'?')[0].toUpperCase();
+onAuthStateChanged(auth, async user => {
+  g('state-loading').style.display = 'none';
 
-// Auto-fill
-if(sess.academicYear) g('sy').value = sess.academicYear;
-if(sess.term)         g('st').value = sess.term;
-if(sess.course)       g('sc').value = sess.course;
-if(sess.academicYear && sess.term && sess.course) loadS();
+  if (!user) { g('state-noauth').style.display = 'block'; return; }
 
-onAuthStateChanged(auth, u => { if(u) loadGrades(u.uid); });
+  // Sign-out helper
+  window._signOut = async () => {
+    await signOut(auth);
+    localStorage.removeItem('firebase_user');
+    localStorage.removeItem('student_session');
+    window.location.href = 'login.html';
+  };
 
-// ── SUBJECTS FOR GRADES ──
-const GRADE_SUBJECTS = [
-  { id:'BES125', code:'BES 125', name:'Computer Fundamentals and Programming',
-    icon:'💻', instructor:'DEBULGADO, S.M.G', dept:'BS Civil Engineering',
-    color:'var(--accent)' },
-];
+  // Nav badge
+  const badge = g('nav-userbadge');
+  if (badge) {
+    badge.innerHTML = (user.photoURL
+      ? `<img src="${user.photoURL}" style="width:22px;height:22px;border-radius:50%;vertical-align:middle;margin-right:5px;border:1px solid rgba(58,249,195,0.4);">`
+      : '👤 ') + (user.displayName || user.email);
+    badge.style.display = 'inline-flex';
+  }
 
-let activeGradeSubject = null;
+  // Build profile header
+  const av = g('av-wrap');
+  av.innerHTML = user.photoURL
+    ? `<img class="p-avatar" src="${user.photoURL}" alt="">`
+    : `<div class="p-avatar-ph">${(user.displayName||user.email||'?')[0].toUpperCase()}</div>`;
+  g('p-name').textContent  = user.displayName || 'Student';
+  g('p-email').textContent = user.email;
+  g('p-tags').innerHTML =
+    `<span class="tag tag-g">✅ Verified Gmail</span>
+     <span class="tag tag-p">📚 Week 1</span>
+     <span class="tag tag-m">BS Civil Engineering</span>`;
 
-window.backToSubjectList = function() {
-  activeGradeSubject = null;
-  document.getElementById('grade-subject-list').style.display = 'block';
-  document.getElementById('grade-detail').style.display = 'none';
+  // Fetch Firestore (with localStorage fallback)
+  const [qSnap, pSnap, q2Snap, p2Snap, grSnap] = await Promise.all([
+    getDoc(doc(db, 'quiz_submissions',      user.uid)).catch(()=>null),
+    getDoc(doc(db, 'practical_submissions', user.uid)).catch(()=>null),
+    getDoc(doc(db, 'quiz2_submissions',     user.uid)).catch(()=>null),
+    getDoc(doc(db, 'practical2_submissions',user.uid)).catch(()=>null),
+    getDoc(doc(db, 'student_grades',        user.uid)).catch(()=>null),
+  ]);
+
+  const fromLS = key => {
+    try { return JSON.parse(localStorage.getItem(key + user.uid)); } catch(e){ return null; }
+  };
+
+  const qd  = qSnap?.exists()  ? qSnap.data()  : fromLS('quiz_done_uid_');
+  const pd  = pSnap?.exists()  ? pSnap.data()  : fromLS('practical_done_uid_');
+  const qd2 = q2Snap?.exists() ? q2Snap.data() : fromLS('quiz2_done_uid_');
+  const pd2 = p2Snap?.exists() ? p2Snap.data() : fromLS('practical2_done_uid_');
+  const grades = grSnap?.exists() ? grSnap.data() : {};
+
+  buildSummary(qd, pd, qd2, pd2, grades);
+  buildQuiz(qd);
+  buildPrac(pd);
+  buildLog(qd, pd, qd2, pd2);
+  // Store for PDF
+  window._qd1Score=qd?.score; window._qd1Pct=qd?.percent;
+  window._qd2Score=qd2?.score; window._qd2Pct=qd2?.percent;
+  window._pd1Score=pd?.score; window._pd1Pct=pd?.percent;
+  window._pd2Score=pd2?.score; window._pd2Pct=pd2?.percent;
+  try{
+    const sess=JSON.parse(localStorage.getItem('student_session')||'{}');
+    window._profileStudentId=sess.studentId||'—';
+    window._profileCourse=sess.course||'—';
+    window._profileAcadYear=sess.academicYear||'—';
+    window._profileTerm=sess.term||'—';
+  }catch(e){}
+
+  g('state-dashboard').style.display = 'block';
+});
+
+function pct(d){ return parseFloat((d?.percent||'0').replace('%','')); }
+
+// Store assessment data globally for period detail modal
+let _qd1=null,_qd2=null,_pd1=null,_pd2=null,_grades=null;
+
+function buildSummary(qd, pd, qd2, pd2, gradesData) {
+  _qd1=qd; _qd2=qd2; _pd1=pd; _pd2=pd2; _grades=gradesData||{};
+
+  const g2 = _grades;
+  const prelim   = g2.prelim    ? parseFloat(g2.prelim)    : null;
+  const midterm  = g2.midterm   ? parseFloat(g2.midterm)   : null;
+  const finals   = g2.finals    ? parseFloat(g2.finals)    : null;
+  const semestral= g2.semestral ? parseFloat(g2.semestral) : null;
+
+  const fmt = v => v===null ? '—' : v.toFixed(2);
+  const col = v => v===null?'var(--dim)':v>=75?'var(--green)':v>=60?'var(--accent)':'var(--red)';
+  const stat= v => v===null?'Not yet released':v>=75?'✅ Passed':'❌ Failed';
+
+  const setCard = (gradeId, subId, val) => {
+    const ge = document.getElementById(gradeId);
+    const se = document.getElementById(subId);
+    if(ge){ ge.textContent=fmt(val); ge.style.color=col(val); }
+    if(se) se.textContent=stat(val);
+  };
+  setCard('pc-prelim-grade','pc-prelim-sub',prelim);
+  setCard('pc-mid-grade','pc-mid-sub',midterm);
+  setCard('pc-finals-grade','pc-finals-sub',finals);
+  setCard('pc-sem-grade','pc-sem-sub',semestral);
+}
+
+window.openPeriodDetail = function(period) {
+  const labels = {prelim:'📘 Prelim Period',midterm:'📗 Midterm Period',finals:'📙 Finals Period'};
+  const g2 = _grades||{};
+  const val = g2[period] ? parseFloat(g2[period]) : null;
+  const col = val===null?'var(--dim)':val>=75?'var(--green)':val>=60?'var(--accent)':'var(--red)';
+
+  // Quizzes + practicals for each period (W1=Prelim, W2=Midterm/Finals)
+  const quizMap   = {prelim:[_qd1], midterm:[_qd2], finals:[_qd1,_qd2]};
+  const pracMap   = {prelim:[_pd1], midterm:[_pd2], finals:[_pd1,_pd2]};
+  const quizzes   = (quizMap[period]||[]).filter(Boolean);
+  const practicals= (pracMap[period]||[]).filter(Boolean);
+
+  const modal = document.getElementById('period-modal');
+  document.getElementById('pm-title').textContent = labels[period]||period;
+  document.getElementById('pm-grade-val').textContent = val!==null ? val.toFixed(2) : '—';
+  document.getElementById('pm-grade-val').style.color = col;
+  document.getElementById('pm-grade-lbl').textContent = val!==null
+    ? (val>=75 ? '✅ Passed' : '❌ Below Passing')
+    : 'Grade not yet released';
+
+  const makeRow = (d, icon, label) => {
+    if(!d) return `<div class="pm-arow"><span class="pm-al">${icon} ${label}</span>
+      <span class="pm-av pma-na">Not submitted</span></div>`;
+    const p=parseFloat((d.percent||'0').replace('%',''));
+    const c2=p>=75?'pma-hi':p>=60?'pma-mid':p>0?'pma-lo':'pma-na';
+    return `<div class="pm-arow">
+      <span class="pm-al">${icon} ${label}</span>
+      <div class="pm-ar">
+        <span class="pm-av ${c2}">${d.score||'—'}</span>
+        <span style="font-size:0.76rem;color:var(--muted)">${d.percent||'—'}</span>
+      </div>
+    </div>`;
+  };
+
+  const qHtml = quizzes.length
+    ? quizzes.map((q,i)=>makeRow(q,'📝',`Week ${i+1} Theory Quiz`)).join('')
+    : '<div class="pm-empty">No quiz data for this period.</div>';
+  const pHtml = practicals.length
+    ? practicals.map((p,i)=>makeRow(p,'💻',`Week ${i+1} Practical`)).join('')
+    : '<div class="pm-empty">No practical data for this period.</div>';
+
+  document.getElementById('pm-quiz-list').innerHTML = qHtml;
+  document.getElementById('pm-prac-list').innerHTML = pHtml;
+  modal.classList.add('show');
 };
 
-function buildSubjectList(uid, gradesData) {
-  const grid = document.getElementById('grade-subj-cards');
-  if(!grid) return;
-  const g2 = gradesData || {};
-  grid.innerHTML = GRADE_SUBJECTS.map(s => {
-    const sg = g2[s.id] || {};
-    const hasSem = !!sg.semestral;
-    const hasSome = sg.prelim||sg.midterm||sg.finals;
-    return `<div class="grade-subj-card" onclick="openSubjectGrades('${uid}','${s.id}')">
-      <div class="gsj-icon">${s.icon}</div>
-      <div class="gsj-code">${esc(s.code)}</div>
-      <div class="gsj-name">${esc(s.name)}</div>
-      <div class="gsj-meta">${esc(s.instructor)} · ${esc(s.dept)}</div>
-      <div class="gsj-status">
-        <div class="gsj-dot ${hasSome?'gsj-dot-ok':'gsj-dot-no'}"></div>
-        <span class="gsj-status-txt" style="color:${hasSome?'var(--green)':'var(--dim)'}">
-          ${hasSem?'✅ Grades Released':hasSome?'⏳ Partial Grades':'📭 Grades Not Yet Released'}
-        </span>
-        <span class="gsj-arrow">→</span>
-      </div>
+window.closePeriodModal = function(){
+  document.getElementById('period-modal').classList.remove('show');
+};
+
+function buildQuiz(qd) {
+  const wrap = g('sec-quiz');
+  if (!qd) {
+    wrap.innerHTML = `<div class="notdone">
+      <div class="nd-icon">📝</div>
+      <div class="nd-title">Theory Quiz Not Yet Taken</div>
+      <p class="nd-sub">Complete the 20-question quiz to see your score here.</p>
+      <a href="quiz.html" class="btn-take">📝 Take the Quiz →</a>
+    </div>`; return;
+  }
+  const p = pct(qd);
+  const pass = p >= 50;
+  const bar = p>=75?'linear-gradient(90deg,#3af9c3,#22d3ee)':p>=50?'linear-gradient(90deg,#f9c33a,#f0a84b)':'linear-gradient(90deg,#f93a7a,#a855f7)';
+  const cv = c => p>=75?'var(--green)':p>=50?'var(--accent)':'var(--red)';
+  wrap.innerHTML = `<div class="acard aq">
+    <div class="ac-top">
+      <div><div class="ac-title">📝 Theory Quiz — Week 1</div><div class="ac-sub">20 Questions · 3 min each · Auto-graded</div></div>
+      <div class="badge ${pass?'badge-ok':'badge-no'}">${pass?'✅ PASSED':'❌ FAILED'}</div>
+    </div>
+    <div class="ac-grid">
+      <div class="ac-cell"><div class="ac-cv" style="color:var(--accent)">${qd.score||'—'}</div><div class="ac-cl">Score</div></div>
+      <div class="ac-cell"><div class="ac-cv" style="color:${cv()}">${qd.percent||'—'}</div><div class="ac-cl">Percentage</div></div>
+      <div class="ac-cell"><div class="ac-cv" style="color:var(--muted)">${qd.wrong||'—'}</div><div class="ac-cl">Wrong</div></div>
+      <div class="ac-cell"><div class="ac-cv" style="color:var(--dim);font-size:0.7rem">${qd.studentNo||'N/A'}</div><div class="ac-cl">Student No.</div></div>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-row"><span>Score Progress</span><span>${qd.percent||'0%'}</span></div>
+      <div class="bar-track"><div class="bar-fill" id="qbar" style="width:0%;background:${bar}"></div></div>
+    </div>
+    <div class="ac-ts">📅 Submitted: ${qd.timestamp||'—'} &nbsp;|&nbsp; 📧 ${qd.gmail||'—'}</div>
+  </div>`;
+  setTimeout(()=>{ const el=g('qbar'); if(el) el.style.width=Math.min(p,100)+'%'; }, 400);
+}
+
+function buildPrac(pd) {
+  const wrap = g('sec-prac');
+  if (!pd) {
+    wrap.innerHTML = `<div class="notdone">
+      <div class="nd-icon">💻</div>
+      <div class="nd-title">Practical Assessment Not Yet Taken</div>
+      <p class="nd-sub">Complete the 2 coding tasks to see your score here.</p>
+      <a href="practical.html" class="btn-take">💻 Take Practical →</a>
+    </div>`; return;
+  }
+  const p = pct(pd);
+  const pass = p >= 50;
+  const bar = p>=75?'linear-gradient(90deg,#a855f7,#22d3ee)':p>=50?'linear-gradient(90deg,#a855f7,#3b82f6)':'linear-gradient(90deg,#f93a7a,#a855f7)';
+  const cv = () => p>=75?'var(--green)':p>=50?'var(--accent)':'var(--red)';
+  wrap.innerHTML = `<div class="acard ap">
+    <div class="ac-top">
+      <div><div class="ac-title">💻 Practical Assessment — Week 1</div><div class="ac-sub">2 Coding Tasks · 50 pts each · C++</div></div>
+      <div class="badge ${pass?'badge-ok':'badge-no'}">${pass?'✅ PASSED':'❌ FAILED'}</div>
+    </div>
+    <div class="ac-grid">
+      <div class="ac-cell"><div class="ac-cv" style="color:var(--purple)">${pd.score||'—'}</div><div class="ac-cl">Tasks Passed</div></div>
+      <div class="ac-cell"><div class="ac-cv" style="color:${cv()}">${pd.percent||'—'}</div><div class="ac-cl">Percentage</div></div>
+      <div class="ac-cell"><div class="ac-cv" style="color:var(--cyan)">${pd.timeTaken||'—'}</div><div class="ac-cl">Time Taken</div></div>
+      <div class="ac-cell"><div class="ac-cv" style="color:var(--dim);font-size:0.7rem">${pd.studentNo||'N/A'}</div><div class="ac-cl">Student No.</div></div>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-row"><span>Score Progress</span><span>${pd.percent||'0%'}</span></div>
+      <div class="bar-track"><div class="bar-fill" id="pbar" style="width:0%;background:${bar}"></div></div>
+    </div>
+    <div class="ac-ts">📅 Submitted: ${pd.timestamp||'—'} &nbsp;|&nbsp; 📧 ${pd.gmail||'—'}</div>
+  </div>`;
+  setTimeout(()=>{ const el=g('pbar'); if(el) el.style.width=Math.min(p,100)+'%'; }, 600);
+}
+
+function buildLog(qd, pd, qd2, pd2) {
+  const log = g('act-log');
+  const items = [];
+  if (qd)  items.push({ icon:'📝', dot:'dot-q', title:'W1 Theory Quiz Submitted',    time:qd.timestamp||'—',  pct:pct(qd) });
+  if (qd2) items.push({ icon:'📝', dot:'dot-q', title:'W2 Theory Quiz Submitted',    time:qd2.timestamp||'—', pct:pct(qd2) });
+  if (pd)  items.push({ icon:'💻', dot:'dot-p', title:'W1 Practical Submitted',      time:pd.timestamp||'—',  pct:pct(pd) });
+  if (pd2) items.push({ icon:'💻', dot:'dot-p', title:'W2 Practical Submitted',      time:pd2.timestamp||'—', pct:pct(pd2) });
+  if (!items.length) { log.innerHTML='<div class="act-empty">No submissions yet. Complete the quiz or practical first.</div>'; return; }
+  log.innerHTML = items.map(it => {
+    const cls = it.pct>=75?'ap-hi':it.pct>=50?'ap-mid':'ap-lo';
+    return `<div class="act-row">
+      <div class="act-dot ${it.dot}">${it.icon}</div>
+      <div class="act-body"><div class="act-t">${it.title}</div><div class="act-d">📅 ${it.time}</div></div>
+      <div class="act-pct ${cls}">${it.pct}%</div>
     </div>`;
   }).join('');
 }
-
-window.openSubjectGrades = function(uid, subjId) {
-  const s = GRADE_SUBJECTS.find(x=>x.id===subjId);
-  if(!s) return;
-  activeGradeSubject = subjId;
-  document.getElementById('grade-subject-list').style.display = 'none';
-  document.getElementById('grade-detail').style.display = 'block';
-  document.getElementById('gd-subj-title').textContent = s.name;
-  document.getElementById('gd-subj-meta').textContent = s.code + ' · ' + s.instructor;
-  loadGrades(uid, subjId);
-};
-
-async function loadGrades(uid, subjId) {
-  const gc = document.getElementById('gc');
-  gc.innerHTML='<div class="g-load"><span class="spin">⟳</span> Loading grades...</div>';
-
-  try {
-    const [q1,q2,p1,p2,ag] = await Promise.all([
-      getDoc(doc(db,'quiz_submissions',uid)).catch(()=>null),
-      getDoc(doc(db,'quiz2_submissions',uid)).catch(()=>null),
-      getDoc(doc(db,'practical_submissions',uid)).catch(()=>null),
-      getDoc(doc(db,'practical2_submissions',uid)).catch(()=>null),
-      getDoc(doc(db,'student_grades',uid)).catch(()=>null),
-    ]);
-
-    // Get grades for this specific subject
-    const allGrades = ag?.exists() ? ag.data() : {};
-    const subjectGrades = allGrades[subjId] || allGrades; // fallback to flat structure
-
-    const prelim   = subjectGrades.prelim    ? parseFloat(subjectGrades.prelim)    : null;
-    const midterm  = subjectGrades.midterm   ? parseFloat(subjectGrades.midterm)   : null;
-    const finals   = subjectGrades.finals    ? parseFloat(subjectGrades.finals)    : null;
-    const semestral= subjectGrades.semestral ? parseFloat(subjectGrades.semestral) : null;
-
-    const gradeCol = v => v===null?'na':v>=75?'hi':v>=60?'mid':'lo';
-    const gradeLbl = v => v===null?'—':v.toFixed(2);
-    const gradeStatus = v => {
-      if(v===null) return '<span class="gc-status gcs-n">Not yet released</span>';
-      return v>=75
-        ? '<span class="gc-status gcs-p">✅ Passed</span>'
-        : '<span class="gc-status gcs-f">❌ Failed</span>';
-    };
-
-    // Assessment items
-    const items=[];
-    if(q1?.exists()) items.push({l:'Week 1 — Theory Quiz',  s:q1.data().score, p:q1.data().percent, t:q1.data().timestamp, type:'quiz'});
-    if(q2?.exists()) items.push({l:'Week 2 — Theory Quiz',  s:q2.data().score, p:q2.data().percent, t:q2.data().timestamp, type:'quiz'});
-    if(p1?.exists()) items.push({l:'Week 1 — Practical',    s:p1.data().score, p:p1.data().percent, t:p1.data().timestamp, type:'prac'});
-    if(p2?.exists()) items.push({l:'Week 2 — Practical',    s:p2.data().score, p:p2.data().percent, t:p2.data().timestamp, type:'prac'});
-
-    // Profile strip
-    const userInit = sess.firstName ? sess.firstName[0].toUpperCase() : '?';
-    let html = `<div class="gp-strip">
-      <div class="gp-av" id="gp-av-inner">${userInit}</div>
-      <div class="gp-info">
-        <div class="gp-name" id="gp-name-txt">${esc(sess.name||'Student')}</div>
-        <div class="gp-email" id="gp-email-txt">${esc(sess.email||'')}</div>
-        <div class="gp-meta">🎓 ${esc(sess.course||'—')} · 🪪 ${esc(sess.studentId||'—')}</div>
-      </div>
-      <span class="gp-badge">✅ Verified Gmail</span>
-    </div>`;
-
-    // BIG GRADE CARDS
-    html += `<div class="grade-hero">
-      <div class="gcard gc-prelim" onclick="openGradePeriod('prelim',${JSON.stringify(items.filter(i=>i.type==='quiz').map(i=>i.l+': '+i.s))})">
-        <div class="gc-label">📘 Prelim</div>
-        <div class="gc-score ${gradeCol(prelim)}">${gradeLbl(prelim)}</div>
-        ${gradeStatus(prelim)}
-        <div style="font-size:0.62rem;color:var(--dim);margin-top:6px;">Click to view assessments</div>
-      </div>
-      <div class="gcard gc-mid" onclick="openGradePeriod('midterm',${JSON.stringify(items.filter(i=>i.type==='quiz').map(i=>i.l+': '+i.s))})">
-        <div class="gc-label">📗 Midterm</div>
-        <div class="gc-score ${gradeCol(midterm)}">${gradeLbl(midterm)}</div>
-        ${gradeStatus(midterm)}
-        <div style="font-size:0.62rem;color:var(--dim);margin-top:6px;">Click to view assessments</div>
-      </div>
-      <div class="gcard gc-finals" onclick="openGradePeriod('finals',${JSON.stringify(items.filter(i=>i.type==='prac').map(i=>i.l+': '+i.s))})">
-        <div class="gc-label">📙 Finals</div>
-        <div class="gc-score ${gradeCol(finals)}">${gradeLbl(finals)}</div>
-        ${gradeStatus(finals)}
-        <div style="font-size:0.62rem;color:var(--dim);margin-top:6px;">Click to view assessments</div>
-      </div>
-      <div class="gcard gc-sem">
-        <div class="gc-label">🏆 Semestral</div>
-        <div class="gc-score ${gradeCol(semestral)}" style="font-size:2.6rem">${gradeLbl(semestral)}</div>
-        ${gradeStatus(semestral)}
-      </div>
-    </div>`;
-
-    // Assessment breakdown
-    if(items.length){
-      const avgs=items.map(i=>parseFloat((i.p||'0').replace('%',''))).filter(n=>n>0);
-      const avg=avgs.length?(avgs.reduce((a,b)=>a+b,0)/avgs.length).toFixed(1):0;
-      const ac=avg>=75?'ar-hi':avg>=60?'ar-mid':'ar-lo';
-      html+=`<div class="assess-card">
-        <div class="assess-head">
-          <div>
-            <div class="assess-title">📝 Assessment Scores</div>
-            <div class="assess-sub">BES 125 · ${esc(sess.academicYear||'')} · ${esc(sess.term||'')}</div>
-          </div>
-          <span class="gp-badge" style="${avg>=75?'':'background:rgba(249,58,122,0.1);color:var(--red);border-color:rgba(249,58,122,0.25);'}">
-            ${avg>=75?'✅ Passing':avg>0?'❌ Below Passing':'—'}
-          </span>
-        </div>
-        <div class="assess-body">
-          ${items.map(i=>{
-            const p=parseFloat((i.p||'0').replace('%',''));
-            const c=p>=75?'ar-hi':p>=60?'ar-mid':p>0?'ar-lo':'ar-na';
-            const icon=i.type==='quiz'?'📝':'💻';
-            return`<div class="arow">
-              <span class="arow-l">${icon} ${esc(i.l)}</span>
-              <div class="arow-r">
-                <span class="arow-score ${c}">${esc(i.s||'—')}</span>
-                <span class="arow-score ${c}" style="font-size:0.78rem">${esc(i.p||'—')}</span>
-              </div>
-            </div>`;}).join('')}
-          <div class="avg-row">
-            <span class="avg-lbl">Assessment Average</span>
-            <span class="avg-val ${ac}">${avg}%</span>
-          </div>
-        </div>
-      </div>`;
-    }
-
-    if(!ag?.exists() || (!subjectGrades.prelim && !subjectGrades.midterm && !subjectGrades.finals)){
-      html+=`<div class="grade-pending">
-        <div class="gp-ic">⏳</div>
-        <div class="gp-t">Official Grades Not Yet Released</div>
-        <p class="gp-s">Your Prelim, Midterm, Final, and Semestral grades will appear once your instructor releases them.</p>
-      </div>`;
-    }
-
-    gc.innerHTML=html;
-
-    // Update with real Google photo
-    try{
-      const {getAuth}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
-      const user=getAuth().currentUser;
-      if(user){
-        const avEl=document.getElementById('gp-av-inner');
-        if(avEl&&user.photoURL){avEl.innerHTML=`<img src="${user.photoURL}" alt="" style="width:52px;height:52px;border-radius:50%;object-fit:cover;">`;}
-        if(document.getElementById('gp-name-txt'))document.getElementById('gp-name-txt').textContent=user.displayName||sess.name||'—';
-        if(document.getElementById('gp-email-txt'))document.getElementById('gp-email-txt').textContent=user.email||'';
-      }
-    }catch(e){}
-
-    // Build subject list in background (store grades data)
-    buildSubjectList(uid, ag?.exists()?{[subjId]:allGrades[subjId]||allGrades}:{});
-
-  } catch(e){
-    gc.innerHTML=`<div class="g-empty">
-      <div class="ge-ic">⚙️</div>
-      <div class="ge-t">Grades Unavailable</div>
-      <p class="ge-s">${e.message}</p>
-    </div>`;
-  }
-}
-
-// Grade period detail modal
-window.openGradePeriod = function(period, assessments) {
-  const labels = {prelim:'📘 Prelim Period',midterm:'📗 Midterm Period',finals:'📙 Finals Period'};
-  const hints  = {
-    prelim: 'Assessments completed during the Prelim period.',
-    midterm:'Assessments completed during the Midterm period.',
-    finals: 'Assessments completed during the Finals period.'
-  };
-  const modal = document.getElementById('grade-period-modal');
-  document.getElementById('gpm-title').textContent = labels[period]||period;
-  document.getElementById('gpm-sub').textContent   = hints[period]||'';
-  const list = document.getElementById('gpm-list');
-  if(!assessments||!assessments.length){
-    list.innerHTML='<div style="color:var(--dim);font-size:0.82rem;padding:10px 0;">No assessments recorded for this period yet.</div>';
-  } else {
-    list.innerHTML = assessments.map(a=>`<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:0.84rem;color:var(--text);">
-      ${a.includes('Quiz')||a.includes('Theory')?'📝':'💻'} ${esc(a)}
-    </div>`).join('');
-  }
-  modal.style.display='flex';
-};
-window.closeGradePeriodModal = function(){
-  document.getElementById('grade-period-modal').style.display='none';
-};
-
-onAuthStateChanged(auth, async u => {
-  if(u) {
-    // Pre-load subject list
-    const ag = await getDoc(doc(db,'student_grades',u.uid)).catch(()=>null);
-    const allGrades = ag?.exists() ? ag.data() : {};
-    buildSubjectList(u.uid, allGrades);
-  }
-});
-window._loadGrades=loadGrades;
 </script>
-
-<script>
-const SUBS=[
-  {id:'cfp',code:'BES 125',title:'Computer Fundamentals and Programming',
-   desc:'Introduction to C++ programming, pseudocode, flowcharts, control structures, functions, and arrays. With laboratory exercises.',
-   icon:'💻',ic:'ic-y',cc:'cpp',units:3,lec:2,lab:3,
-   inst:'DEBULGADO, S.M.G',dept:'BS Civil Engineering',
-   open:true,link:'bes125.html',
-   courses:['BS IN CIVIL ENGINEERING'],terms:['2nd Semester'],years:null},
-  {id:'nstp',code:'NSTP 101',title:'National Service Training Program',
-   desc:'Civic welfare training, community service, and national defense preparation for Filipino students.',
-   icon:'🇵🇭',ic:'ic-g',cc:'gc',units:3,lec:3,lab:0,
-   inst:'TBA',dept:'BS Accounting Information System',
-   open:false,link:null,
-   courses:['BS IN ACCOUNTING INFORMATION SYSTEM'],terms:null,years:null},
-  {id:'pe1',code:'PE 101',title:'Physical Education 1',
-   desc:'Physical fitness, wellness, and sport activities promoting lifelong health and physical well-being.',
-   icon:'🏃',ic:'ic-o',cc:'oc',units:2,lec:0,lab:2,
-   inst:'TBA',dept:'BS Accounting Information System',
-   open:false,link:null,
-   courses:['BS IN ACCOUNTING INFORMATION SYSTEM'],terms:null,years:null},
-  {id:'math1',code:'MATH 101',title:'Mathematics in the Modern World',
-   desc:'Nature of mathematics, mathematical language, sets, relations, functions, statistics, and data management.',
-   icon:'📐',ic:'ic-b',cc:'bc',units:3,lec:3,lab:0,
-   inst:'TBA',dept:'General Education',
-   open:false,link:null,courses:null,terms:null,years:null},
-  {id:'eng1',code:'ENGL 101',title:'Purposive Communication',
-   desc:'Communication skills in multicultural settings — writing, speaking, reading, and listening for academic and professional purposes.',
-   icon:'📝',ic:'ic-g',cc:'gc',units:3,lec:3,lab:0,
-   inst:'TBA',dept:'General Education',
-   open:false,link:null,courses:null,terms:null,years:null},
-  {id:'sci1',code:'SCI 101',title:'The Contemporary World',
-   desc:'Globalization, geopolitics, global economy, global culture, and global governance in the modern world.',
-   icon:'🌏',ic:'ic-p',cc:'pc',units:3,lec:3,lab:0,
-   inst:'TBA',dept:'General Education',
-   open:false,link:null,courses:null,terms:null,years:null},
-];
-
-const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
-function chg(){
-  if(g('sy').value&&g('st').value&&g('sc').value) loadS();
-}
-window.chg=chg;
-
-function loadS(){
-  const yr=g('sy').value,tm=g('st').value,cr=g('sc').value;
-  const ar=g('sa');
-  if(!yr||!tm||!cr){
-    ar.innerHTML=`<div class="nb">⚠ <strong>Please select</strong> all three filters.</div>`;return;
-  }
-  const filt=SUBS.filter(s=>{
-    const cOk=!s.courses||s.courses.includes(cr);
-    const tOk=!s.terms||s.terms.includes(tm);
-    const yOk=!s.years||s.years.includes(yr);
-    return cOk&&tOk&&yOk;
-  });
-  const feat=filt.find(s=>s.open&&s.link);
-  let html=`<div class="nb">📅 <strong>${esc(yr)}</strong> · <strong>${esc(tm)}</strong> · <strong>${esc(cr)}</strong> — <strong>${filt.length}</strong> subject${filt.length!==1?'s':''} found</div>`;
-
-  if(feat){
-    html+=`<div class="sh"><span class="sh-lbl">⭐ Active Subject</span><span class="sh-bg">Now Open</span><div class="sh-ln"></div></div>
-    <div class="hc" onclick="enterS('${feat.id}')">
-      <div class="hc-ic">${feat.icon}</div>
-      <div class="hc-b">
-        <div class="hc-tg">${esc(feat.code)} · ${esc(yr)} · ${esc(tm)}</div>
-        <div class="hc-ttl">${esc(feat.title)}</div>
-        <div class="hc-sb">Instructor: ${esc(feat.inst)} · ${feat.units} Units · Lec ${feat.lec}hrs / Lab ${feat.lab}hrs</div>
-      </div>
-      <div class="hc-arr">→</div>
-    </div>`;
-  }
-
-  if(!filt.length){
-    html+=`<div class="es"><div class="es-ic">📭</div>
-      <div class="es-t">No subjects found</div>
-      <p class="es-s">No subjects listed for ${esc(cr)} in ${esc(yr)} · ${esc(tm)}.</p></div>`;
-    ar.innerHTML=html;return;
-  }
-
-  html+=`<div class="sh"><span class="sh-lbl">📚 All Subjects This Term</span>
-    <span class="sh-bg">${filt.length} Subjects</span><div class="sh-ln"></div></div>
-    <div class="sg">`;
-
-  filt.forEach(s=>{
-    const cl=s.open?'ss-ac':'ss-lk';
-    const lb=s.open?'● Active':'🔒 Coming Soon';
-    const ca=s.open&&s.link?`onclick="enterS('${s.id}')"`:'';
-    html+=`<div class="sc ${s.cc}${!s.open?' lk':''}" ${ca}>
-      <div class="sc-top">
-        <div class="sc-ic ${s.ic}">${s.icon}</div>
-        <span class="ss ${cl}">${lb}</span>
-      </div>
-      <div class="sc-code">${esc(s.code)}</div>
-      <div class="sc-ttl">${esc(s.title)}</div>
-      <div class="sc-dsc">${esc(s.desc)}</div>
-      <div class="sc-meta">
-        <span class="sm">📖 ${s.units} Units</span>
-        ${s.lec?`<span class="sm">🏫 Lec: ${s.lec}hrs</span>`:''}
-        ${s.lab?`<span class="sm">🔬 Lab: ${s.lab}hrs</span>`:''}
-      </div>
-      <div class="sc-ft">
-        <div class="sc-inst"><strong>${esc(s.inst)}</strong><br><span style="font-size:0.64rem">${esc(s.dept)}</span></div>
-        ${s.open?`<div class="ent">Open Course →</div>`:`<div class="ent-lk">Not yet available</div>`}
-      </div>
-    </div>`;
-  });
-
-  html+='</div>';
-  ar.innerHTML=html;
-}
-window.loadS=loadS;
-
-function enterS(id){
-  const s=SUBS.find(x=>x.id===id);if(!s||!s.link)return;
-  try{
-    const sess=JSON.parse(localStorage.getItem('student_session')||'{}');
-    sess.activeYear=g('sy').value;sess.activeTerm=g('st').value;
-    sess.activeSubject=s.title;
-    localStorage.setItem('student_session',JSON.stringify(sess));
-  }catch(e){}
-  window.location.href=s.link;
-}
-window.enterS=enterS;
-
-function g(id){return document.getElementById(id);}
-
-function shortC(c){
-  return({
-    'BS IN ACCOUNTING INFORMATION SYSTEM':'BSAIS',
-    'BS IN CRIMINOLOGY':'BSCrim',
-    'BS IN HOSPITALITY MANAGEMENT':'BSHM',
-    'BS IN SOCIAL WORK':'BSSW',
-    'BS IN CIVIL ENGINEERING':'BSCE',
-    'BS IN SECONDARY EDUCATION':'BSEd',
-    'BACHELOR OF ELEMENTARY EDUCATION':'BEEd'
-  })[c]||c||'—';
-}
-window.shortC=shortC;
-
-function doLogout(){
-  localStorage.removeItem('student_session');
-  localStorage.removeItem('firebase_user');
-  window.location.href='login.html';
-}
-window.doLogout=doLogout;
-
-// SIDEBAR
-function toggleSB(){
-  const sb=document.getElementById('sb');
-  const ov=document.getElementById('ov');
-  const main=document.getElementById('main');
-  if(window.innerWidth<=768){
-    sb.classList.toggle('open');ov.classList.toggle('show');
-  } else {
-    sb.classList.toggle('hide');main.classList.toggle('full');
-  }
-}
-function closeSB(){
-  document.getElementById('sb').classList.remove('open');
-  document.getElementById('ov').classList.remove('show');
-}
-window.toggleSB=toggleSB;window.closeSB=closeSB;
-
-// TAB SWITCHER
-function showT(name){
-  // Hide all
-  document.getElementById('th').classList.remove('on');
-  ['tx','gr','cv'].forEach(t=>{
-    const el=document.getElementById('t'+t);
-    if(el)el.classList.remove('on');
-  });
-  // Remove all nav active
-  ['home','tx','gr','cv'].forEach(t=>{
-    const el=document.getElementById('ni-'+t);
-    if(el)el.classList.remove('on');
-  });
-  // Show selected
-  if(name==='home'){
-    document.getElementById('th').classList.add('on');
-    document.getElementById('ni-home').classList.add('on');
-    setTimeout(startStarfield, 30);
-  } else {
-    stopStarfield();
-    const el=document.getElementById('t'+name);
-    if(el)el.classList.add('on');
-    const ni=document.getElementById('ni-'+name);
-    if(ni)ni.classList.add('on');
-  }
-  if(window.innerWidth<=768)closeSB();
-}
-// ── SMGDEBULGADO PARTICLES ──
-const ptColors=['#00e5ff','#7c3aed','#f59e0b','#a78bfa','#38bdf8'];
-let particlesSpawned = false;
-
-function startStarfield() {
-  spawnParticles();
-  startClock();
-}
-function stopStarfield() { /* particles keep running – they're fixed position */ }
-
-function spawnParticles() {
-  if(particlesSpawned) return;
-  particlesSpawned = true;
-  const container = document.getElementById('home-particles');
-  if(!container) return;
-  for(let i=0;i<45;i++){
-    const p=document.createElement('div');
-    p.className='hpt';
-    const s=Math.random()*3.5+1;
-    p.style.cssText=`width:${s}px;height:${s}px;background:${ptColors[Math.floor(Math.random()*ptColors.length)]};`+
-      `left:${Math.random()*100}%;bottom:-10px;`+
-      `animation-duration:${Math.random()*14+8}s;animation-delay:${Math.random()*10}s;`+
-      `box-shadow:0 0 ${s*3}px ${ptColors[Math.floor(Math.random()*ptColors.length)]};`;
-    container.appendChild(p);
-  }
-}
-
-// ── CLOCK ──
-const DAYS2=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-const MONTHS2=['January','February','March','April','May','June','July','August','September','October','November','December'];
-function pad2(n){return String(n).padStart(2,'0');}
-let clockInterval = null;
-function startClock() {
-  if(clockInterval) return;
-  function tick(){
-    const now=new Date();
-    let h=now.getHours();const m=now.getMinutes();const s=now.getSeconds();
-    const ampm=h>=12?'PM':'AM';h=h%12||12;
-    const hh=document.getElementById('hc-h');
-    const hm=document.getElementById('hc-m');
-    const hs=document.getElementById('hc-s');
-    const ha=document.getElementById('hc-ampm');
-    const hd=document.getElementById('hc-date');
-    const hg=document.getElementById('hc-greet');
-    if(hh) hh.textContent=pad2(h);
-    if(hm) hm.textContent=pad2(m);
-    if(hs) hs.textContent=pad2(s);
-    if(ha) ha.textContent=ampm;
-    if(hd) hd.textContent=DAYS2[now.getDay()]+', '+MONTHS2[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
-    const hr24=now.getHours();
-    if(hg) hg.textContent=hr24>=5&&hr24<12?'Good Morning ☀️':hr24>=12&&hr24<17?'Good Afternoon 🌤️':hr24>=17&&hr24<21?'Good Evening 🌆':'Good Night 🌙';
-  }
-  tick();
-  clockInterval=setInterval(tick,1000);
-}
-
-// Start immediately since home is shown first
-window.addEventListener('load', () => { startStarfield(); });
-
-window.showT=showT;
-
-// ── DOWNLOAD GRADES PDF ──
-window.downloadGradesPDF = async function() {
-  const btn = document.getElementById('btn-grade-pdf');
-  if(btn){ btn.disabled=true; btn.textContent='⟳ Generating PDF...'; }
-
-  try {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
-    const W = 210, M = 14;
-    let y = 18;
-
-    // ── helpers ──
-    const line = (col=[30,50,80]) => {
-      pdf.setDrawColor(...col); pdf.setLineWidth(0.25);
-      pdf.line(M, y, W-M, y); y += 4;
-    };
-    const section = (txt) => {
-      pdf.setFontSize(9); pdf.setFont('helvetica','bold');
-      pdf.setTextColor(162,85,247);
-      pdf.text(txt, M, y); y += 4;
-      line([42,30,80]);
-    };
-    const kv = (label, value, vc=[226,232,255]) => {
-      pdf.setFontSize(8.5); pdf.setFont('helvetica','normal'); pdf.setTextColor(90,116,153);
-      pdf.text(label, M, y);
-      pdf.setTextColor(...vc); pdf.setFont('helvetica','bold');
-      pdf.text(String(value||'—'), M+55, y);
-      y += 5;
-    };
-
-    // ── gather data ──
-    const sess = JSON.parse(localStorage.getItem('student_session')||'{}');
-    const subjectTitle = document.getElementById('gd-subj-title')?.textContent||'Computer Fundamentals and Programming';
-    const subjectMeta  = document.getElementById('gd-subj-meta')?.textContent||'BES 125 · DEBULGADO, S.M.G';
-
-    // Grade values
-    const getGrade = id => { const el=document.getElementById(id); return el?el.textContent.trim():'—'; };
-    const prelim   = getGrade('gd-prelim-val');
-    const midterm  = getGrade('gd-mid-val');
-    const finals   = getGrade('gd-finals-val');
-    const semestral= getGrade('gd-sem-val');
-
-    // Fallback: read from grade cards via gcard
-    const readCard = cls => {
-      const el = document.querySelector('.gc-score');
-      return el ? el.textContent.trim() : '—';
-    };
-    const gcards = document.querySelectorAll('.gc-score');
-    const g = (i) => gcards[i]?.textContent?.trim()||'—';
-    const p=g(0), m=g(1), f=g(2), s=g(3);
-
-    const gradeColor = v => {
-      if(!v||v==='—') return [90,116,153];
-      const n=parseFloat(v);
-      return n>=75?[58,249,195]:n>=60?[249,195,58]:[249,58,122];
-    };
-    const gradeStatus = v => {
-      if(!v||v==='—') return 'Not Yet Released';
-      return parseFloat(v)>=75 ? 'PASSED' : 'FAILED';
-    };
-
-    // ── HEADER BLOCK ──
-    pdf.setFillColor(8,16,28); pdf.rect(0,0,W,34,'F');
-    pdf.setFontSize(16); pdf.setFont('helvetica','bold'); pdf.setTextColor(255,255,255);
-    pdf.text('Official Grade Report', M, 13);
-    pdf.setFontSize(8); pdf.setTextColor(90,116,153); pdf.setFont('helvetica','normal');
-    pdf.text('SMGDecode LMS · Academia de Tecnologia in Mindanao, Inc.', M, 20);
-    pdf.text('DEBULGADO, S.M.G · Computer Fundamentals and Programming', M, 26);
-    pdf.setFontSize(7); pdf.setTextColor(52,72,104);
-    pdf.text('Generated: ' + new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'}), M, 31);
-    y = 44;
-
-    // ── STUDENT INFO ──
-    section('Student Information');
-    kv('Full Name',     sess.name||'—');
-    kv('Gmail',         sess.email||'—');
-    kv('Student ID',    sess.studentId||'—');
-    kv('Course',        sess.course||'—');
-    kv('Academic Year', sess.academicYear||'—');
-    kv('Term',          sess.term||'—');
-    y += 3;
-
-    // ── SUBJECT ──
-    section('Subject');
-    kv('Subject',    subjectTitle);
-    kv('Details',    subjectMeta);
-    y += 4;
-
-    // ── GRADE TABLE ──
-    section('Official Grades');
-
-    // Grade boxes
-    const boxes = [
-      {label:'PRELIM', value:p},
-      {label:'MIDTERM', value:m},
-      {label:'FINALS', value:f},
-      {label:'SEMESTRAL', value:s},
-    ];
-    const bw = (W - M*2 - 9) / 4;
-    boxes.forEach((b, i) => {
-      const bx = M + i*(bw+3);
-      const by = y;
-      const col = gradeColor(b.value);
-      // Box background
-      pdf.setFillColor(13,22,38); pdf.setDrawColor(...col);
-      pdf.setLineWidth(0.5); pdf.roundedRect(bx, by, bw, 28, 3, 3, 'FD');
-      // Label
-      pdf.setFontSize(7); pdf.setFont('helvetica','bold');
-      pdf.setTextColor(90,116,153);
-      pdf.text(b.label, bx + bw/2, by+7, {align:'center'});
-      // Value
-      pdf.setFontSize(18); pdf.setFont('helvetica','bold');
-      pdf.setTextColor(...col);
-      pdf.text(b.value||'—', bx + bw/2, by+18, {align:'center'});
-      // Status
-      pdf.setFontSize(6); pdf.setFont('helvetica','normal');
-      pdf.setTextColor(90,116,153);
-      pdf.text(gradeStatus(b.value), bx + bw/2, by+24, {align:'center'});
-    });
-    y += 34;
-
-    // ── ASSESSMENT SCORES ──
-    section('Assessment Scores');
-    const arows = document.querySelectorAll('.arow');
-    if(arows.length) {
-      arows.forEach(row => {
-        const lbl = row.querySelector('.arow-l')?.textContent?.trim()||'';
-        const scores = row.querySelectorAll('.arow-score');
-        const sc  = scores[0]?.textContent?.trim()||'—';
-        const pct = scores[1]?.textContent?.trim()||'—';
-        const pn  = parseFloat(pct)||0;
-        const vc  = pn>=75?[58,249,195]:pn>=50?[249,195,58]:[249,58,122];
-        pdf.setFontSize(8.5); pdf.setFont('helvetica','normal'); pdf.setTextColor(90,116,153);
-        pdf.text(lbl, M, y);
-        pdf.setTextColor(...vc); pdf.setFont('helvetica','bold');
-        pdf.text(sc + '   ' + pct, M+80, y);
-        y += 5;
-      });
-    } else {
-      pdf.setFontSize(8); pdf.setTextColor(52,72,104);
-      pdf.text('No assessment data available.', M, y); y+=5;
-    }
-    y += 4;
-
-    // ── FOOTER ──
-    pdf.setFillColor(8,16,28); pdf.rect(0,278,W,20,'F');
-    pdf.setFontSize(7); pdf.setTextColor(52,72,104);
-    pdf.text('This is an unofficial copy generated from SMGDecode LMS for reference only.', M, 286);
-    pdf.text('For official records, contact your instructor: DEBULGADO, S.M.G', M, 291);
-
-    const fname = (sess.name||'Student').replace(/\s+/g,'_');
-    pdf.save('GradeReport_' + fname + '_' + new Date().toLocaleDateString('en-PH').replace(/\//g,'-') + '.pdf');
-
-    if(btn){ btn.disabled=false; btn.textContent='⬇ Download Grades PDF'; }
-  } catch(e) {
-    console.error(e);
-    if(btn){ btn.disabled=false; btn.textContent='⬇ Download Grades PDF'; }
-    alert('PDF error: ' + e.message);
-  }
-};
-</script>
-<!-- GRADE PERIOD MODAL -->
-<div id="grade-period-modal" onclick="if(event.target===this)closeGradePeriodModal()"
-  style="display:none;position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.75);
-  backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;">
-  <div style="background:var(--s1);border:1.5px solid var(--border2);border-radius:18px;
-    width:100%;max-width:440px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.7);">
-    <div style="height:3px;background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent))"></div>
-    <div style="padding:18px 22px 14px;border-bottom:1px solid var(--border);
-      display:flex;align-items:center;justify-content:space-between;">
-      <div>
-        <div id="gpm-title" style="font-size:1rem;font-weight:800;"></div>
-        <div id="gpm-sub" style="font-size:0.72rem;color:var(--muted);margin-top:2px;"></div>
-      </div>
-      <div onclick="closeGradePeriodModal()" style="cursor:pointer;background:var(--s2);
-        border:1px solid var(--border);border-radius:8px;width:30px;height:30px;
-        display:flex;align-items:center;justify-content:center;color:var(--muted);
-        font-size:1rem;transition:all 0.2s;" onmouseover="this.style.color='var(--red)'"
-        onmouseout="this.style.color='var(--muted)'">✕</div>
+<!-- PERIOD DETAIL MODAL -->
+<div class="period-modal" id="period-modal" onclick="if(event.target===this)closePeriodModal()">
+  <div class="pm-box">
+    <div class="pm-top"></div>
+    <div class="pm-head">
+      <div class="pm-title" id="pm-title">Period Details</div>
+      <div class="pm-close" onclick="closePeriodModal()">✕</div>
     </div>
-    <div style="padding:18px 22px 22px;">
-      <div style="font-size:0.62rem;font-weight:800;color:var(--purple);
-        letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;
-        display:flex;align-items:center;gap:8px;">
-        Assessments Taken
-        <div style="flex:1;height:1px;background:rgba(168,85,247,0.2)"></div>
+    <div class="pm-body">
+      <div class="pm-grade-big">
+        <div class="pm-grade-val" id="pm-grade-val">—</div>
+        <div class="pm-grade-lbl" id="pm-grade-lbl">Official Grade</div>
       </div>
-      <div id="gpm-list"></div>
+      <div class="pm-sec">📝 Theory Quizzes</div>
+      <div id="pm-quiz-list"></div>
+      <div class="pm-sec" style="margin-top:14px;">💻 Practical Assessments</div>
+      <div id="pm-prac-list"></div>
     </div>
   </div>
 </div>
