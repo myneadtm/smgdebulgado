@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Admin Dashboard — SMGDecode</title>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -323,6 +325,16 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 <body>
 
 <!-- LOGIN GATE -->
+<script>
+window.onerror = function(msg, src, line, col, err) {
+  var d = document.getElementById('js-error-banner');
+  if(d) { d.style.display='block'; d.textContent = '❌ JS Error: ' + msg + ' (line ' + line + ')'; }
+  return false;
+};
+</script>
+<div id="js-error-banner" style="display:none;position:fixed;top:0;left:0;right:0;
+  background:#7f0020;color:#fff;padding:10px 16px;font-size:13px;z-index:99999;
+  font-family:monospace;"></div>
 <div id="gate">
   <div class="lg-box">
     <div class="lg-icon">🛡️</div>
