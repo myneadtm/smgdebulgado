@@ -181,6 +181,22 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 /* Modal profile */
 /* Modal name-row action buttons */
 .mp-actions{display:flex;gap:8px;margin-left:auto;flex-shrink:0;align-items:center;}
+.inline-del-strip{display:none;margin-top:14px;background:rgba(249,58,122,0.06);
+  border:1.5px solid rgba(249,58,122,0.3);border-radius:12px;padding:14px 16px;}
+.inline-del-strip.show{display:block;}
+.idel-title{font-size:0.78rem;font-weight:800;color:var(--red);margin-bottom:4px;}
+.idel-sub{font-size:0.72rem;color:var(--muted);line-height:1.6;margin-bottom:12px;}
+.idel-btns{display:flex;gap:8px;}
+.btn-idel-cancel{flex:1;background:var(--s2);color:var(--muted);
+  border:1px solid var(--border2);border-radius:8px;padding:9px;
+  font-family:var(--font);font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s;}
+.btn-idel-cancel:hover{color:var(--text);}
+.btn-idel-confirm{flex:2;background:linear-gradient(135deg,var(--red),#a855f7);
+  color:#fff;border:none;border-radius:8px;padding:9px;
+  font-family:var(--font);font-weight:800;font-size:0.8rem;cursor:pointer;transition:all 0.2s;}
+.btn-idel-confirm:hover{box-shadow:0 4px 16px rgba(249,58,122,0.4);}
+.btn-idel-confirm:disabled{opacity:0.5;cursor:not-allowed;}
+
 .btn-modal-cancel{background:var(--s2);color:var(--muted);
   border:1.5px solid var(--border2);border-radius:10px;
   padding:8px 18px;font-family:var(--font);font-weight:700;
@@ -790,7 +806,7 @@ window.openModal = function(uid) {
       </div>
       <div class="mp-actions">
         <button class="btn-modal-cancel" onclick="closeModal()">✕ Cancel</button>
-        <button class="btn-modal-delete" onclick="closeModal();confirmDelete('${uid}')">🗑 Delete</button>
+        <button class="btn-modal-delete" id="btn-modal-del-${uid}" onclick="showInlineDeleteConfirm('${uid}')">🗑 Delete</button>
       </div>
     </div>
 
@@ -804,7 +820,20 @@ window.openModal = function(uid) {
 
     <div class="ms-title">📚 Select Subject to Enter Grades</div>
     <div class="ms-subj-list">${subjectRows}</div>
-  `;
+
+    <!-- INLINE DELETE CONFIRMATION -->
+    <div class="inline-del-strip" id="inline-del-strip">
+      <div class="idel-title">⚠ Permanently delete this student?</div>
+      <div class="idel-sub">
+        All data will be removed: quiz submissions, practical submissions, feedback, grades, and profile.
+        This cannot be undone.
+      </div>
+      <div class="idel-btns">
+        <button class="btn-idel-cancel" onclick="hideInlineDeleteConfirm()">✕ Cancel</button>
+        <button class="btn-idel-confirm" id="btn-idel-confirm" onclick="executeDelete()">🗑 Yes, Delete Student</button>
+      </div>
+    </div>
+  \`;
 
   g('modal-ov').classList.add('show');
 };
@@ -948,31 +977,24 @@ window.saveGrades = async function(uid, subjId) {
 // ── DELETE STUDENT ──
 let _deleteUid = null;
 
-window.confirmDelete = function(uid) {
-  const r = allData[uid];
-  if(!r) return;
+window.showInlineDeleteConfirm = function(uid) {
   _deleteUid = uid;
-  const init = (r.firstName||r.name||'?')[0].toUpperCase();
-  g('del-av').textContent = init;
-  g('del-nm').textContent = r.name || '—';
-  g('del-em').textContent = r.gmail || '—';
-  g('del-overlay').classList.add('show');
-  // Close the student modal if open
-  g('modal-ov').classList.remove('show');
+  const strip = g('inline-del-strip');
+  if(strip){ strip.classList.add('show'); strip.scrollIntoView({behavior:'smooth',block:'nearest'}); }
 };
 
-window.closeDelModal = function() {
-  g('del-overlay').classList.remove('show');
+window.hideInlineDeleteConfirm = function() {
   _deleteUid = null;
+  const strip = g('inline-del-strip');
+  if(strip) strip.classList.remove('show');
 };
 
 window.executeDelete = async function() {
   if(!_deleteUid) return;
-  const uid  = _deleteUid;
-  const r    = allData[uid];
-  const btn  = g('btn-del-confirm');
-  btn.disabled = true;
-  btn.textContent = '⟳ Deleting...';
+  const uid = _deleteUid;
+  const r   = allData[uid];
+  const btn = g('btn-idel-confirm');
+  if(btn){ btn.disabled=true; btn.textContent='⟳ Deleting...'; }
 
   const collections = [
     'student_profiles',
@@ -985,35 +1007,29 @@ window.executeDelete = async function() {
     'student_ids',
   ];
 
-  // Delete from Firestore
-  const results = await Promise.allSettled(
+  await Promise.allSettled(
     collections.map(col => deleteDoc(doc(db, col, uid)).catch(()=>null))
   );
 
-  // Also remove student_ids entry keyed by studentId
+  // Also delete student_ids by studentId key
   if(r?.studentId) {
     const idKey = r.studentId.toLowerCase().replace(/\s+/g,'');
     await deleteDoc(doc(db,'student_ids',idKey)).catch(()=>null);
   }
 
-  // Remove from local cache
   delete allData[uid];
+  _deleteUid = null;
 
-  // Close modal & refresh
-  closeDelModal();
-  btn.disabled = false;
-  btn.textContent = '🗑 Yes, Delete Student';
-
-  // Refresh stats + cards
+  closeModal();
   applyFilter();
 
-  // Show brief toast
+  // Toast
   const toast = document.createElement('div');
-  toast.textContent = '✅ Student record deleted.';
+  toast.textContent = '✅ Student record deleted successfully.';
   toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);' +
     'background:var(--s1);border:1px solid var(--green);color:var(--green);' +
     'padding:10px 22px;border-radius:10px;font-size:0.82rem;font-weight:700;' +
-    'z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.5);';
+    'z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.5);animation:fadeIn 0.3s;';
   document.body.appendChild(toast);
   setTimeout(()=>toast.remove(), 3000);
 };
@@ -1042,31 +1058,5 @@ window.exportCSV = function() {
   a.click();
 };
 </script>
-<!-- DELETE CONFIRM MODAL -->
-<div id="del-overlay" onclick="if(event.target===this)closeDelModal()">
-  <div class="del-box">
-    <div class="del-top"></div>
-    <div class="del-head">
-      <div class="del-title">🗑 Delete Student Record</div>
-      <div class="del-sub">This will permanently remove all data for this student.</div>
-    </div>
-    <div class="del-student">
-      <div class="del-av" id="del-av">?</div>
-      <div>
-        <div class="del-nm" id="del-nm">—</div>
-        <div class="del-em" id="del-em">—</div>
-      </div>
-    </div>
-    <div class="del-warning">
-      <strong>⚠ Warning — This action cannot be undone.</strong><br>
-      The following data will be permanently deleted:<br>
-      Quiz submissions · Practical submissions · Feedback · Grades · Profile
-    </div>
-    <div class="del-foot">
-      <button class="btn-del-cancel" onclick="closeDelModal()">✕ Cancel</button>
-      <button class="btn-del-confirm" id="btn-del-confirm" onclick="executeDelete()">🗑 Yes, Delete Student</button>
-    </div>
-  </div>
-</div>
 </body>
 </html>
