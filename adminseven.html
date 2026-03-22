@@ -246,7 +246,20 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .btn-export{border-color:rgba(58,249,195,0.35);color:var(--green);background:rgba(58,249,195,0.05);}
 .btn-export:hover{background:rgba(58,249,195,0.1);}
 
-/* MOBILE */
+/* COURSE CARDS */
+.course-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;
+  padding:16px 14px 14px;cursor:pointer;transition:all 0.22s;
+  position:relative;overflow:hidden;text-align:center;}
+.course-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.course-card.active{border-color:var(--purple)!important;background:rgba(168,85,247,0.06);}
+.course-card:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(0,0,0,0.4);}
+.cc-icon{font-size:1.6rem;margin-bottom:8px;}
+.cc-count{font-size:2rem;font-weight:900;font-family:var(--mono);line-height:1;margin-bottom:4px;}
+.cc-name{font-size:0.62rem;font-weight:700;color:var(--muted);letter-spacing:0.5px;
+  line-height:1.4;text-transform:uppercase;}
+.cc-sub{font-size:0.62rem;color:var(--dim);margin-top:3px;}
+
+/* keep old stat CSS refs clean */
 @media(max-width:800px){
   .stat-row{grid-template-columns:1fr 1fr;}
   .page{padding:16px 12px 60px;}
@@ -335,36 +348,17 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
 
     <!-- STATS -->
-    <div class="stat-row">
-      <div class="stat-box sb-tot">
-        <div class="sb-icon">👥</div>
-        <div class="sb-val" id="st-tot" style="color:var(--cyan)">—</div>
-        <div class="sb-lbl">Registered</div>
-        <div class="sb-sub" id="st-tot-s">Loading...</div>
-      </div>
-      <div class="stat-box sb-q1">
-        <div class="sb-icon">📝</div>
-        <div class="sb-val" id="st-q1" style="color:var(--accent)">—</div>
-        <div class="sb-lbl">W1 Quiz</div>
-        <div class="sb-sub" id="st-q1-a">Avg: —</div>
-      </div>
-      <div class="stat-box sb-q2">
-        <div class="sb-icon">📗</div>
-        <div class="sb-val" id="st-q2" style="color:var(--purple)">—</div>
-        <div class="sb-lbl">W2 Quiz</div>
-        <div class="sb-sub" id="st-q2-a">Avg: —</div>
-      </div>
-      <div class="stat-box sb-p1">
-        <div class="sb-icon">💻</div>
-        <div class="sb-val" id="st-p1" style="color:var(--green)">—</div>
-        <div class="sb-lbl">W1 Practical</div>
-        <div class="sb-sub" id="st-p1-a">Avg: —</div>
-      </div>
-      <div class="stat-box sb-p2">
-        <div class="sb-icon">🔬</div>
-        <div class="sb-val" id="st-p2" style="color:var(--orange)">—</div>
-        <div class="sb-lbl">W2 Practical</div>
-        <div class="sb-sub" id="st-p2-a">Avg: —</div>
+    <!-- COURSE BREAKDOWN CARDS -->
+    <div class="sec-hd" style="margin-bottom:12px;">
+      <span class="sec-hd-txt">🎓 Students by Course</span>
+      <div class="sec-hd-ln"></div>
+      <span id="course-filter-tag" style="font-size:0.68rem;color:var(--accent);white-space:nowrap;display:none;">
+        Filtered &nbsp;<span style="cursor:pointer;color:var(--muted);text-decoration:underline;" onclick="clearCourseFilter()">✕ Clear</span>
+      </span>
+    </div>
+    <div id="course-cards-row" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:24px;">
+      <div style="text-align:center;padding:30px;color:var(--muted);font-size:0.8rem;grid-column:1/-1">
+        <span class="spin">⟳</span> Loading...
       </div>
     </div>
 
@@ -526,36 +520,110 @@ window.loadAll = async function() {
   }
 };
 
+// ── COURSE CARDS ──
+const COURSES = [
+  { key:'BS IN ACCOUNTING INFORMATION SYSTEM', short:'BSAIS',      icon:'📊', color:'var(--blue)'   },
+  { key:'BS IN CRIMINOLOGY',                   short:'BSCrim',     icon:'⚖️',  color:'var(--red)'    },
+  { key:'BS IN HOSPITALITY MANAGEMENT',        short:'BSHM',       icon:'🏨', color:'var(--orange)' },
+  { key:'BS IN SOCIAL WORK',                   short:'BSSW',       icon:'🤝', color:'var(--teal,#14b8a6)'   },
+  { key:'BS IN CIVIL ENGINEERING',             short:'BSCE',       icon:'🏗️', color:'var(--accent)'  },
+  { key:'BS IN SECONDARY EDUCATION',           short:'BSEd',       icon:'📚', color:'var(--purple)'  },
+  { key:'BACHELOR OF ELEMENTARY EDUCATION',    short:'BEEd',       icon:'🎒', color:'var(--green)'   },
+];
+
+const COURSE_COLORS = [
+  'linear-gradient(90deg,var(--blue),var(--cyan))',
+  'linear-gradient(90deg,var(--red),var(--orange))',
+  'linear-gradient(90deg,var(--orange),var(--accent))',
+  'linear-gradient(90deg,var(--teal,#14b8a6),var(--green))',
+  'linear-gradient(90deg,var(--accent),#f0a84b)',
+  'linear-gradient(90deg,var(--purple),var(--cyan))',
+  'linear-gradient(90deg,var(--green),var(--blue))',
+];
+
+let activeCourseFilter = '';
+
+function renderCourseCards(rows) {
+  const container = g('course-cards-row');
+  // Count per course from ALL data (not just filtered)
+  const allRows = Object.values(allData);
+  const yr  = g('f-year')?.value || '';
+  const tm  = g('f-term')?.value || '';
+  // Pre-filter by year/term only for counts
+  const base = allRows.filter(r => {
+    if(yr && r.academicYear !== yr) return false;
+    if(tm && r.term !== tm) return false;
+    return true;
+  });
+  const total = base.length;
+
+  let html = '';
+
+  // ALL card first
+  const allActive = activeCourseFilter === '';
+  html += `<div class="course-card${allActive?' active':''}" 
+    onclick="setCourseFilter('')"
+    style="border-color:${allActive?'var(--purple)':'var(--border2)'};${allActive?'background:rgba(168,85,247,0.06)':''}">
+    <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent))"></div>
+    <div class="cc-icon">👥</div>
+    <div class="cc-count" style="color:var(--cyan)">${total}</div>
+    <div class="cc-name">All Courses</div>
+    <div class="cc-sub">Total registered</div>
+  </div>`;
+
+  COURSES.forEach((c, i) => {
+    const count = base.filter(r => r.course === c.key).length;
+    const isActive = activeCourseFilter === c.key;
+    const grad = COURSE_COLORS[i];
+    html += `<div class="course-card${isActive?' active':''}"
+      onclick="setCourseFilter('${c.key.replace(/'/g,"\\'")}')"
+      style="${isActive?'border-color:var(--purple);background:rgba(168,85,247,0.06)':''}">
+      <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:${grad}"></div>
+      <div class="cc-icon">${c.icon}</div>
+      <div class="cc-count" style="color:${c.color.startsWith('var')?c.color:'var(--text)'}">${count}</div>
+      <div class="cc-name">${c.short}</div>
+      <div class="cc-sub">${count === 1 ? '1 student' : count + ' students'}</div>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+window.setCourseFilter = function(courseKey) {
+  activeCourseFilter = courseKey;
+  const tag = g('course-filter-tag');
+  if (courseKey) {
+    const c = COURSES.find(x => x.key === courseKey);
+    tag.style.display = 'block';
+    tag.childNodes[0].textContent = (c?.short || courseKey) + ' ';
+  } else {
+    tag.style.display = 'none';
+  }
+  // Also update the dropdown to match
+  if (g('f-course')) g('f-course').value = courseKey;
+  applyFilter();
+};
+
+window.clearCourseFilter = function() {
+  setCourseFilter('');
+};
+
 function updateStats(rows) {
-  const tot = rows.length;
-  const q1s = rows.filter(r=>r.q1);
-  const q2s = rows.filter(r=>r.q2);
-  const p1s = rows.filter(r=>r.p1);
-  const p2s = rows.filter(r=>r.p2);
-  const avg = arr => arr.length ? (arr.map(r=>pctN(r[Object.keys(r).find(k=>r[k]?.percent)]?.percent)).reduce((a,b)=>a+b,0)/arr.length).toFixed(1)+'%' : '—';
-  const avgOf = (arr,field) => {
-    const vals = arr.map(r=>pctN(r[field]?.percent)).filter(n=>n>0);
-    return vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1)+'%' : '—';
-  };
-  g('st-tot').textContent=tot; g('st-tot-s').textContent=tot+' students';
-  g('st-q1').textContent=q1s.length+'/'+tot; g('st-q1-a').textContent='Avg: '+avgOf(rows,'q1');
-  g('st-q2').textContent=q2s.length+'/'+tot; g('st-q2-a').textContent='Avg: '+avgOf(rows,'q2');
-  g('st-p1').textContent=p1s.length+'/'+tot; g('st-p1-a').textContent='Avg: '+avgOf(rows,'p1');
-  g('st-p2').textContent=p2s.length+'/'+tot; g('st-p2-a').textContent='Avg: '+avgOf(rows,'p2');
+  renderCourseCards(rows);
 }
 
 // ── FILTER ──
 window.applyFilter = function() {
   const yr  = g('f-year').value;
   const tm  = g('f-term').value;
-  const cr  = g('f-course').value;
+  const cr  = activeCourseFilter || g('f-course').value;
   filtered = Object.values(allData).filter(r => {
     if(yr && r.academicYear !== yr) return false;
     if(tm && r.term !== tm) return false;
     if(cr && r.course !== cr) return false;
     return true;
   });
-  updateStats(filtered);
+  renderCourseCards(filtered);
   renderCards();
 };
 
