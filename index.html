@@ -234,25 +234,83 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .es-s{font-size:0.78rem;color:var(--dim);}
 
 /* GRADES */
-.gc-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;overflow:hidden;margin-bottom:14px;}
-.gcc-h{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.gcc-s{font-size:0.86rem;font-weight:800;}
-.gcc-t{font-size:0.68rem;color:var(--muted);}
-.gcc-b{padding:14px 18px;}
-.gr{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);}
-.gr:last-child{border-bottom:none;}
-.gr-l{font-size:0.76rem;color:var(--muted);}
-.gr-v{font-size:0.86rem;font-weight:800;font-family:var(--mono);}
-.gv-hi{color:var(--green);}.gv-mid{color:var(--accent);}.gv-lo{color:var(--red);}.gv-na{color:var(--dim);}
-.gbg{padding:3px 12px;border-radius:20px;font-size:0.7rem;font-weight:800;}
-.gbg-p{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.25);}
-.gbg-f{background:rgba(249,58,122,0.1);color:var(--red);border:1px solid rgba(249,58,122,0.25);}
-.gbg-n{background:rgba(90,116,153,0.1);color:var(--muted);border:1px solid var(--border);}
-.g-empty{text-align:center;padding:50px 20px;}
-.ge-ic{font-size:2.8rem;margin-bottom:12px;opacity:0.3;}
-.ge-t{font-size:0.92rem;font-weight:700;color:var(--muted);margin-bottom:5px;}
-.ge-s{font-size:0.78rem;color:var(--dim);line-height:1.7;}
-.g-load{text-align:center;padding:40px;color:var(--muted);font-size:0.84rem;}
+/* ── GRADES TAB ── */
+.g-empty{text-align:center;padding:60px 20px;}
+.ge-ic{font-size:3rem;margin-bottom:14px;opacity:0.3;}
+.ge-t{font-size:1rem;font-weight:700;color:var(--muted);margin-bottom:6px;}
+.ge-s{font-size:0.82rem;color:var(--dim);line-height:1.7;}
+.g-load{text-align:center;padding:40px;color:var(--muted);font-size:0.86rem;}
+
+/* Student profile strip */
+.gp-strip{display:flex;align-items:center;gap:14px;
+  background:var(--s2);border:1.5px solid var(--border2);border-radius:14px;
+  padding:16px 20px;margin-bottom:22px;position:relative;overflow:hidden;}
+.gp-strip::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));}
+.gp-av{width:52px;height:52px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;font-weight:800;color:#fff;
+  border:2px solid rgba(168,85,247,0.4);}
+.gp-av img{width:52px;height:52px;border-radius:50%;object-fit:cover;}
+.gp-info{flex:1;min-width:0;}
+.gp-name{font-size:1rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gp-email{font-size:0.76rem;color:var(--muted);margin-top:2px;}
+.gp-meta{font-size:0.7rem;color:var(--dim);margin-top:3px;}
+.gp-badge{font-size:0.64rem;font-weight:800;padding:3px 10px;border-radius:20px;
+  background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.2);flex-shrink:0;}
+
+/* BIG GRADE CARDS */
+.grade-hero{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+.gcard{background:var(--s1);border:1.5px solid var(--border2);border-radius:16px;
+  padding:22px 16px;text-align:center;position:relative;overflow:hidden;
+  transition:transform 0.2s;}
+.gcard:hover{transform:translateY(-2px);}
+.gcard::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.gc-prelim::after{background:linear-gradient(90deg,var(--blue),var(--cyan));}
+.gc-mid::after{background:linear-gradient(90deg,var(--purple),var(--cyan));}
+.gc-finals::after{background:linear-gradient(90deg,var(--green),var(--blue));}
+.gc-sem::after{background:linear-gradient(90deg,var(--accent),#f0a84b);}
+.gc-sem{border-color:rgba(249,195,58,0.3);background:linear-gradient(135deg,rgba(249,195,58,0.05),rgba(168,85,247,0.03));}
+.gc-label{font-size:0.65rem;font-weight:800;color:var(--muted);letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:12px;}
+.gc-score{font-size:3rem;font-weight:900;font-family:var(--mono);line-height:1;
+  margin-bottom:6px;transition:color 0.3s;}
+.gc-score.hi{color:var(--green);}
+.gc-score.mid{color:var(--accent);}
+.gc-score.lo{color:var(--red);}
+.gc-score.na{color:var(--dim);}
+.gc-status{font-size:0.72rem;font-weight:700;padding:3px 12px;border-radius:20px;margin-top:4px;display:inline-block;}
+.gcs-p{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.25);}
+.gcs-f{background:rgba(249,58,122,0.1);color:var(--red);border:1px solid rgba(249,58,122,0.25);}
+.gcs-n{background:rgba(90,116,153,0.1);color:var(--muted);border:1px solid var(--border);}
+
+/* Assessment scores table */
+.assess-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;
+  overflow:hidden;margin-bottom:14px;}
+.assess-head{padding:14px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;}
+.assess-title{font-size:0.9rem;font-weight:800;}
+.assess-sub{font-size:0.68rem;color:var(--muted);margin-top:2px;}
+.assess-body{padding:6px 20px 14px;}
+.arow{display:flex;justify-content:space-between;align-items:center;
+  padding:9px 0;border-bottom:1px solid var(--border);}
+.arow:last-child{border-bottom:none;}
+.arow-l{font-size:0.82rem;color:var(--muted);}
+.arow-r{display:flex;align-items:center;gap:10px;}
+.arow-score{font-size:0.9rem;font-weight:800;font-family:var(--mono);}
+.ar-hi{color:var(--green);}.ar-mid{color:var(--accent);}.ar-lo{color:var(--red);}.ar-na{color:var(--dim);}
+.avg-row{background:rgba(255,255,255,0.02);padding:10px 12px;border-radius:10px;
+  margin-top:8px;display:flex;justify-content:space-between;align-items:center;}
+.avg-lbl{font-size:0.84rem;font-weight:700;color:var(--text);}
+.avg-val{font-size:1.3rem;font-weight:900;font-family:var(--mono);}
+
+/* Pending state */
+.grade-pending{background:var(--s2);border:1.5px dashed var(--border2);
+  border-radius:14px;padding:28px;text-align:center;margin-bottom:14px;}
+.gp-ic{font-size:2rem;margin-bottom:10px;opacity:0.4;}
+.gp-t{font-size:0.88rem;font-weight:700;color:var(--muted);margin-bottom:4px;}
+.gp-s{font-size:0.76rem;color:var(--dim);line-height:1.6;}
 .spin{display:inline-block;animation:sp 0.85s linear infinite;}
 @keyframes sp{to{transform:rotate(360deg);}}
 
@@ -283,6 +341,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
 /* MOBILE */
 @media(max-width:768px){
+  .grade-hero{grid-template-columns:1fr 1fr;}
+  .gc-score{font-size:2.2rem;}
+  .gp-strip{flex-wrap:wrap;}
+  .gcard{padding:16px 10px;}
   .sidebar{transform:translateX(calc(-1 * var(--sw)));}
   .sidebar.open{transform:translateX(0);}
   .main{margin-left:0!important;}
@@ -378,7 +440,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
           onerror="this.style.display='none'">
       </div>
       <div class="h-logo">SMGDecode</div>
-      <div class="h-logo-sub">Learning Management System</div>
+      <div class="h-logo-sub">Academia de Tecnologia in Mindanao, Inc.</div>
       <div class="h-tags">
         <div class="htag ht1">💻 Software Engineer</div>
         <div class="htag ht2">🎓 Mentor</div>
@@ -515,6 +577,8 @@ onAuthStateChanged(auth, u => { if(u) loadGrades(u.uid); });
 
 async function loadGrades(uid) {
   const gc = g('gc');
+  gc.innerHTML='<div class="g-load"><span class="spin">⟳</span> Loading your grades...</div>';
+
   try {
     const [q1,q2,p1,p2,ag] = await Promise.all([
       getDoc(doc(db,'quiz_submissions',uid)).catch(()=>null),
@@ -523,64 +587,158 @@ async function loadGrades(uid) {
       getDoc(doc(db,'practical2_submissions',uid)).catch(()=>null),
       getDoc(doc(db,'student_grades',uid)).catch(()=>null),
     ]);
+
+    // ── Student profile strip ──
+    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js').then(({getAuth})=>{
+      const user = getAuth().currentUser;
+      if(user){
+        const init = (user.displayName||user.email||'?')[0].toUpperCase();
+        const avHtml = user.photoURL
+          ? `<img src="${user.photoURL}" alt="">`
+          : init;
+        g('gp-av-inner').innerHTML = avHtml;
+        g('gp-name-txt').textContent = user.displayName || sess.name || '—';
+        g('gp-email-txt').textContent = user.email || '';
+      }
+    }).catch(()=>{});
+
+    // ── Assessment items ──
     const items=[];
-    if(q1?.exists()) items.push({l:'Week 1 — Theory Quiz',s:q1.data().score,p:q1.data().percent,t:q1.data().timestamp});
-    if(q2?.exists()) items.push({l:'Week 2 — Theory Quiz',s:q2.data().score,p:q2.data().percent,t:q2.data().timestamp});
-    if(p1?.exists()) items.push({l:'Week 1 — Practical',s:p1.data().score,p:p1.data().percent,t:p1.data().timestamp});
-    if(p2?.exists()) items.push({l:'Week 2 — Practical',s:p2.data().score,p:p2.data().percent,t:p2.data().timestamp});
+    if(q1?.exists()) items.push({l:'Week 1 — Theory Quiz',  s:q1.data().score, p:q1.data().percent, t:q1.data().timestamp});
+    if(q2?.exists()) items.push({l:'Week 2 — Theory Quiz',  s:q2.data().score, p:q2.data().percent, t:q2.data().timestamp});
+    if(p1?.exists()) items.push({l:'Week 1 — Practical',    s:p1.data().score, p:p1.data().percent, t:p1.data().timestamp});
+    if(p2?.exists()) items.push({l:'Week 2 — Practical',    s:p2.data().score, p:p2.data().percent, t:p2.data().timestamp});
+
+    // ── Official grades from admin ──
+    const gd = ag?.exists() ? ag.data() : {};
+    const prelim   = gd.prelim   ? parseFloat(gd.prelim)   : null;
+    const midterm  = gd.midterm  ? parseFloat(gd.midterm)  : null;
+    const finals   = gd.finals   ? parseFloat(gd.finals)   : null;
+    const semestral= gd.semestral? parseFloat(gd.semestral): null;
+
+    const gradeCol = v => v===null?'na':v>=75?'hi':v>=60?'mid':'lo';
+    const gradeLbl = v => v===null?'—':v.toFixed(2);
+    const gradeStatus = v => {
+      if(v===null) return '<span class="gc-status gcs-n">Not yet released</span>';
+      return v>=75
+        ? '<span class="gc-status gcs-p">✅ Passed</span>'
+        : '<span class="gc-status gcs-f">❌ Failed</span>';
+    };
 
     if(!items.length && !ag?.exists()){
-      gc.innerHTML=`<div class="g-empty"><div class="ge-ic">📊</div>
+      gc.innerHTML=`<div class="g-empty">
+        <div class="ge-ic">📊</div>
         <div class="ge-t">No Grades Yet</div>
-        <p class="ge-s">Complete your assessments and scores will appear here.</p></div>`;
+        <p class="ge-s">Complete your assessments and your grades will appear here once released by your instructor.</p>
+      </div>`;
       return;
     }
 
     let html='';
+
+    // ── Profile strip ──
+    const userInit = sess.firstName ? sess.firstName[0].toUpperCase() : '?';
+    html += `<div class="gp-strip">
+      <div class="gp-av" id="gp-av-inner">${userInit}</div>
+      <div class="gp-info">
+        <div class="gp-name" id="gp-name-txt">${esc(sess.name||'Student')}</div>
+        <div class="gp-email" id="gp-email-txt">${esc(sess.email||'')}</div>
+        <div class="gp-meta">
+          🎓 ${esc(sess.course||'—')} &nbsp;·&nbsp;
+          📋 ${esc(sess.academicYear||'—')} · ${esc(sess.term||'—')} &nbsp;·&nbsp;
+          🪪 ${esc(sess.studentId||'—')}
+        </div>
+      </div>
+      <span class="gp-badge">✅ Verified Gmail</span>
+    </div>`;
+
+    // ── BIG GRADE CARDS ──
+    html += `<div class="grade-hero">
+      <div class="gcard gc-prelim">
+        <div class="gc-label">📘 Prelim</div>
+        <div class="gc-score ${gradeCol(prelim)}">${gradeLbl(prelim)}</div>
+        ${gradeStatus(prelim)}
+      </div>
+      <div class="gcard gc-mid">
+        <div class="gc-label">📗 Midterm</div>
+        <div class="gc-score ${gradeCol(midterm)}">${gradeLbl(midterm)}</div>
+        ${gradeStatus(midterm)}
+      </div>
+      <div class="gcard gc-finals">
+        <div class="gc-label">📙 Finals</div>
+        <div class="gc-score ${gradeCol(finals)}">${gradeLbl(finals)}</div>
+        ${gradeStatus(finals)}
+      </div>
+      <div class="gcard gc-sem">
+        <div class="gc-label">🏆 Semestral</div>
+        <div class="gc-score ${gradeCol(semestral)}" style="font-size:2.6rem">${gradeLbl(semestral)}</div>
+        ${gradeStatus(semestral)}
+      </div>
+    </div>`;
+
+    // ── Assessment breakdown ──
     if(items.length){
       const avgs=items.map(i=>parseFloat((i.p||'0').replace('%',''))).filter(n=>n>0);
       const avg=avgs.length?(avgs.reduce((a,b)=>a+b,0)/avgs.length).toFixed(1):0;
-      const ac=avg>=75?'hi':avg>=60?'mid':'lo';
-      html+=`<div class="gc-card">
-        <div class="gcc-h">
-          <div><div class="gcc-s">📝 Computer Fundamentals and Programming</div>
-          <div class="gcc-t">BES 125 · ${esc(sess.academicYear||'')} · ${esc(sess.term||'')}</div></div>
-          <span class="gbg ${avg>=75?'gbg-p':avg>0?'gbg-f':'gbg-n'}">${avg>=75?'✅ Passing':avg>0?'❌ Below Passing':'—'}</span>
+      const ac=avg>=75?'ar-hi':avg>=60?'ar-mid':'ar-lo';
+      html+=`<div class="assess-card">
+        <div class="assess-head">
+          <div>
+            <div class="assess-title">📝 Computer Fundamentals and Programming</div>
+            <div class="assess-sub">BES 125 · ${esc(sess.academicYear||'')} · ${esc(sess.term||'')}</div>
+          </div>
+          <span class="gp-badge" style="${avg>=75?'':'background:rgba(249,58,122,0.1);color:var(--red);border-color:rgba(249,58,122,0.25);'}">
+            ${avg>=75?'✅ Passing':avg>0?'❌ Below Passing':'—'}
+          </span>
         </div>
-        <div class="gcc-b">
-          ${items.map(i=>{const p=parseFloat((i.p||'0').replace('%',''));const c=p>=75?'gv-hi':p>=60?'gv-mid':p>0?'gv-lo':'gv-na';
-            return`<div class="gr"><span class="gr-l">${esc(i.l)}</span>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <span class="gr-v ${c}">${esc(i.s||'—')}</span>
-              <span class="gr-v ${c}" style="font-size:0.74rem">${esc(i.p||'—')}</span>
-            </div></div>`;}).join('')}
-          <div class="gr" style="background:rgba(255,255,255,0.02);padding:9px 6px;border-radius:8px;margin-top:4px;">
-            <span class="gr-l" style="font-weight:700;color:var(--text)">Average</span>
-            <span class="gr-v ${ac}" style="font-size:1.05rem">${avg}%</span>
+        <div class="assess-body">
+          ${items.map(i=>{
+            const p=parseFloat((i.p||'0').replace('%',''));
+            const c=p>=75?'ar-hi':p>=60?'ar-mid':p>0?'ar-lo':'ar-na';
+            return`<div class="arow">
+              <span class="arow-l">${esc(i.l)}</span>
+              <div class="arow-r">
+                <span class="arow-score ${c}">${esc(i.s||'—')}</span>
+                <span class="arow-score ${c}" style="font-size:0.8rem">${esc(i.p||'—')}</span>
+              </div>
+            </div>`;}).join('')}
+          <div class="avg-row">
+            <span class="avg-lbl">Assessment Average</span>
+            <span class="avg-val ${ac}">${avg}%</span>
           </div>
         </div>
       </div>`;
     }
-    if(ag?.exists()){
-      const d=ag.data();
-      html+=`<div class="gc-card">
-        <div class="gcc-h">
-          <div><div class="gcc-s">📋 Official Grades — Instructor</div>
-          <div class="gcc-t">Entered by: DEBULGADO, S.M.G</div></div>
-        </div>
-        <div class="gcc-b">
-          ${Object.entries(d).filter(([k])=>!['uid','gmail','updatedAt'].includes(k)).map(([k,v])=>{
-            const p=parseFloat(v)||0;const c=p>=75?'gv-hi':p>=60?'gv-mid':p>0?'gv-lo':'gv-na';
-            return`<div class="gr"><span class="gr-l">${esc(k)}</span>
-              <span class="gr-v ${c}">${esc(v)}</span></div>`;}).join('')}
-        </div>
+
+    // ── Pending grade notice if admin hasn't entered yet ──
+    if(!ag?.exists()){
+      html+=`<div class="grade-pending">
+        <div class="gp-ic">⏳</div>
+        <div class="gp-t">Official Grades Not Yet Released</div>
+        <p class="gp-s">Your Prelim, Midterm, Final, and Semestral grades will appear here once your instructor releases them.</p>
       </div>`;
     }
+
     gc.innerHTML=html;
+
+    // Now try to update with real Google photo
+    try{
+      const {getAuth}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+      const user=getAuth().currentUser;
+      if(user){
+        const avEl=g('gp-av-inner');
+        if(avEl&&user.photoURL){avEl.innerHTML=`<img src="${user.photoURL}" alt="" style="width:52px;height:52px;border-radius:50%;object-fit:cover;">`;}
+        if(g('gp-name-txt'))g('gp-name-txt').textContent=user.displayName||sess.name||'—';
+        if(g('gp-email-txt'))g('gp-email-txt').textContent=user.email||'';
+      }
+    }catch(e){}
+
   } catch(e){
-    gc.innerHTML=`<div class="g-empty"><div class="ge-ic">⚙️</div>
+    gc.innerHTML=`<div class="g-empty">
+      <div class="ge-ic">⚙️</div>
       <div class="ge-t">Grades Unavailable</div>
-      <p class="ge-s">Complete Firebase setup to load grades.<br><small style="color:var(--dim)">${e.message}</small></p></div>`;
+      <p class="ge-s">Could not load grades. Complete Firebase setup to enable this feature.<br><small style="color:var(--dim)">${e.message}</small></p>
+    </div>`;
   }
 }
 window._loadGrades=loadGrades;
