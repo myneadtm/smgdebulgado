@@ -443,7 +443,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
         <span id="si-btn-txt">Sign in with Google</span>
       </button>
 
-      <button class="btn-continue" id="si-continue-btn" onclick="goHome()">▶ Continue to Site →</button>
+      <button class="btn-continue" id="si-continue-btn" onclick="goHome()">🔑 Log In →</button>
 
       <div class="note">
         <strong>First time here?</strong> Click the <strong>Register</strong> tab above to create your student account first before signing in.
@@ -534,27 +534,48 @@ const clrFieldErr = id => {
 };
 
 // ── AUTH STATE ──
-onAuthStateChanged(auth, user => {
+onAuthStateChanged(auth, async user => {
   currentUser = user;
   if (user) {
-    // Reg panel
+    // Reg panel — show connected Google account
     g('reg-user-card').classList.add('show');
-    g('reg-avatar').src  = user.photoURL||'';
-    g('reg-uname').textContent  = user.displayName||'';
-    g('reg-uemail').textContent = user.email;
+    g('reg-avatar').src           = user.photoURL||'';
+    g('reg-uname').textContent    = user.displayName||'';
+    g('reg-uemail').textContent   = user.email;
     g('reg-google-btn').style.display = 'none';
-    // Si panel
+
+    // Si panel — show user card
     g('si-user-card').classList.add('show');
-    g('si-avatar').src  = user.photoURL||'';
-    g('si-uname').textContent  = user.displayName||'';
-    g('si-uemail').textContent = user.email;
+    g('si-avatar').src           = user.photoURL||'';
+    g('si-uname').textContent    = user.displayName||'';
+    g('si-uemail').textContent   = user.email;
     g('si-google-btn').style.display = 'none';
+
+    // ── Auto-show Continue button if already registered ──
+    try {
+      const snap = await getDoc(doc(db, 'student_profiles', user.uid));
+      if (snap.exists()) {
+        // Already registered — show Continue immediately
+        saveSession(user, snap.data());
+        g('si-continue-btn').style.display = 'block';
+        showAlert('si-ok', '✅ Welcome back, ' + esc(snap.data().firstName || user.displayName || '') + '! Click Log In to continue.', 'ok');
+      } else {
+        // Signed in with Google but not registered yet
+        g('si-continue-btn').style.display = 'none';
+        showAlert('si-err', '⚠️ No account found. Please Register first using the Register tab.');
+      }
+    } catch(e) {
+      // Firestore not configured — show the button anyway (fallback)
+      g('si-continue-btn').style.display = 'block';
+    }
   } else {
     g('reg-user-card').classList.remove('show');
     g('reg-google-btn').style.display = 'flex';
     g('si-user-card').classList.remove('show');
-    g('si-google-btn').style.display = 'flex';
+    g('si-google-btn').style.display  = 'flex';
     g('si-continue-btn').style.display = 'none';
+    hideAlert('si-ok');
+    hideAlert('si-err');
   }
 });
 
@@ -591,7 +612,7 @@ window.signInGoogle = async () => {
     }
     saveSession(result.user, snap.data());
     bar(100);
-    showAlert('si-ok','✅ Welcome back, '+esc(snap.data().firstName)+'! Tap Continue below.','ok');
+    showAlert('si-ok','✅ Welcome back, '+esc(snap.data().firstName)+'! Click Log In to continue.','ok');
     g('si-continue-btn').style.display = 'block';
   } catch(e) {
     bar(0);
@@ -736,7 +757,7 @@ function saveSession(user, profile) {
 }
 
 // ── GO HOME ──
-window.goHome = () => window.location.href = 'portal.html';
+window.goHome = () => window.location.href = 'index.html';
 
 // ── CONFIRM MODAL ──
 function showConfirmModal() {
