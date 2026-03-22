@@ -181,16 +181,18 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 /* Modal profile */
 /* Modal name-row action buttons */
 .mp-actions{display:flex;gap:8px;margin-left:auto;flex-shrink:0;align-items:center;}
-.btn-modal-cancel{background:transparent;color:var(--muted);
-  border:1px solid var(--border2);border-radius:8px;
-  padding:6px 14px;font-family:var(--font);font-weight:700;
-  font-size:0.76rem;cursor:pointer;transition:all 0.2s;}
-.btn-modal-cancel:hover{color:var(--text);border-color:var(--border);}
-.btn-modal-delete{background:rgba(249,58,122,0.08);color:var(--red);
-  border:1px solid rgba(249,58,122,0.35);border-radius:8px;
-  padding:6px 14px;font-family:var(--font);font-weight:700;
-  font-size:0.76rem;cursor:pointer;transition:all 0.2s;}
-.btn-modal-delete:hover{background:rgba(249,58,122,0.16);border-color:var(--red);}
+.btn-modal-cancel{background:var(--s2);color:var(--muted);
+  border:1.5px solid var(--border2);border-radius:10px;
+  padding:8px 18px;font-family:var(--font);font-weight:700;
+  font-size:0.8rem;cursor:pointer;transition:all 0.2s;}
+.btn-modal-cancel:hover{color:var(--text);border-color:var(--border);background:var(--s3);}
+.btn-modal-delete{background:linear-gradient(135deg,rgba(249,58,122,0.15),rgba(168,85,247,0.1));
+  color:var(--red);border:1.5px solid rgba(249,58,122,0.5);border-radius:10px;
+  padding:8px 18px;font-family:var(--font);font-weight:800;
+  font-size:0.8rem;cursor:pointer;transition:all 0.2s;
+  box-shadow:0 2px 12px rgba(249,58,122,0.15);}
+.btn-modal-delete:hover{background:rgba(249,58,122,0.22);border-color:var(--red);
+  box-shadow:0 4px 18px rgba(249,58,122,0.3);transform:translateY(-1px);}
 
 .mp-row{display:flex;align-items:center;gap:14px;margin-bottom:20px;
   background:var(--s2);border-radius:12px;padding:14px;}
@@ -697,8 +699,7 @@ window.renderCards = function() {
       r.fb ? '<span class="scb scb-done">Feedback ✓</span>' : '',
       r.grades ? '<span class="scb scb-done">Grades ✓</span>' : '',
     ].join('');
-    return `<div class="student-card" style="position:relative;" onclick="openModal('${r.uid}')">
-      <button class="btn-delete-card" onclick="event.stopPropagation();confirmDelete('${r.uid}')">🗑 Delete</button>
+    return `<div class="student-card" onclick="openModal('${r.uid}')">
       <div class="sc-top">
         <div class="sc-av">${esc(init)}</div>
         <div class="sc-info">
