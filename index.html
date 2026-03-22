@@ -845,6 +845,15 @@ onAuthStateChanged(auth, u => {
     g('tb-nm').textContent = dn2;
     g('sb-nm').textContent = dn2;
     if(g('sb-em')) g('sb-em').textContent = u.email || sess.email || '';
+    // Keep firebase_user up-to-date so PDF can read photoURL
+    try {
+      localStorage.setItem('firebase_user', JSON.stringify({
+        uid:   u.uid,
+        email: u.email,
+        name:  u.displayName || sess.name || '',
+        photo: u.photoURL || ''
+      }));
+    } catch(e){}
   }
 });
 
@@ -1444,6 +1453,27 @@ window.downloadGradesPDF = async function() {
     const gv        = i => gcards[i]?.textContent?.trim()||'—';
     const PrelimV=gv(0), MidV=gv(1), FinV=gv(2), SemV=gv(3);
 
+    // ── LOAD IMAGES AS BASE64 ──
+    const toBase64 = url => new Promise(resolve => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const cv = document.createElement('canvas');
+        cv.width = img.naturalWidth; cv.height = img.naturalHeight;
+        cv.getContext('2d').drawImage(img,0,0);
+        resolve(cv.toDataURL('image/jpeg',0.85));
+      };
+      img.onerror = () => resolve(null);
+      img.src = url;
+    });
+
+    // Load Teacher D + student Google photo in parallel
+    const fbUser = (() => { try { return JSON.parse(localStorage.getItem('firebase_user')||'{}'); } catch(e){ return {}; }})();
+    const [teacherB64, studentB64] = await Promise.all([
+      toBase64('teacher-d.png'),
+      fbUser.photo ? toBase64(fbUser.photo) : Promise.resolve(null),
+    ]);
+
     // ═══════════════════════════════════════════
     // PAGE BACKGROUND
     // ═══════════════════════════════════════════
@@ -1458,11 +1488,15 @@ window.downloadGradesPDF = async function() {
     const bw2=W/stops.length;
     stops.forEach((col,i)=>{ fill(...col); rect(i*bw2,0,bw2+1,3,0); });
 
-    // School logo box
+    // Teacher D image (or fallback logo box)
     fill(...C.card2); stroke(...C.purple,0.4); rect(M,10,32,32,4,'FD');
-    txt('SMG',M+16,22,8,...C.cyan,'bold','center');
-    txt('Decode',M+16,28,5,...C.muted,'normal','center');
-    txt('LMS',M+16,33,5,...C.gold,'normal','center');
+    if(teacherB64) {
+      try { pdf.addImage(teacherB64,'JPEG',M+1,11,30,30,undefined,'FAST'); } catch(e){}
+    } else {
+      txt('SMG',M+16,22,8,...C.cyan,'bold','center');
+      txt('Decode',M+16,28,5,...C.muted,'normal','center');
+      txt('LMS',M+16,33,5,...C.gold,'normal','center');
+    }
 
     // Header text
     txt('Official Grade Report',M+38,18,16,...C.white,'bold');
@@ -1483,11 +1517,24 @@ window.downloadGradesPDF = async function() {
     fill(...C.card); stroke(...C.border,0.3); rect(M,y,CW,46,3,'FD');
     // Left color accent
     fill(...C.purple); rect(M,y,3,46,3);
-    // Avatar circle
+    // Avatar circle — student Google photo or initials
     fill(...C.card2); stroke(...C.purple,0.5);
     pdf.circle(M+19, y+23, 10, 'FD');
-    const initials = ((sess.firstName||'')[0]||(sess.name||'?')[0]||'?').toUpperCase();
-    txt(initials, M+19, y+26, 10, ...C.white,'bold','center');
+    if(studentB64) {
+      try {
+        // Clip to circle using a clipping rect approximation (jsPDF doesn't support circle clip natively)
+        // Use square crop centered — visually close enough at small size
+        pdf.addImage(studentB64,'JPEG',M+9,y+13,20,20,undefined,'FAST');
+        // Re-draw circle border on top
+        fill(0,0,0,0); stroke(...C.purple,0.5); pdf.circle(M+19, y+23, 10, 'D');
+      } catch(e) {
+        const initials2 = ((sess.firstName||'')[0]||(sess.name||'?')[0]||'?').toUpperCase();
+        txt(initials2, M+19, y+26, 10, ...C.white,'bold','center');
+      }
+    } else {
+      const initials = ((sess.firstName||'')[0]||(sess.name||'?')[0]||'?').toUpperCase();
+      txt(initials, M+19, y+26, 10, ...C.white,'bold','center');
+    }
     // Info
     txt(sess.name||'—',          M+34, y+14, 11, ...C.white,'bold');
     txt(sess.email||'—',         M+34, y+20, 7.5,...C.muted,'normal');
