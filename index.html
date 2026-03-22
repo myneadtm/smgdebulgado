@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Student Portal — SMGDecode</title>
-<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#060b14;--s1:#0b1120;--s2:#101828;--s3:#1a2436;
@@ -104,41 +104,102 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 @keyframes fi{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
 /* HOME TAB */
+/* HOME TAB — smgdebulgado aesthetic */
 #th{min-height:calc(100dvh - 58px);display:none;flex-direction:column;
-  align-items:center;justify-content:center;padding:40px 24px;text-align:center;
+  align-items:center;justify-content:flex-start;padding:20px 20px 60px;
   position:relative;overflow:hidden;}
 #th.on{display:flex;}
-#stars-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;}
-.h-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;}
-.h-logo{font-size:2.8rem;font-weight:900;font-family:var(--mono);letter-spacing:-2px;
-  background:linear-gradient(135deg,var(--purple),var(--cyan),var(--accent));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  margin-bottom:6px;line-height:1;}
-.h-logo-sub{font-size:0.64rem;font-weight:700;letter-spacing:4px;
-  text-transform:uppercase;color:var(--muted);margin-bottom:24px;}
 
-/* CIRCLE Teacher D */
-.td-wrap{position:relative;display:inline-block;margin-bottom:24px;}
-.td-circle-ring{position:absolute;inset:-6px;border-radius:50%;
-  background:conic-gradient(var(--purple),var(--cyan),var(--accent),var(--green),var(--purple));
-  animation:spin-ring 4s linear infinite;z-index:0;}
+/* Shimmer top line */
+.home-shimmer{position:absolute;top:0;left:0;right:0;height:3px;z-index:3;
+  background:linear-gradient(90deg,#7c3aed,#00e5ff,#f59e0b,#7c3aed);
+  background-size:300% 100%;animation:shimmer 3s linear infinite;}
+@keyframes shimmer{0%{background-position:0% center;}100%{background-position:300% center;}}
+
+/* Rising particles */
+#home-particles{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.hpt{position:absolute;border-radius:50%;animation:hrise linear infinite;opacity:0;}
+@keyframes hrise{0%{opacity:0;transform:translateY(0);}10%{opacity:1;}90%{opacity:0.8;}100%{opacity:0;transform:translateY(-110vh);}}
+
+/* Ambient corner orbs */
+.home-orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:0.15;pointer-events:none;animation:orbf 9s ease-in-out infinite;}
+.ho1{width:280px;height:280px;background:#7c3aed;top:-80px;left:-80px;animation-delay:0s;}
+.ho2{width:220px;height:220px;background:#00e5ff;bottom:-60px;right:-60px;animation-delay:3s;}
+.ho3{width:160px;height:160px;background:#f59e0b;top:45%;left:60%;animation-delay:6s;}
+@keyframes orbf{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(10px,-20px) scale(1.06);}}
+
+.h-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;width:100%;max-width:400px;margin:0 auto;}
+
+/* Clock widget */
+.h-clock{width:100%;margin-bottom:16px;background:rgba(14,15,28,0.88);
+  border:1px solid #1a2444;border-radius:22px;padding:18px 20px 14px;
+  display:flex;flex-direction:column;align-items:center;
+  backdrop-filter:blur(8px);box-shadow:0 0 0 1px rgba(0,229,255,0.05),0 4px 30px rgba(0,0,0,0.6);}
+.h-clock-time{font-family:'Orbitron',monospace;font-size:42px;font-weight:900;
+  color:#fff;letter-spacing:0.04em;line-height:1;text-shadow:0 0 28px rgba(0,229,255,0.5);}
+.h-clock-colon{color:#00e5ff;animation:blink-c 1s step-end infinite;}
+@keyframes blink-c{0%,100%{opacity:1;}50%{opacity:0.2;}}
+.h-clock-ampm{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;
+  color:#f59e0b;letter-spacing:0.2em;margin-top:2px;}
+.h-clock-date{font-size:10px;color:#64748b;letter-spacing:0.1em;margin-top:5px;text-align:center;}
+.h-clock-greet{margin-top:10px;padding:6px 16px;background:rgba(0,229,255,0.07);
+  border:1px solid rgba(0,229,255,0.18);border-radius:100px;
+  font-size:9px;color:#00e5ff;letter-spacing:0.15em;text-transform:uppercase;}
+
+/* Profile card */
+.h-card{position:relative;width:100%;background:rgba(14,15,28,0.85);
+  border:1px solid #1a2444;border-radius:24px;padding:20px 20px 22px;
+  display:flex;flex-direction:column;align-items:center;
+  box-shadow:0 0 0 1px rgba(0,229,255,0.05),0 8px 48px rgba(0,0,0,0.8);
+  animation:cardIn 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;backdrop-filter:blur(8px);}
+@keyframes cardIn{from{opacity:0;transform:scale(0.93) translateY(24px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.h-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  border-radius:24px 24px 0 0;
+  background:linear-gradient(90deg,#7c3aed,#00e5ff,#f59e0b);}
+.h-bracket{position:absolute;width:16px;height:16px;border-color:#00e5ff;border-style:solid;opacity:0.4;}
+.hb-tl{top:10px;left:10px;border-width:2px 0 0 2px;}
+.hb-br{bottom:10px;right:10px;border-width:0 2px 2px 0;}
+
+.h-cs-badge{display:flex;align-items:center;gap:8px;
+  background:rgba(0,229,255,0.07);border:1px solid rgba(0,229,255,0.22);
+  border-radius:100px;padding:6px 18px;font-size:9px;letter-spacing:0.3em;
+  color:#00e5ff;text-transform:uppercase;margin-bottom:16px;}
+.h-cs-dot{width:5px;height:5px;border-radius:50%;background:#00e5ff;
+  animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
+
+/* ROUNDED RECT Teacher D (not circle) */
+.td-wrap{position:relative;display:inline-block;margin-bottom:16px;}
+.td-rect-ring{position:absolute;inset:-3px;border-radius:15px;z-index:0;
+  background:conic-gradient(from 0deg,#7c3aed,#00e5ff,#f59e0b,#7c3aed);
+  animation:spin-ring 4s linear infinite;}
 @keyframes spin-ring{to{transform:rotate(360deg);}}
-.td-circle-bg{position:absolute;inset:-3px;border-radius:50%;background:var(--bg);z-index:1;}
-.td-img{width:170px;height:170px;border-radius:50%;object-fit:cover;object-position:top;
-  position:relative;z-index:2;
-  box-shadow:0 0 40px rgba(168,85,247,0.35),0 0 80px rgba(34,211,238,0.1);
+.td-rect-bg{position:absolute;inset:0px;border-radius:12px;background:var(--bg);z-index:1;}
+.td-img{width:150px;height:170px;border-radius:12px;object-fit:cover;
+  object-position:top;position:relative;z-index:2;display:block;
+  box-shadow:0 0 24px rgba(124,58,237,0.4);
   animation:flt 4s ease-in-out infinite;}
-@keyframes flt{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@keyframes flt{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
 
-.h-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:18px;}
-.htag{padding:6px 16px;border-radius:20px;font-size:0.74rem;font-weight:700;
-  border:1px solid;display:flex;align-items:center;gap:6px;}
-.ht1{background:rgba(168,85,247,0.1);color:var(--purple);border-color:rgba(168,85,247,0.25);}
-.ht2{background:rgba(34,211,238,0.1);color:var(--cyan);border-color:rgba(34,211,238,0.25);}
-.ht3{background:rgba(249,195,58,0.1);color:var(--accent);border-color:rgba(249,195,58,0.25);}
-.ht4{background:rgba(58,249,195,0.1);color:var(--green);border-color:rgba(58,249,195,0.25);}
-.ht5{background:rgba(251,146,60,0.1);color:var(--orange);border-color:rgba(251,146,60,0.25);}
-.h-desc{font-size:0.84rem;color:var(--muted);line-height:1.8;max-width:460px;}
+.h-logo{font-family:'Orbitron',monospace;font-size:2.2rem;font-weight:900;
+  color:#fff;letter-spacing:0.04em;text-align:center;margin-bottom:6px;
+  text-shadow:0 0 28px rgba(0,229,255,0.4);}
+.h-logo .hl-excl{color:#00e5ff;}
+.h-logo-sub{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,158,11,0.9);
+  display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.h-logo-dot{width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;}
+
+.h-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-bottom:0;}
+.htag{padding:5px 13px;border-radius:20px;font-family:'Rajdhani',sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  border:1px solid;display:flex;align-items:center;gap:5px;}
+.ht1{background:rgba(124,58,237,0.12);color:#a78bfa;border-color:rgba(124,58,237,0.3);}
+.ht2{background:rgba(0,229,255,0.08);color:#00e5ff;border-color:rgba(0,229,255,0.25);}
+.ht3{background:rgba(245,158,11,0.1);color:#f59e0b;border-color:rgba(245,158,11,0.25);}
+.ht4{background:rgba(56,189,248,0.1);color:#38bdf8;border-color:rgba(56,189,248,0.25);}
+.ht5{background:rgba(167,139,250,0.1);color:#a78bfa;border-color:rgba(167,139,250,0.25);}
+.h-desc{display:none;}
 
 /* CONTENT PADDING */
 .cpad{padding:32px 28px 80px;}
@@ -442,37 +503,73 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
     <!-- HOME -->
     <div id="th" class="on">
-      <!-- Starfield canvas background -->
-      <canvas id="stars-canvas"></canvas>
 
-      <!-- All content above canvas -->
+      <!-- Shimmer line -->
+      <div class="home-shimmer"></div>
+
+      <!-- Ambient orbs -->
+      <div class="home-orb ho1"></div>
+      <div class="home-orb ho2"></div>
+      <div class="home-orb ho3"></div>
+
+      <!-- Rising particles -->
+      <div id="home-particles"></div>
+
+      <!-- Grid overlay (same as smgdebulgado) -->
+      <div style="position:absolute;inset:0;z-index:0;pointer-events:none;
+        background-image:linear-gradient(rgba(0,229,255,0.03) 1px,transparent 1px),
+          linear-gradient(90deg,rgba(0,229,255,0.03) 1px,transparent 1px);
+        background-size:36px 36px;"></div>
+
+      <!-- All content -->
       <div class="h-content">
 
-        <!-- Circular Teacher D with spinning rainbow ring -->
-        <div class="td-wrap">
-          <div class="td-circle-ring"></div>
-          <div class="td-circle-bg"></div>
-          <img class="td-img" src="teacher-d.png" alt="Teacher D"
-            onerror="this.style.display='none'">
+        <!-- CLOCK WIDGET -->
+        <div class="h-clock">
+          <div class="h-clock-time">
+            <span id="hc-h">--</span><span class="h-clock-colon">:</span><span id="hc-m">--</span><span class="h-clock-colon">:</span><span id="hc-s">--</span>
+          </div>
+          <div class="h-clock-ampm" id="hc-ampm">AM</div>
+          <div class="h-clock-date" id="hc-date">Loading...</div>
+          <div class="h-clock-greet" id="hc-greet">Good Morning ☀️</div>
         </div>
 
-        <!-- SMGDecode logo -->
-        <div class="h-logo">SMGDecode</div>
-        <div class="h-logo-sub">Learning Management System</div>
+        <!-- PROFILE CARD -->
+        <div class="h-card">
+          <div class="h-bracket hb-tl"></div>
+          <div class="h-bracket hb-br"></div>
 
-        <!-- Tagline pills -->
-        <div class="h-tags">
-          <div class="htag ht1">💻 Software Engineer</div>
-          <div class="htag ht2">🎓 Mentor</div>
-          <div class="htag ht3">🧠 Guru</div>
-          <div class="htag ht4">🛠 Developer</div>
-          <div class="htag ht5">📖 Educator</div>
+          <div class="h-cs-badge">
+            <span class="h-cs-dot"></span>
+            Computer Scientist
+            <span class="h-cs-dot"></span>
+          </div>
+
+          <!-- ROUNDED RECT Teacher D -->
+          <div class="td-wrap">
+            <div class="td-rect-ring"></div>
+            <div class="td-rect-bg"></div>
+            <img class="td-img" src="teacher-d.png" alt="Teacher D"
+              onerror="this.style.display='none'">
+          </div>
+
+          <!-- Name -->
+          <div class="h-logo">Teacher D<span class="hl-excl">!</span></div>
+          <div class="h-logo-sub">
+            <span class="h-logo-dot"></span>
+            Educator · Developer · Mentor
+            <span class="h-logo-dot"></span>
+          </div>
+
+          <!-- Tagline pills -->
+          <div class="h-tags">
+            <div class="htag ht1">💻 Software Engineer</div>
+            <div class="htag ht2">🎓 Mentor</div>
+            <div class="htag ht3">🧠 Guru</div>
+            <div class="htag ht4">🛠 Developer</div>
+            <div class="htag ht5">📖 Educator</div>
+          </div>
         </div>
-
-        <p class="h-desc">Welcome to the SMGDecode Student Portal.<br>
-        Select <strong style="color:var(--text)">Transactions</strong> to view your subjects,
-        <strong style="color:var(--text)">Grades</strong> for your scores, or
-        <strong style="color:var(--text)">Curriculum</strong> to download your program checklist.</p>
 
       </div>
     </div>
@@ -956,107 +1053,64 @@ function showT(name){
   }
   if(window.innerWidth<=768)closeSB();
 }
-// ── STARFIELD BACKGROUND ──
-let starAF = null;
+// ── SMGDEBULGADO PARTICLES ──
+const ptColors=['#00e5ff','#7c3aed','#f59e0b','#a78bfa','#38bdf8'];
+let particlesSpawned = false;
 
 function startStarfield() {
-  if (starAF) return; // already running
-  const cv = document.getElementById('stars-canvas');
-  if (!cv) return;
-  const home = document.getElementById('th');
-  cv.width  = home.offsetWidth  || window.innerWidth;
-  cv.height = home.offsetHeight || window.innerHeight;
-  const ctx = cv.getContext('2d');
-  const W = cv.width, H = cv.height;
+  spawnParticles();
+  startClock();
+}
+function stopStarfield() { /* particles keep running – they're fixed position */ }
 
-  // Static tiny stars
-  const starCount = 120;
-  const stars = Array.from({length: starCount}, () => ({
-    x: Math.random() * W,
-    y: Math.random() * H,
-    r: 0.5 + Math.random() * 1.5,
-    alpha: 0.2 + Math.random() * 0.7,
-    twinkleSpeed: 0.005 + Math.random() * 0.015,
-    twinkleOffset: Math.random() * Math.PI * 2,
-  }));
-
-  // Colored glowing dots (like in your reference image)
-  const glowColors = [
-    'rgba(168,85,247,A)',   // purple
-    'rgba(34,211,238,A)',   // cyan
-    'rgba(249,195,58,A)',   // gold
-    'rgba(59,130,246,A)',   // blue
-    'rgba(58,249,195,A)',   // green
-    'rgba(251,146,60,A)',   // orange
-    'rgba(244,63,94,A)',    // rose
-  ];
-  const glowDots = Array.from({length: 22}, () => {
-    const col = glowColors[Math.floor(Math.random() * glowColors.length)];
-    return {
-      x: Math.random() * W,
-      y: Math.random() * H,
-      r: 1.5 + Math.random() * 2.5,
-      glowR: 6 + Math.random() * 14,
-      color: col,
-      alpha: 0.5 + Math.random() * 0.5,
-      twinkle: Math.random() * Math.PI * 2,
-      speed: 0.008 + Math.random() * 0.018,
-    };
-  });
-
-  let t = 0;
-
-  function drawStars() {
-    ctx.clearRect(0, 0, W, H);
-    t += 0.016;
-
-    // Draw static stars with twinkle
-    stars.forEach(s => {
-      const a = s.alpha * (0.5 + 0.5 * Math.sin(t * s.twinkleSpeed * 60 + s.twinkleOffset));
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,255,${a.toFixed(2)})`;
-      ctx.fill();
-    });
-
-    // Draw colored glow dots
-    glowDots.forEach(d => {
-      const pulse = 0.6 + 0.4 * Math.sin(t * d.speed * 60 + d.twinkle);
-      const a = (d.alpha * pulse).toFixed(2);
-      const aLow = (d.alpha * pulse * 0.15).toFixed(2);
-
-      // Outer glow
-      const grad = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, d.glowR);
-      grad.addColorStop(0,   d.color.replace('A', a));
-      grad.addColorStop(1,   d.color.replace('A', '0'));
-      ctx.beginPath();
-      ctx.arc(d.x, d.y, d.glowR, 0, Math.PI * 2);
-      ctx.fillStyle = grad;
-      ctx.fill();
-
-      // Bright center dot
-      ctx.beginPath();
-      ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-      ctx.fillStyle = d.color.replace('A', a);
-      ctx.fill();
-    });
-
-    starAF = requestAnimationFrame(drawStars);
+function spawnParticles() {
+  if(particlesSpawned) return;
+  particlesSpawned = true;
+  const container = document.getElementById('home-particles');
+  if(!container) return;
+  for(let i=0;i<45;i++){
+    const p=document.createElement('div');
+    p.className='hpt';
+    const s=Math.random()*3.5+1;
+    p.style.cssText=`width:${s}px;height:${s}px;background:${ptColors[Math.floor(Math.random()*ptColors.length)]};`+
+      `left:${Math.random()*100}%;bottom:-10px;`+
+      `animation-duration:${Math.random()*14+8}s;animation-delay:${Math.random()*10}s;`+
+      `box-shadow:0 0 ${s*3}px ${ptColors[Math.floor(Math.random()*ptColors.length)]};`;
+    container.appendChild(p);
   }
-  drawStars();
 }
 
-function stopStarfield() {
-  if (starAF) { cancelAnimationFrame(starAF); starAF = null; }
+// ── CLOCK ──
+const DAYS2=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS2=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function pad2(n){return String(n).padStart(2,'0');}
+let clockInterval = null;
+function startClock() {
+  if(clockInterval) return;
+  function tick(){
+    const now=new Date();
+    let h=now.getHours();const m=now.getMinutes();const s=now.getSeconds();
+    const ampm=h>=12?'PM':'AM';h=h%12||12;
+    const hh=document.getElementById('hc-h');
+    const hm=document.getElementById('hc-m');
+    const hs=document.getElementById('hc-s');
+    const ha=document.getElementById('hc-ampm');
+    const hd=document.getElementById('hc-date');
+    const hg=document.getElementById('hc-greet');
+    if(hh) hh.textContent=pad2(h);
+    if(hm) hm.textContent=pad2(m);
+    if(hs) hs.textContent=pad2(s);
+    if(ha) ha.textContent=ampm;
+    if(hd) hd.textContent=DAYS2[now.getDay()]+', '+MONTHS2[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
+    const hr24=now.getHours();
+    if(hg) hg.textContent=hr24>=5&&hr24<12?'Good Morning ☀️':hr24>=12&&hr24<17?'Good Afternoon 🌤️':hr24>=17&&hr24<21?'Good Evening 🌆':'Good Night 🌙';
+  }
+  tick();
+  clockInterval=setInterval(tick,1000);
 }
 
 // Start immediately since home is shown first
-window.addEventListener('load', () => { setTimeout(startStarfield, 50); });
-window.addEventListener('resize', () => {
-  if (document.getElementById('th')?.classList.contains('on')) {
-    stopStarfield(); startStarfield();
-  }
-});
+window.addEventListener('load', () => { startStarfield(); });
 
 window.showT=showT;
 </script>
