@@ -1453,7 +1453,7 @@ window.downloadGradesPDF = async function() {
     const gv        = i => gcards[i]?.textContent?.trim()||'—';
     const PrelimV=gv(0), MidV=gv(1), FinV=gv(2), SemV=gv(3);
 
-    // ── LOAD IMAGES AS BASE64 ──
+    // ── LOAD IMAGES AS BASE64 (with dimensions) ──
     const toBase64 = url => new Promise(resolve => {
       const img = new Image();
       img.crossOrigin = 'anonymous';
@@ -1461,18 +1461,28 @@ window.downloadGradesPDF = async function() {
         const cv = document.createElement('canvas');
         cv.width = img.naturalWidth; cv.height = img.naturalHeight;
         cv.getContext('2d').drawImage(img,0,0);
-        resolve(cv.toDataURL('image/jpeg',0.85));
+        resolve({ data: cv.toDataURL('image/jpeg',0.85), w: img.naturalWidth, h: img.naturalHeight });
       };
       img.onerror = () => resolve(null);
       img.src = url;
     });
 
+    // contain-fit helper: fit src into box (bw x bh) maintaining aspect ratio, centered
+    const containFit = (srcW, srcH, bw, bh) => {
+      const scale = Math.min(bw / srcW, bh / srcH);
+      const fw = srcW * scale, fh = srcH * scale;
+      return { fw, fh, ox: (bw - fw) / 2, oy: (bh - fh) / 2 };
+    };
+
     // Load Teacher D + student Google photo in parallel
     const fbUser = (() => { try { return JSON.parse(localStorage.getItem('firebase_user')||'{}'); } catch(e){ return {}; }})();
-    const [teacherB64, studentB64] = await Promise.all([
+    const [teacherImg, studentImg] = await Promise.all([
       toBase64('teacher-d.png'),
       fbUser.photo ? toBase64(fbUser.photo) : Promise.resolve(null),
     ]);
+    // Aliases for backward compat
+    const teacherB64 = teacherImg?.data || null;
+    const studentB64 = studentImg?.data || null;
 
     // ═══════════════════════════════════════════
     // PAGE BACKGROUND
@@ -1488,14 +1498,21 @@ window.downloadGradesPDF = async function() {
     const bw2=W/stops.length;
     stops.forEach((col,i)=>{ fill(...col); rect(i*bw2,0,bw2+1,3,0); });
 
-    // Teacher D image (or fallback logo box)
-    fill(...C.card2); stroke(...C.purple,0.4); rect(M,10,32,32,4,'FD');
-    if(teacherB64) {
-      try { pdf.addImage(teacherB64,'JPEG',M+1,11,30,30,undefined,'FAST'); } catch(e){}
+    // Teacher D image — contain-fit inside 34x36 box, no distortion
+    fill(...C.card2); stroke(...C.purple,0.5); rect(M,8,34,36,4,'FD');
+    if(teacherB64 && teacherImg) {
+      try {
+        const BW=32, BH=34; // inner area
+        const {fw,fh,ox,oy} = containFit(teacherImg.w, teacherImg.h, BW, BH);
+        pdf.addImage(teacherB64,'JPEG', M+1+ox, 9+oy, fw, fh, undefined,'FAST');
+      } catch(e) {
+        txt('SMG',M+17,24,8,...C.cyan,'bold','center');
+        txt('Decode',M+17,30,5,...C.muted,'normal','center');
+      }
     } else {
-      txt('SMG',M+16,22,8,...C.cyan,'bold','center');
-      txt('Decode',M+16,28,5,...C.muted,'normal','center');
-      txt('LMS',M+16,33,5,...C.gold,'normal','center');
+      txt('SMG',M+17,22,8,...C.cyan,'bold','center');
+      txt('Decode',M+17,28,5,...C.muted,'normal','center');
+      txt('LMS',M+17,33,5,...C.gold,'normal','center');
     }
 
     // Header text
@@ -1517,23 +1534,25 @@ window.downloadGradesPDF = async function() {
     fill(...C.card); stroke(...C.border,0.3); rect(M,y,CW,46,3,'FD');
     // Left color accent
     fill(...C.purple); rect(M,y,3,46,3);
-    // Avatar circle — student Google photo or initials
+    // Avatar — student Google photo or initials, contain-fit inside circle (diameter 22mm)
+    const R=11, cx=M+19, cy=y+23; // radius and center
     fill(...C.card2); stroke(...C.purple,0.5);
-    pdf.circle(M+19, y+23, 10, 'FD');
-    if(studentB64) {
+    pdf.circle(cx, cy, R, 'FD');
+    if(studentB64 && studentImg) {
       try {
-        // Clip to circle using a clipping rect approximation (jsPDF doesn't support circle clip natively)
-        // Use square crop centered — visually close enough at small size
-        pdf.addImage(studentB64,'JPEG',M+9,y+13,20,20,undefined,'FAST');
-        // Re-draw circle border on top
-        fill(0,0,0,0); stroke(...C.purple,0.5); pdf.circle(M+19, y+23, 10, 'D');
+        // contain-fit into circle bounding square (R*2 x R*2)
+        const D = R*2;
+        const {fw,fh,ox,oy} = containFit(studentImg.w, studentImg.h, D, D);
+        pdf.addImage(studentB64,'JPEG', cx-R+ox, cy-R+oy, fw, fh, undefined,'FAST');
+        // Draw circle border on top to mask corners
+        fill(0,0,0,0); stroke(...C.purple,0.6); pdf.circle(cx, cy, R, 'D');
       } catch(e) {
-        const initials2 = ((sess.firstName||'')[0]||(sess.name||'?')[0]||'?').toUpperCase();
-        txt(initials2, M+19, y+26, 10, ...C.white,'bold','center');
+        const ini = ((sess.firstName||'')[0]||(sess.name||'?')[0]||'?').toUpperCase();
+        txt(ini, cx, cy+3.5, 11, ...C.white,'bold','center');
       }
     } else {
       const initials = ((sess.firstName||'')[0]||(sess.name||'?')[0]||'?').toUpperCase();
-      txt(initials, M+19, y+26, 10, ...C.white,'bold','center');
+      txt(initials, cx, cy+3.5, 11, ...C.white,'bold','center');
     }
     // Info
     txt(sess.name||'—',          M+34, y+14, 11, ...C.white,'bold');
