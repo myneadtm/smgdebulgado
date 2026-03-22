@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Student Portal — SMGDecode</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#060b14;--s1:#0b1120;--s2:#101828;--s3:#1a2436;
@@ -169,18 +169,37 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   animation:blink 2s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
 
-/* ROUNDED RECT Teacher D (not circle) */
+/* ROUNDED RECT Teacher D */
 .td-wrap{position:relative;display:inline-block;margin-bottom:16px;}
-.td-rect-ring{position:absolute;inset:-3px;border-radius:15px;z-index:0;
-  background:conic-gradient(from 0deg,#7c3aed,#00e5ff,#f59e0b,#7c3aed);
+.td-rect-ring{position:absolute;inset:-4px;border-radius:18px;z-index:0;
+  background:conic-gradient(from 0deg,#7c3aed,#00e5ff,#f59e0b,#a78bfa,#7c3aed);
   animation:spin-ring 4s linear infinite;}
 @keyframes spin-ring{to{transform:rotate(360deg);}}
-.td-rect-bg{position:absolute;inset:0px;border-radius:12px;background:var(--bg);z-index:1;}
-.td-img{width:150px;height:170px;border-radius:12px;object-fit:cover;
-  object-position:top;position:relative;z-index:2;display:block;
-  box-shadow:0 0 24px rgba(124,58,237,0.4);
+.td-rect-bg{position:absolute;inset:2px;border-radius:13px;background:#07080f;z-index:1;}
+.td-img{width:160px;height:200px;border-radius:13px;
+  object-fit:cover;object-position:center top;
+  position:relative;z-index:2;display:block;
+  box-shadow:0 0 30px rgba(124,58,237,0.5),0 0 60px rgba(0,229,255,0.1);
   animation:flt 4s ease-in-out infinite;}
 @keyframes flt{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+
+/* QR Code */
+.h-qr-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:18px;width:100%;}
+.h-qr-label{font-size:8px;letter-spacing:0.3em;color:#4a5568;text-transform:uppercase;font-family:'Space Mono',monospace;}
+.h-qr-box{position:relative;padding:10px;background:#fff;border-radius:14px;
+  box-shadow:0 0 0 3px rgba(124,58,237,0.3),0 0 20px rgba(0,229,255,0.15);}
+.h-qr-box::before{content:'';position:absolute;inset:-3px;border-radius:17px;
+  background:conic-gradient(from 0deg,#7c3aed,#00e5ff,#f59e0b,#7c3aed);
+  z-index:-1;animation:spin-ring 4s linear infinite;}
+.h-qr-connect{display:flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,rgba(0,229,255,0.1),rgba(124,58,237,0.1));
+  border:1px solid rgba(0,229,255,0.28);border-radius:100px;
+  padding:9px 22px;cursor:pointer;transition:transform 0.15s;text-decoration:none;}
+.h-qr-connect:hover{transform:scale(1.03);}
+.h-qr-dot{width:7px;height:7px;border-radius:50%;background:#00e5ff;
+  box-shadow:0 0 8px #00e5ff;animation:blink 2s infinite;flex-shrink:0;}
+.h-qr-txt{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;
+  letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.85);}
 
 .h-logo{font-family:'Orbitron',monospace;font-size:2.2rem;font-weight:900;
   color:#fff;letter-spacing:0.04em;text-align:center;margin-bottom:6px;
@@ -345,6 +364,44 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .btn-grade-pdf:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
 
 /* Student profile strip */
+/* GRADE TAB PROFILE CARD */
+.grade-profile-card{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--s1);border:1.5px solid var(--border2);border-radius:18px;
+  padding:18px 22px;margin-bottom:24px;position:relative;overflow:hidden;
+  box-shadow:0 4px 24px rgba(0,0,0,0.4);}
+.grade-profile-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#7c3aed,#00e5ff,#f59e0b,#a78bfa,#7c3aed);
+  background-size:300% 100%;animation:shimmer 3s linear infinite;}
+@keyframes shimmer{0%{background-position:0% center;}100%{background-position:300% center;}}
+.gpc-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0;}
+.gpc-avatar{width:52px;height:52px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;font-weight:800;color:#fff;overflow:hidden;
+  border:2px solid rgba(168,85,247,0.4);}
+.gpc-avatar img{width:52px;height:52px;border-radius:50%;object-fit:cover;display:block;}
+.gpc-info{flex:1;min-width:0;}
+.gpc-name{font-size:0.98rem;font-weight:800;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gpc-email{font-size:0.74rem;color:var(--muted);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gpc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.gpc-tag{font-size:0.62rem;font-weight:700;padding:3px 10px;border-radius:20px;
+  white-space:nowrap;}
+.gpc-tag-g{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.25);}
+.gpc-tag-w{background:rgba(59,130,246,0.1);color:var(--blue);border:1px solid rgba(59,130,246,0.25);}
+.gpc-tag-c{background:rgba(168,85,247,0.1);color:var(--purple);border:1px solid rgba(168,85,247,0.25);}
+.gpc-signout{background:transparent;color:var(--red);
+  border:1px solid rgba(249,58,122,0.35);border-radius:10px;
+  padding:8px 18px;font-family:var(--font);font-weight:700;font-size:0.78rem;
+  cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;margin-left:14px;}
+.gpc-signout:hover{background:rgba(249,58,122,0.08);}
+@media(max-width:520px){
+  .grade-profile-card{flex-wrap:wrap;gap:12px;}
+  .gpc-signout{margin-left:0;width:100%;}
+}
+
 .gp-strip{display:flex;align-items:center;gap:14px;
   background:var(--s2);border:1.5px solid var(--border2);border-radius:14px;
   padding:16px 20px;margin-bottom:22px;position:relative;overflow:hidden;}
@@ -461,6 +518,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   .sg{grid-template-columns:1fr;}
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 <!-- LOGIN GUARD -->
@@ -520,9 +578,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       </div>
       <div class="sb-div"></div>
       <div class="sb-sec">Account</div>
-      <div class="sb-it" onclick="window.location.href='profile.html'">
-        <span class="si">👤</span><span>My Profile</span>
-      </div>
       <div class="sb-it" onclick="doLogout()">
         <span class="si">⏻</span><span style="color:var(--red)">Logout</span>
       </div>
@@ -579,7 +634,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
             <span class="h-cs-dot"></span>
           </div>
 
-          <!-- ROUNDED RECT Teacher D -->
+          <!-- ROUNDED RECT Teacher D — properly fitted -->
           <div class="td-wrap">
             <div class="td-rect-ring"></div>
             <div class="td-rect-bg"></div>
@@ -602,6 +657,19 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
             <div class="htag ht3">🧠 Guru</div>
             <div class="htag ht4">🛠 Developer</div>
             <div class="htag ht5">📖 Educator</div>
+          </div>
+
+          <!-- QR Code — Scan to Connect -->
+          <div class="h-qr-wrap">
+            <div class="h-qr-label">✦ Scan to Connect ✦</div>
+            <div class="h-qr-box">
+              <div id="home-qrcode"></div>
+            </div>
+            <a class="h-qr-connect" href="https://t.me/SMGDECODE" target="_blank" rel="noopener">
+              <div class="h-qr-dot"></div>
+              <span class="h-qr-txt">@SMGDECODE</span>
+              <div class="h-qr-dot"></div>
+            </a>
           </div>
         </div>
 
@@ -658,10 +726,20 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
     <!-- GRADES -->
     <div id="tgr" class="tpanel cpad">
-      <div class="ph">
-        <div class="ph-tag">📊 Grades</div>
-        <h1 class="ph-title">My <span>Grades</span></h1>
-        <p class="ph-sub">Select a subject below to view your official grades.</p>
+
+      <!-- PROFILE CARD — same style as screenshot -->
+      <div class="grade-profile-card" id="grade-profile-card">
+        <div class="gpc-left">
+          <div class="gpc-avatar" id="gpc-avatar">?</div>
+          <div class="gpc-info">
+            <div class="gpc-name"  id="gpc-name">—</div>
+            <div class="gpc-email" id="gpc-email">—</div>
+            <div class="gpc-tags"  id="gpc-tags">
+              <span class="gpc-tag gpc-tag-g">✅ Verified Gmail</span>
+            </div>
+          </div>
+        </div>
+        <button class="gpc-signout" onclick="doLogout()">⏻ Sign Out</button>
       </div>
 
       <!-- Subject list for grades -->
@@ -979,8 +1057,52 @@ onAuthStateChanged(auth, async u => {
     const ag = await getDoc(doc(db,'student_grades',u.uid)).catch(()=>null);
     const allGrades = ag?.exists() ? ag.data() : {};
     buildSubjectList(u.uid, allGrades);
+
+    // Populate grade-tab profile card
+    populateGradeProfileCard(u);
   }
 });
+
+function populateGradeProfileCard(user) {
+  const card = document.getElementById('grade-profile-card');
+  if(!card) return;
+
+  // Avatar
+  const av = document.getElementById('gpc-avatar');
+  if(av) {
+    if(user.photoURL) {
+      av.innerHTML = `<img src="${user.photoURL}" alt="">`;
+    } else {
+      av.textContent = (user.displayName||user.email||'?')[0].toUpperCase();
+    }
+  }
+
+  // Name + email
+  const nm = document.getElementById('gpc-name');
+  const em = document.getElementById('gpc-email');
+  if(nm) nm.textContent = user.displayName || sess.name || '—';
+  if(em) em.textContent = user.email || sess.email || '—';
+
+  // Tags from session
+  const tags = document.getElementById('gpc-tags');
+  if(tags) {
+    const course = sess.course || '';
+    const shortCourse = {
+      'BS IN CIVIL ENGINEERING':'BSCE',
+      'BS IN ACCOUNTING INFORMATION SYSTEM':'BSAIS',
+      'BS IN CRIMINOLOGY':'BSCrim',
+      'BS IN HOSPITALITY MANAGEMENT':'BSHM',
+      'BS IN SOCIAL WORK':'BSSW',
+      'BS IN SECONDARY EDUCATION':'BSEd',
+      'BACHELOR OF ELEMENTARY EDUCATION':'BEEd'
+    }[course] || course.split(' ').slice(-1)[0] || '—';
+
+    tags.innerHTML =
+      `<span class="gpc-tag gpc-tag-g">✅ Verified Gmail</span>` +
+      (sess.academicYear ? `<span class="gpc-tag gpc-tag-w">📅 ${esc(sess.academicYear)}</span>` : '') +
+      (course ? `<span class="gpc-tag gpc-tag-c">${esc(shortCourse)}</span>` : '');
+  }
+}
 window._loadGrades=loadGrades;
 </script>
 
@@ -1181,8 +1303,23 @@ let particlesSpawned = false;
 function startStarfield() {
   spawnParticles();
   startClock();
+  initQRCode();
 }
 function stopStarfield() { /* particles keep running – they're fixed position */ }
+
+// Init QR code once
+function initQRCode() {
+  const el = document.getElementById('home-qrcode');
+  if(!el || el.children.length > 0) return; // already generated
+  try {
+    new QRCode(el, {
+      text: "https://t.me/SMGDECODE",
+      width: 150, height: 150,
+      colorDark: "#000000", colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  } catch(e){ console.warn('QR:', e); }
+}
 
 function spawnParticles() {
   if(particlesSpawned) return;
@@ -1238,161 +1375,248 @@ window.showT=showT;
 // ── DOWNLOAD GRADES PDF ──
 window.downloadGradesPDF = async function() {
   const btn = document.getElementById('btn-grade-pdf');
-  if(btn){ btn.disabled=true; btn.textContent='⟳ Generating PDF...'; }
+  if(btn){ btn.disabled=true; btn.textContent='Generating PDF...'; }
 
   try {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
-    const W = 210, M = 14;
-    let y = 18;
+    const W=210, H=297, M=16, CW=W-M*2;
+    let y=0;
 
-    // ── helpers ──
-    const line = (col=[30,50,80]) => {
-      pdf.setDrawColor(...col); pdf.setLineWidth(0.25);
-      pdf.line(M, y, W-M, y); y += 4;
-    };
-    const section = (txt) => {
-      pdf.setFontSize(9); pdf.setFont('helvetica','bold');
-      pdf.setTextColor(162,85,247);
-      pdf.text(txt, M, y); y += 4;
-      line([42,30,80]);
-    };
-    const kv = (label, value, vc=[226,232,255]) => {
-      pdf.setFontSize(8.5); pdf.setFont('helvetica','normal'); pdf.setTextColor(90,116,153);
-      pdf.text(label, M, y);
-      pdf.setTextColor(...vc); pdf.setFont('helvetica','bold');
-      pdf.text(String(value||'—'), M+55, y);
-      y += 5;
+    // ── COLORS ──
+    const C = {
+      bg:     [5, 10, 20],
+      card:   [11, 18, 32],
+      card2:  [16, 26, 46],
+      border: [26, 40, 64],
+      purple: [140, 70, 230],
+      cyan:   [34, 195, 220],
+      gold:   [245, 158, 11],
+      green:  [46, 213, 160],
+      red:    [230, 60, 100],
+      white:  [230, 235, 255],
+      muted:  [90, 116, 153],
+      dim:    [48, 66, 96],
+      black:  [0, 0, 0],
     };
 
-    // ── gather data ──
-    const sess = JSON.parse(localStorage.getItem('student_session')||'{}');
-    const subjectTitle = document.getElementById('gd-subj-title')?.textContent||'Computer Fundamentals and Programming';
-    const subjectMeta  = document.getElementById('gd-subj-meta')?.textContent||'BES 125 · DEBULGADO, S.M.G';
-
-    // Grade values
-    const getGrade = id => { const el=document.getElementById(id); return el?el.textContent.trim():'—'; };
-    const prelim   = getGrade('gd-prelim-val');
-    const midterm  = getGrade('gd-mid-val');
-    const finals   = getGrade('gd-finals-val');
-    const semestral= getGrade('gd-sem-val');
-
-    // Fallback: read from grade cards via gcard
-    const readCard = cls => {
-      const el = document.querySelector('.gc-score');
-      return el ? el.textContent.trim() : '—';
+    // ── HELPERS ──
+    const fill = (r,g,b)        => pdf.setFillColor(r,g,b);
+    const stroke = (r,g,b,w=0.3)=> { pdf.setDrawColor(r,g,b); pdf.setLineWidth(w); };
+    const txt = (t,x,yy,sz,r,g,b,style='normal',align='left') => {
+      pdf.setFontSize(sz); pdf.setFont('helvetica',style);
+      pdf.setTextColor(r,g,b); pdf.text(t,x,yy,{align});
     };
-    const gcards = document.querySelectorAll('.gc-score');
-    const g = (i) => gcards[i]?.textContent?.trim()||'—';
-    const p=g(0), m=g(1), f=g(2), s=g(3);
-
-    const gradeColor = v => {
-      if(!v||v==='—') return [90,116,153];
-      const n=parseFloat(v);
-      return n>=75?[58,249,195]:n>=60?[249,195,58]:[249,58,122];
+    const rect = (x,yy,w,h,r2=0,mode='F') => pdf.roundedRect(x,yy,w,h,r2,r2,mode);
+    const gradeCol = v => {
+      if(!v||v==='—') return C.muted;
+      const n=parseFloat(v); return n>=75?C.green:n>=60?C.gold:C.red;
     };
     const gradeStatus = v => {
-      if(!v||v==='—') return 'Not Yet Released';
-      return parseFloat(v)>=75 ? 'PASSED' : 'FAILED';
+      if(!v||v==='—') return 'NOT YET RELEASED';
+      return parseFloat(v)>=75?'PASSED':'FAILED';
     };
+    const stripEmoji = s => s.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{FE00}-\u{FE0F}]|[\u{1F000}-\u{1FFFF}]|📝|💻|📘|📗|📙|🏆|✅|❌|⏱|📅|📧/gu,'').replace(/^\s+|\s+$/g,'');
 
-    // ── HEADER BLOCK ──
-    pdf.setFillColor(8,16,28); pdf.rect(0,0,W,34,'F');
-    pdf.setFontSize(16); pdf.setFont('helvetica','bold'); pdf.setTextColor(255,255,255);
-    pdf.text('Official Grade Report', M, 13);
-    pdf.setFontSize(8); pdf.setTextColor(90,116,153); pdf.setFont('helvetica','normal');
-    pdf.text('SMGDecode LMS · Academia de Tecnologia in Mindanao, Inc.', M, 20);
-    pdf.text('DEBULGADO, S.M.G · Computer Fundamentals and Programming', M, 26);
-    pdf.setFontSize(7); pdf.setTextColor(52,72,104);
-    pdf.text('Generated: ' + new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'}), M, 31);
-    y = 44;
+    // ── DATA ──
+    const sess    = JSON.parse(localStorage.getItem('student_session')||'{}');
+    const subjTitle = document.getElementById('gd-subj-title')?.textContent||'Computer Fundamentals and Programming';
+    const subjMeta  = document.getElementById('gd-subj-meta')?.textContent||'BES 125 · DEBULGADO, S.M.G';
+    const gcards    = document.querySelectorAll('.gc-score');
+    const gv        = i => gcards[i]?.textContent?.trim()||'—';
+    const PrelimV=gv(0), MidV=gv(1), FinV=gv(2), SemV=gv(3);
 
-    // ── STUDENT INFO ──
-    section('Student Information');
-    kv('Full Name',     sess.name||'—');
-    kv('Gmail',         sess.email||'—');
-    kv('Student ID',    sess.studentId||'—');
-    kv('Course',        sess.course||'—');
-    kv('Academic Year', sess.academicYear||'—');
-    kv('Term',          sess.term||'—');
-    y += 3;
+    // ═══════════════════════════════════════════
+    // PAGE BACKGROUND
+    // ═══════════════════════════════════════════
+    fill(...C.bg); rect(0,0,W,H,0);
 
-    // ── SUBJECT ──
-    section('Subject');
-    kv('Subject',    subjectTitle);
-    kv('Details',    subjectMeta);
-    y += 4;
+    // ═══════════════════════════════════════════
+    // HEADER BAND
+    // ═══════════════════════════════════════════
+    fill(...C.card); rect(0,0,W,52,0);
+    // Rainbow accent bar
+    const stops=[[140,70,230],[100,120,240],[34,195,220],[46,213,160],[245,158,11],[34,195,220],[140,70,230]];
+    const bw2=W/stops.length;
+    stops.forEach((col,i)=>{ fill(...col); rect(i*bw2,0,bw2+1,3,0); });
 
-    // ── GRADE TABLE ──
-    section('Official Grades');
+    // School logo box
+    fill(...C.card2); stroke(...C.purple,0.4); rect(M,10,32,32,4,'FD');
+    txt('SMG',M+16,22,8,...C.cyan,'bold','center');
+    txt('Decode',M+16,28,5,...C.muted,'normal','center');
+    txt('LMS',M+16,33,5,...C.gold,'normal','center');
 
-    // Grade boxes
-    const boxes = [
-      {label:'PRELIM', value:p},
-      {label:'MIDTERM', value:m},
-      {label:'FINALS', value:f},
-      {label:'SEMESTRAL', value:s},
-    ];
-    const bw = (W - M*2 - 9) / 4;
-    boxes.forEach((b, i) => {
-      const bx = M + i*(bw+3);
-      const by = y;
-      const col = gradeColor(b.value);
-      // Box background
-      pdf.setFillColor(13,22,38); pdf.setDrawColor(...col);
-      pdf.setLineWidth(0.5); pdf.roundedRect(bx, by, bw, 28, 3, 3, 'FD');
-      // Label
-      pdf.setFontSize(7); pdf.setFont('helvetica','bold');
-      pdf.setTextColor(90,116,153);
-      pdf.text(b.label, bx + bw/2, by+7, {align:'center'});
-      // Value
-      pdf.setFontSize(18); pdf.setFont('helvetica','bold');
-      pdf.setTextColor(...col);
-      pdf.text(b.value||'—', bx + bw/2, by+18, {align:'center'});
-      // Status
-      pdf.setFontSize(6); pdf.setFont('helvetica','normal');
-      pdf.setTextColor(90,116,153);
-      pdf.text(gradeStatus(b.value), bx + bw/2, by+24, {align:'center'});
+    // Header text
+    txt('Official Grade Report',M+38,18,16,...C.white,'bold');
+    txt('SMGDecode Learning Management System',M+38,25,8,...C.muted,'normal');
+    txt('Academia de Tecnologia in Mindanao, Inc.',M+38,31,7,...C.dim,'normal');
+    txt('Instructor: DEBULGADO, S.M.G',M+38,37,7,...C.dim,'normal');
+
+    // Date right-aligned
+    const dateStr = new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila',
+      year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    txt('Generated: '+dateStr, W-M, 48, 6.5, ...C.dim,'normal','right');
+
+    y = 62;
+
+    // ═══════════════════════════════════════════
+    // STUDENT PROFILE CARD
+    // ═══════════════════════════════════════════
+    fill(...C.card); stroke(...C.border,0.3); rect(M,y,CW,46,3,'FD');
+    // Left color accent
+    fill(...C.purple); rect(M,y,3,46,3);
+    // Avatar circle
+    fill(...C.card2); stroke(...C.purple,0.5);
+    pdf.circle(M+19, y+23, 10, 'FD');
+    const initials = ((sess.firstName||'')[0]||(sess.name||'?')[0]||'?').toUpperCase();
+    txt(initials, M+19, y+26, 10, ...C.white,'bold','center');
+    // Info
+    txt(sess.name||'—',          M+34, y+14, 11, ...C.white,'bold');
+    txt(sess.email||'—',         M+34, y+20, 7.5,...C.muted,'normal');
+    // Tags row
+    const tags=[
+      {t:'Verified Gmail', c:C.green},
+      {t:sess.academicYear||'', c:C.cyan},
+      {t:sess.term||'',         c:C.gold},
+    ].filter(x=>x.t);
+    let tx=M+34;
+    tags.forEach(tag=>{
+      const tw=pdf.getStringUnitWidth(tag.t)*7.5*0.352+8;
+      fill(...tag.c.map(v=>Math.min(v+180,255))); stroke(...tag.c,0.3);
+      rect(tx, y+24, tw, 7, 2,'FD');
+      txt(tag.t, tx+tw/2, y+29, 5.5,...tag.c,'bold','center');
+      tx+=tw+4;
     });
-    y += 34;
+    // Student ID + Course
+    txt('ID: '+(sess.studentId||'—'), M+34, y+38, 7, ...C.dim,'normal');
+    txt(sess.course||'—', M+34+30, y+38, 7, ...C.muted,'normal');
 
-    // ── ASSESSMENT SCORES ──
-    section('Assessment Scores');
+    y += 56;
+
+    // ═══════════════════════════════════════════
+    // SUBJECT CARD
+    // ═══════════════════════════════════════════
+    fill(...C.card); stroke(...C.border,0.3); rect(M,y,CW,22,3,'FD');
+    fill(...C.cyan); rect(M,y,3,22,3);
+    txt('SUBJECT',      M+9,  y+8, 6.5,...C.muted,'bold');
+    txt(stripEmoji(subjTitle), M+9, y+15, 8.5,...C.white,'bold');
+    txt(stripEmoji(subjMeta),  M+9, y+20, 6.5,...C.cyan,'normal');
+
+    y += 32;
+
+    // ═══════════════════════════════════════════
+    // GRADE SECTION TITLE
+    // ═══════════════════════════════════════════
+    txt('OFFICIAL GRADES', M, y, 7, ...C.purple,'bold');
+    stroke(...C.border, 0.3); pdf.line(M+38,y-1.5,W-M,y-1.5);
+    y += 7;
+
+    // 4 GRADE BOXES
+    const grades=[
+      {label:'PRELIM',   value:PrelimV, col:C.cyan},
+      {label:'MIDTERM',  value:MidV,    col:C.purple},
+      {label:'FINALS',   value:FinV,    col:C.green},
+      {label:'SEMESTRAL',value:SemV,    col:C.gold},
+    ];
+    const gbw=(CW-9)/4, gbh=38;
+    grades.forEach((gb,i)=>{
+      const bx=M+i*(gbw+3), by=y;
+      const vc=gradeCol(gb.value);
+      // Box
+      fill(...C.card); stroke(...vc,0.6); rect(bx,by,gbw,gbh,3,'FD');
+      // Top accent bar
+      fill(...gb.col); rect(bx+0.3,by+0.3,gbw-0.6,2.5,2,'F');
+      // Label
+      txt(gb.label, bx+gbw/2, by+10, 6, ...C.muted,'bold','center');
+      // Value
+      txt(gb.value||'—', bx+gbw/2, by+24, gb.value&&gb.value!=='—'?16:12, ...vc,'bold','center');
+      // Status
+      txt(gradeStatus(gb.value), bx+gbw/2, by+33, 5, ...vc,'normal','center');
+    });
+    y += gbh+12;
+
+    // ═══════════════════════════════════════════
+    // ASSESSMENT SCORES
+    // ═══════════════════════════════════════════
+    txt('ASSESSMENT SCORES', M, y, 7, ...C.purple,'bold');
+    stroke(...C.border,0.3); pdf.line(M+43,y-1.5,W-M,y-1.5);
+    y += 8;
+
+    // Build assessment rows from DOM (strip emojis)
     const arows = document.querySelectorAll('.arow');
-    if(arows.length) {
-      arows.forEach(row => {
-        const lbl = row.querySelector('.arow-l')?.textContent?.trim()||'';
-        const scores = row.querySelectorAll('.arow-score');
-        const sc  = scores[0]?.textContent?.trim()||'—';
-        const pct = scores[1]?.textContent?.trim()||'—';
-        const pn  = parseFloat(pct)||0;
-        const vc  = pn>=75?[58,249,195]:pn>=50?[249,195,58]:[249,58,122];
-        pdf.setFontSize(8.5); pdf.setFont('helvetica','normal'); pdf.setTextColor(90,116,153);
-        pdf.text(lbl, M, y);
-        pdf.setTextColor(...vc); pdf.setFont('helvetica','bold');
-        pdf.text(sc + '   ' + pct, M+80, y);
-        y += 5;
-      });
+    const assData = [];
+    arows.forEach(row => {
+      const rawLbl  = row.querySelector('.arow-l')?.textContent?.trim()||'';
+      const scores  = row.querySelectorAll('.arow-score');
+      const sc  = scores[0]?.textContent?.trim()||'—';
+      const pct = scores[1]?.textContent?.trim()||'—';
+      const lbl = stripEmoji(rawLbl).replace(/\s+/,' ').trim();
+      if(lbl) assData.push({lbl,sc,pct});
+    });
+
+    if(!assData.length){
+      fill(...C.card); stroke(...C.border,0.2); rect(M,y,CW,14,3,'FD');
+      txt('No assessment data available.',M+CW/2,y+9,8,...C.dim,'normal','center');
+      y+=18;
     } else {
-      pdf.setFontSize(8); pdf.setTextColor(52,72,104);
-      pdf.text('No assessment data available.', M, y); y+=5;
+      // Table header
+      fill(...C.card2); rect(M,y,CW,8,2,'F');
+      txt('Assessment',  M+4,   y+5.5, 6.5,...C.muted,'bold');
+      txt('Score',       M+110, y+5.5, 6.5,...C.muted,'bold');
+      txt('Percentage',  M+140, y+5.5, 6.5,...C.muted,'bold');
+      txt('Status',      M+165, y+5.5, 6.5,...C.muted,'bold');
+      y+=10;
+
+      assData.forEach((a,i)=>{
+        const pn=parseFloat(a.pct)||0;
+        const vc=pn>=75?C.green:pn>=50?C.gold:pn>0?C.red:C.dim;
+        const status=pn>=75?'PASSED':pn>0?'FAILED':'N/A';
+        // Alternating row bg
+        if(i%2===0){ fill(...C.card2); rect(M,y-3.5,CW,9,0,'F'); }
+        txt(a.lbl,        M+4,   y+2, 7.5,...C.white,'normal');
+        txt(a.sc,         M+110, y+2, 7.5,...vc,'bold');
+        txt(a.pct,        M+140, y+2, 7.5,...vc,'bold');
+        txt(status,       M+165, y+2, 6,  ...vc,'normal');
+        y+=9;
+      });
     }
-    y += 4;
+    y+=6;
 
-    // ── FOOTER ──
-    pdf.setFillColor(8,16,28); pdf.rect(0,278,W,20,'F');
-    pdf.setFontSize(7); pdf.setTextColor(52,72,104);
-    pdf.text('This is an unofficial copy generated from SMGDecode LMS for reference only.', M, 286);
-    pdf.text('For official records, contact your instructor: DEBULGADO, S.M.G', M, 291);
+    // ═══════════════════════════════════════════
+    // SIGNATURE LINE
+    // ═══════════════════════════════════════════
+    if(y < 230){
+      y = 240;
+      stroke(...C.border,0.3);
+      pdf.line(M, y, M+70, y);
+      txt('INSTRUCTOR SIGNATURE', M, y+5, 6,...C.muted,'normal');
+      txt('DEBULGADO, S.M.G', M, y+10, 7,...C.white,'bold');
+      txt('Computer Fundamentals and Programming', M, y+15, 6,...C.dim,'normal');
 
-    const fname = (sess.name||'Student').replace(/\s+/g,'_');
-    pdf.save('GradeReport_' + fname + '_' + new Date().toLocaleDateString('en-PH').replace(/\//g,'-') + '.pdf');
+      pdf.line(W-M-70, y, W-M, y);
+      txt('DATE', W-M-70, y+5, 6,...C.muted,'normal');
+      txt(new Date().toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'}),
+          W-M-70, y+10, 7,...C.white,'bold');
+    }
 
+    // ═══════════════════════════════════════════
+    // FOOTER
+    // ═══════════════════════════════════════════
+    fill(...C.card); rect(0,H-18,W,18,0);
+    fill(...C.purple); rect(0,H-18,W,2,0);
+    txt('This is an UNOFFICIAL copy generated from SMGDecode LMS for personal reference only.',
+        W/2, H-11, 6.5,...C.dim,'normal','center');
+    txt('For official transcript requests, contact the Registrar or Instructor: DEBULGADO, S.M.G',
+        W/2, H-6.5, 6,...C.dim,'normal','center');
+
+    // ── SAVE ──
+    const fname=(sess.name||'Student').replace(/\s+/g,'_');
+    pdf.save('GradeReport_'+fname+'_'+new Date().toLocaleDateString('en-PH').replace(/\//g,'-')+'.pdf');
     if(btn){ btn.disabled=false; btn.textContent='⬇ Download Grades PDF'; }
-  } catch(e) {
+  } catch(e){
     console.error(e);
     if(btn){ btn.disabled=false; btn.textContent='⬇ Download Grades PDF'; }
-    alert('PDF error: ' + e.message);
+    alert('PDF error: '+e.message);
   }
 };
 </script>
