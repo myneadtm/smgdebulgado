@@ -310,6 +310,33 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .ge-s{font-size:0.82rem;color:var(--dim);line-height:1.7;}
 .g-load{text-align:center;padding:40px;color:var(--muted);font-size:0.86rem;}
 
+/* Grade subject selector */
+.sec-hd-g{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.sec-hd-lbl-g{font-size:0.6rem;font-weight:800;color:var(--muted);letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
+.sec-hd-ln-g{flex:1;height:1px;background:var(--border);}
+.grade-subj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
+.grade-subj-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;
+  padding:18px 16px;cursor:pointer;transition:all 0.22s;position:relative;overflow:hidden;}
+.grade-subj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));}
+.grade-subj-card:hover{transform:translateY(-3px);border-color:rgba(168,85,247,0.5);
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);}
+.gsj-icon{font-size:1.6rem;margin-bottom:8px;}
+.gsj-code{font-family:var(--mono);font-size:0.65rem;color:var(--muted);margin-bottom:4px;}
+.gsj-name{font-size:0.92rem;font-weight:800;margin-bottom:6px;line-height:1.3;}
+.gsj-meta{font-size:0.72rem;color:var(--dim);}
+.gsj-status{display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.gsj-dot{width:7px;height:7px;border-radius:50%;}
+.gsj-dot-ok{background:var(--green);}
+.gsj-dot-no{background:var(--dim);}
+.gsj-status-txt{font-size:0.7rem;font-weight:700;}
+.gsj-arrow{margin-left:auto;color:var(--accent);font-size:0.8rem;font-weight:700;transition:transform 0.2s;}
+.grade-subj-card:hover .gsj-arrow{transform:translateX(4px);}
+.btn-back-subj{background:var(--s2);border:1.5px solid var(--border2);border-radius:8px;
+  padding:7px 14px;color:var(--muted);font-family:var(--font);font-weight:700;
+  font-size:0.78rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.btn-back-subj:hover{color:var(--text);border-color:var(--border);}
+
 /* Student profile strip */
 .gp-strip{display:flex;align-items:center;gap:14px;
   background:var(--s2);border:1.5px solid var(--border2);border-radius:14px;
@@ -627,9 +654,31 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="ph">
         <div class="ph-tag">📊 Grades</div>
         <h1 class="ph-title">My <span>Grades</span></h1>
-        <p class="ph-sub">Your assessment scores recorded by your instructor.</p>
+        <p class="ph-sub">Select a subject below to view your official grades.</p>
       </div>
-      <div id="gc"><div class="g-load"><span class="spin">⟳</span> Loading grades...</div></div>
+
+      <!-- Subject list for grades -->
+      <div id="grade-subject-list">
+        <div class="sec-hd-g">
+          <span class="sec-hd-lbl-g">📚 Enrolled Subjects</span>
+          <div class="sec-hd-ln-g"></div>
+        </div>
+        <div id="grade-subj-cards" class="grade-subj-grid">
+          <div class="g-load"><span class="spin">⟳</span> Loading subjects...</div>
+        </div>
+      </div>
+
+      <!-- Grades detail (shown after clicking a subject) -->
+      <div id="grade-detail" style="display:none;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <button class="btn-back-subj" onclick="backToSubjectList()">← Back</button>
+          <div>
+            <div id="gd-subj-title" style="font-size:1rem;font-weight:800;"></div>
+            <div id="gd-subj-meta" style="font-size:0.72rem;color:var(--muted);margin-top:2px;"></div>
+          </div>
+        </div>
+        <div id="gc"><div class="g-load"><span class="spin">⟳</span> Loading grades...</div></div>
+      </div>
     </div>
 
     <!-- CURRICULUM -->
@@ -661,12 +710,13 @@ import { getFirestore, doc, getDoc }
                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
-  apiKey:            "AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
-  authDomain:        "YOUR_PROJECT.firebaseapp.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId:             "YOUR_APP_ID"
+  apiKey: "AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
+  authDomain: "cfp2526-database.firebaseapp.com",
+  projectId: "cfp2526-database",
+  storageBucket: "cfp2526-database.firebasestorage.app",
+  messagingSenderId: "111042690196",
+  appId: "1:111042690196:web:cd63203bd29b350cea8881",
+  measurementId: "G-Y7CMBZM1G1"
 };
 
 const app  = initializeApp(firebaseConfig);
@@ -694,9 +744,59 @@ if(sess.academicYear && sess.term && sess.course) loadS();
 
 onAuthStateChanged(auth, u => { if(u) loadGrades(u.uid); });
 
-async function loadGrades(uid) {
-  const gc = g('gc');
-  gc.innerHTML='<div class="g-load"><span class="spin">⟳</span> Loading your grades...</div>';
+// ── SUBJECTS FOR GRADES ──
+const GRADE_SUBJECTS = [
+  { id:'BES125', code:'BES 125', name:'Computer Fundamentals and Programming',
+    icon:'💻', instructor:'DEBULGADO, S.M.G', dept:'BS Civil Engineering',
+    color:'var(--accent)' },
+];
+
+let activeGradeSubject = null;
+
+window.backToSubjectList = function() {
+  activeGradeSubject = null;
+  document.getElementById('grade-subject-list').style.display = 'block';
+  document.getElementById('grade-detail').style.display = 'none';
+};
+
+function buildSubjectList(uid, gradesData) {
+  const grid = document.getElementById('grade-subj-cards');
+  if(!grid) return;
+  const g2 = gradesData || {};
+  grid.innerHTML = GRADE_SUBJECTS.map(s => {
+    const sg = g2[s.id] || {};
+    const hasSem = !!sg.semestral;
+    const hasSome = sg.prelim||sg.midterm||sg.finals;
+    return `<div class="grade-subj-card" onclick="openSubjectGrades('${uid}','${s.id}')">
+      <div class="gsj-icon">${s.icon}</div>
+      <div class="gsj-code">${esc(s.code)}</div>
+      <div class="gsj-name">${esc(s.name)}</div>
+      <div class="gsj-meta">${esc(s.instructor)} · ${esc(s.dept)}</div>
+      <div class="gsj-status">
+        <div class="gsj-dot ${hasSome?'gsj-dot-ok':'gsj-dot-no'}"></div>
+        <span class="gsj-status-txt" style="color:${hasSome?'var(--green)':'var(--dim)'}">
+          ${hasSem?'✅ Grades Released':hasSome?'⏳ Partial Grades':'📭 Grades Not Yet Released'}
+        </span>
+        <span class="gsj-arrow">→</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.openSubjectGrades = function(uid, subjId) {
+  const s = GRADE_SUBJECTS.find(x=>x.id===subjId);
+  if(!s) return;
+  activeGradeSubject = subjId;
+  document.getElementById('grade-subject-list').style.display = 'none';
+  document.getElementById('grade-detail').style.display = 'block';
+  document.getElementById('gd-subj-title').textContent = s.name;
+  document.getElementById('gd-subj-meta').textContent = s.code + ' · ' + s.instructor;
+  loadGrades(uid, subjId);
+};
+
+async function loadGrades(uid, subjId) {
+  const gc = document.getElementById('gc');
+  gc.innerHTML='<div class="g-load"><span class="spin">⟳</span> Loading grades...</div>';
 
   try {
     const [q1,q2,p1,p2,ag] = await Promise.all([
@@ -707,33 +807,14 @@ async function loadGrades(uid) {
       getDoc(doc(db,'student_grades',uid)).catch(()=>null),
     ]);
 
-    // ── Student profile strip ──
-    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js').then(({getAuth})=>{
-      const user = getAuth().currentUser;
-      if(user){
-        const init = (user.displayName||user.email||'?')[0].toUpperCase();
-        const avHtml = user.photoURL
-          ? `<img src="${user.photoURL}" alt="">`
-          : init;
-        g('gp-av-inner').innerHTML = avHtml;
-        g('gp-name-txt').textContent = user.displayName || sess.name || '—';
-        g('gp-email-txt').textContent = user.email || '';
-      }
-    }).catch(()=>{});
+    // Get grades for this specific subject
+    const allGrades = ag?.exists() ? ag.data() : {};
+    const subjectGrades = allGrades[subjId] || allGrades; // fallback to flat structure
 
-    // ── Assessment items ──
-    const items=[];
-    if(q1?.exists()) items.push({l:'Week 1 — Theory Quiz',  s:q1.data().score, p:q1.data().percent, t:q1.data().timestamp});
-    if(q2?.exists()) items.push({l:'Week 2 — Theory Quiz',  s:q2.data().score, p:q2.data().percent, t:q2.data().timestamp});
-    if(p1?.exists()) items.push({l:'Week 1 — Practical',    s:p1.data().score, p:p1.data().percent, t:p1.data().timestamp});
-    if(p2?.exists()) items.push({l:'Week 2 — Practical',    s:p2.data().score, p:p2.data().percent, t:p2.data().timestamp});
-
-    // ── Official grades from admin ──
-    const gd = ag?.exists() ? ag.data() : {};
-    const prelim   = gd.prelim   ? parseFloat(gd.prelim)   : null;
-    const midterm  = gd.midterm  ? parseFloat(gd.midterm)  : null;
-    const finals   = gd.finals   ? parseFloat(gd.finals)   : null;
-    const semestral= gd.semestral? parseFloat(gd.semestral): null;
+    const prelim   = subjectGrades.prelim    ? parseFloat(subjectGrades.prelim)    : null;
+    const midterm  = subjectGrades.midterm   ? parseFloat(subjectGrades.midterm)   : null;
+    const finals   = subjectGrades.finals    ? parseFloat(subjectGrades.finals)    : null;
+    const semestral= subjectGrades.semestral ? parseFloat(subjectGrades.semestral) : null;
 
     const gradeCol = v => v===null?'na':v>=75?'hi':v>=60?'mid':'lo';
     const gradeLbl = v => v===null?'—':v.toFixed(2);
@@ -744,49 +825,44 @@ async function loadGrades(uid) {
         : '<span class="gc-status gcs-f">❌ Failed</span>';
     };
 
-    if(!items.length && !ag?.exists()){
-      gc.innerHTML=`<div class="g-empty">
-        <div class="ge-ic">📊</div>
-        <div class="ge-t">No Grades Yet</div>
-        <p class="ge-s">Complete your assessments and your grades will appear here once released by your instructor.</p>
-      </div>`;
-      return;
-    }
+    // Assessment items
+    const items=[];
+    if(q1?.exists()) items.push({l:'Week 1 — Theory Quiz',  s:q1.data().score, p:q1.data().percent, t:q1.data().timestamp, type:'quiz'});
+    if(q2?.exists()) items.push({l:'Week 2 — Theory Quiz',  s:q2.data().score, p:q2.data().percent, t:q2.data().timestamp, type:'quiz'});
+    if(p1?.exists()) items.push({l:'Week 1 — Practical',    s:p1.data().score, p:p1.data().percent, t:p1.data().timestamp, type:'prac'});
+    if(p2?.exists()) items.push({l:'Week 2 — Practical',    s:p2.data().score, p:p2.data().percent, t:p2.data().timestamp, type:'prac'});
 
-    let html='';
-
-    // ── Profile strip ──
+    // Profile strip
     const userInit = sess.firstName ? sess.firstName[0].toUpperCase() : '?';
-    html += `<div class="gp-strip">
+    let html = `<div class="gp-strip">
       <div class="gp-av" id="gp-av-inner">${userInit}</div>
       <div class="gp-info">
         <div class="gp-name" id="gp-name-txt">${esc(sess.name||'Student')}</div>
         <div class="gp-email" id="gp-email-txt">${esc(sess.email||'')}</div>
-        <div class="gp-meta">
-          🎓 ${esc(sess.course||'—')} &nbsp;·&nbsp;
-          📋 ${esc(sess.academicYear||'—')} · ${esc(sess.term||'—')} &nbsp;·&nbsp;
-          🪪 ${esc(sess.studentId||'—')}
-        </div>
+        <div class="gp-meta">🎓 ${esc(sess.course||'—')} · 🪪 ${esc(sess.studentId||'—')}</div>
       </div>
       <span class="gp-badge">✅ Verified Gmail</span>
     </div>`;
 
-    // ── BIG GRADE CARDS ──
+    // BIG GRADE CARDS
     html += `<div class="grade-hero">
-      <div class="gcard gc-prelim">
+      <div class="gcard gc-prelim" onclick="openGradePeriod('prelim',${JSON.stringify(items.filter(i=>i.type==='quiz').map(i=>i.l+': '+i.s))})">
         <div class="gc-label">📘 Prelim</div>
         <div class="gc-score ${gradeCol(prelim)}">${gradeLbl(prelim)}</div>
         ${gradeStatus(prelim)}
+        <div style="font-size:0.62rem;color:var(--dim);margin-top:6px;">Click to view assessments</div>
       </div>
-      <div class="gcard gc-mid">
+      <div class="gcard gc-mid" onclick="openGradePeriod('midterm',${JSON.stringify(items.filter(i=>i.type==='quiz').map(i=>i.l+': '+i.s))})">
         <div class="gc-label">📗 Midterm</div>
         <div class="gc-score ${gradeCol(midterm)}">${gradeLbl(midterm)}</div>
         ${gradeStatus(midterm)}
+        <div style="font-size:0.62rem;color:var(--dim);margin-top:6px;">Click to view assessments</div>
       </div>
-      <div class="gcard gc-finals">
+      <div class="gcard gc-finals" onclick="openGradePeriod('finals',${JSON.stringify(items.filter(i=>i.type==='prac').map(i=>i.l+': '+i.s))})">
         <div class="gc-label">📙 Finals</div>
         <div class="gc-score ${gradeCol(finals)}">${gradeLbl(finals)}</div>
         ${gradeStatus(finals)}
+        <div style="font-size:0.62rem;color:var(--dim);margin-top:6px;">Click to view assessments</div>
       </div>
       <div class="gcard gc-sem">
         <div class="gc-label">🏆 Semestral</div>
@@ -795,7 +871,7 @@ async function loadGrades(uid) {
       </div>
     </div>`;
 
-    // ── Assessment breakdown ──
+    // Assessment breakdown
     if(items.length){
       const avgs=items.map(i=>parseFloat((i.p||'0').replace('%',''))).filter(n=>n>0);
       const avg=avgs.length?(avgs.reduce((a,b)=>a+b,0)/avgs.length).toFixed(1):0;
@@ -803,7 +879,7 @@ async function loadGrades(uid) {
       html+=`<div class="assess-card">
         <div class="assess-head">
           <div>
-            <div class="assess-title">📝 Computer Fundamentals and Programming</div>
+            <div class="assess-title">📝 Assessment Scores</div>
             <div class="assess-sub">BES 125 · ${esc(sess.academicYear||'')} · ${esc(sess.term||'')}</div>
           </div>
           <span class="gp-badge" style="${avg>=75?'':'background:rgba(249,58,122,0.1);color:var(--red);border-color:rgba(249,58,122,0.25);'}">
@@ -814,11 +890,12 @@ async function loadGrades(uid) {
           ${items.map(i=>{
             const p=parseFloat((i.p||'0').replace('%',''));
             const c=p>=75?'ar-hi':p>=60?'ar-mid':p>0?'ar-lo':'ar-na';
+            const icon=i.type==='quiz'?'📝':'💻';
             return`<div class="arow">
-              <span class="arow-l">${esc(i.l)}</span>
+              <span class="arow-l">${icon} ${esc(i.l)}</span>
               <div class="arow-r">
                 <span class="arow-score ${c}">${esc(i.s||'—')}</span>
-                <span class="arow-score ${c}" style="font-size:0.8rem">${esc(i.p||'—')}</span>
+                <span class="arow-score ${c}" style="font-size:0.78rem">${esc(i.p||'—')}</span>
               </div>
             </div>`;}).join('')}
           <div class="avg-row">
@@ -829,37 +906,73 @@ async function loadGrades(uid) {
       </div>`;
     }
 
-    // ── Pending grade notice if admin hasn't entered yet ──
-    if(!ag?.exists()){
+    if(!ag?.exists() || (!subjectGrades.prelim && !subjectGrades.midterm && !subjectGrades.finals)){
       html+=`<div class="grade-pending">
         <div class="gp-ic">⏳</div>
         <div class="gp-t">Official Grades Not Yet Released</div>
-        <p class="gp-s">Your Prelim, Midterm, Final, and Semestral grades will appear here once your instructor releases them.</p>
+        <p class="gp-s">Your Prelim, Midterm, Final, and Semestral grades will appear once your instructor releases them.</p>
       </div>`;
     }
 
     gc.innerHTML=html;
 
-    // Now try to update with real Google photo
+    // Update with real Google photo
     try{
       const {getAuth}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
       const user=getAuth().currentUser;
       if(user){
-        const avEl=g('gp-av-inner');
+        const avEl=document.getElementById('gp-av-inner');
         if(avEl&&user.photoURL){avEl.innerHTML=`<img src="${user.photoURL}" alt="" style="width:52px;height:52px;border-radius:50%;object-fit:cover;">`;}
-        if(g('gp-name-txt'))g('gp-name-txt').textContent=user.displayName||sess.name||'—';
-        if(g('gp-email-txt'))g('gp-email-txt').textContent=user.email||'';
+        if(document.getElementById('gp-name-txt'))document.getElementById('gp-name-txt').textContent=user.displayName||sess.name||'—';
+        if(document.getElementById('gp-email-txt'))document.getElementById('gp-email-txt').textContent=user.email||'';
       }
     }catch(e){}
+
+    // Build subject list in background (store grades data)
+    buildSubjectList(uid, ag?.exists()?{[subjId]:allGrades[subjId]||allGrades}:{});
 
   } catch(e){
     gc.innerHTML=`<div class="g-empty">
       <div class="ge-ic">⚙️</div>
       <div class="ge-t">Grades Unavailable</div>
-      <p class="ge-s">Could not load grades. Complete Firebase setup to enable this feature.<br><small style="color:var(--dim)">${e.message}</small></p>
+      <p class="ge-s">${e.message}</p>
     </div>`;
   }
 }
+
+// Grade period detail modal
+window.openGradePeriod = function(period, assessments) {
+  const labels = {prelim:'📘 Prelim Period',midterm:'📗 Midterm Period',finals:'📙 Finals Period'};
+  const hints  = {
+    prelim: 'Assessments completed during the Prelim period.',
+    midterm:'Assessments completed during the Midterm period.',
+    finals: 'Assessments completed during the Finals period.'
+  };
+  const modal = document.getElementById('grade-period-modal');
+  document.getElementById('gpm-title').textContent = labels[period]||period;
+  document.getElementById('gpm-sub').textContent   = hints[period]||'';
+  const list = document.getElementById('gpm-list');
+  if(!assessments||!assessments.length){
+    list.innerHTML='<div style="color:var(--dim);font-size:0.82rem;padding:10px 0;">No assessments recorded for this period yet.</div>';
+  } else {
+    list.innerHTML = assessments.map(a=>`<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:0.84rem;color:var(--text);">
+      ${a.includes('Quiz')||a.includes('Theory')?'📝':'💻'} ${esc(a)}
+    </div>`).join('');
+  }
+  modal.style.display='flex';
+};
+window.closeGradePeriodModal = function(){
+  document.getElementById('grade-period-modal').style.display='none';
+};
+
+onAuthStateChanged(auth, async u => {
+  if(u) {
+    // Pre-load subject list
+    const ag = await getDoc(doc(db,'student_grades',u.uid)).catch(()=>null);
+    const allGrades = ag?.exists() ? ag.data() : {};
+    buildSubjectList(u.uid, allGrades);
+  }
+});
 window._loadGrades=loadGrades;
 </script>
 
@@ -1114,5 +1227,35 @@ window.addEventListener('load', () => { startStarfield(); });
 
 window.showT=showT;
 </script>
+<!-- GRADE PERIOD MODAL -->
+<div id="grade-period-modal" onclick="if(event.target===this)closeGradePeriodModal()"
+  style="display:none;position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--s1);border:1.5px solid var(--border2);border-radius:18px;
+    width:100%;max-width:440px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.7);">
+    <div style="height:3px;background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent))"></div>
+    <div style="padding:18px 22px 14px;border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div id="gpm-title" style="font-size:1rem;font-weight:800;"></div>
+        <div id="gpm-sub" style="font-size:0.72rem;color:var(--muted);margin-top:2px;"></div>
+      </div>
+      <div onclick="closeGradePeriodModal()" style="cursor:pointer;background:var(--s2);
+        border:1px solid var(--border);border-radius:8px;width:30px;height:30px;
+        display:flex;align-items:center;justify-content:center;color:var(--muted);
+        font-size:1rem;transition:all 0.2s;" onmouseover="this.style.color='var(--red)'"
+        onmouseout="this.style.color='var(--muted)'">✕</div>
+    </div>
+    <div style="padding:18px 22px 22px;">
+      <div style="font-size:0.62rem;font-weight:800;color:var(--purple);
+        letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;
+        display:flex;align-items:center;gap:8px;">
+        Assessments Taken
+        <div style="flex:1;height:1px;background:rgba(168,85,247,0.2)"></div>
+      </div>
+      <div id="gpm-list"></div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
