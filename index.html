@@ -106,22 +106,30 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 /* HOME TAB */
 #th{min-height:calc(100dvh - 58px);display:none;flex-direction:column;
   align-items:center;justify-content:center;padding:40px 24px;text-align:center;
-  background:radial-gradient(ellipse 70% 60% at 50% 30%,rgba(168,85,247,0.07),transparent 65%);}
+  position:relative;overflow:hidden;}
 #th.on{display:flex;}
+#stars-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;}
+.h-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;}
 .h-logo{font-size:2.8rem;font-weight:900;font-family:var(--mono);letter-spacing:-2px;
   background:linear-gradient(135deg,var(--purple),var(--cyan),var(--accent));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   margin-bottom:6px;line-height:1;}
 .h-logo-sub{font-size:0.64rem;font-weight:700;letter-spacing:4px;
   text-transform:uppercase;color:var(--muted);margin-bottom:24px;}
+
+/* CIRCLE Teacher D */
 .td-wrap{position:relative;display:inline-block;margin-bottom:24px;}
-.td-img{width:170px;height:auto;border-radius:20px;
-  border:2px solid rgba(168,85,247,0.35);
-  box-shadow:0 0 60px rgba(168,85,247,0.2);
+.td-circle-ring{position:absolute;inset:-6px;border-radius:50%;
+  background:conic-gradient(var(--purple),var(--cyan),var(--accent),var(--green),var(--purple));
+  animation:spin-ring 4s linear infinite;z-index:0;}
+@keyframes spin-ring{to{transform:rotate(360deg);}}
+.td-circle-bg{position:absolute;inset:-3px;border-radius:50%;background:var(--bg);z-index:1;}
+.td-img{width:170px;height:170px;border-radius:50%;object-fit:cover;object-position:top;
+  position:relative;z-index:2;
+  box-shadow:0 0 40px rgba(168,85,247,0.35),0 0 80px rgba(34,211,238,0.1);
   animation:flt 4s ease-in-out infinite;}
 @keyframes flt{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
-.td-glow{position:absolute;inset:-20px;border-radius:30px;
-  background:radial-gradient(ellipse,rgba(168,85,247,0.12),transparent 70%);pointer-events:none;}
+
 .h-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:18px;}
 .htag{padding:6px 16px;border-radius:20px;font-size:0.74rem;font-weight:700;
   border:1px solid;display:flex;align-items:center;gap:6px;}
@@ -434,24 +442,39 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
     <!-- HOME -->
     <div id="th" class="on">
-      <div class="td-wrap">
-        <div class="td-glow"></div>
-        <img class="td-img" src="teacher-d.png" alt="Teacher D"
-          onerror="this.style.display='none'">
+      <!-- Starfield canvas background -->
+      <canvas id="stars-canvas"></canvas>
+
+      <!-- All content above canvas -->
+      <div class="h-content">
+
+        <!-- Circular Teacher D with spinning rainbow ring -->
+        <div class="td-wrap">
+          <div class="td-circle-ring"></div>
+          <div class="td-circle-bg"></div>
+          <img class="td-img" src="teacher-d.png" alt="Teacher D"
+            onerror="this.style.display='none'">
+        </div>
+
+        <!-- SMGDecode logo -->
+        <div class="h-logo">SMGDecode</div>
+        <div class="h-logo-sub">Learning Management System</div>
+
+        <!-- Tagline pills -->
+        <div class="h-tags">
+          <div class="htag ht1">💻 Software Engineer</div>
+          <div class="htag ht2">🎓 Mentor</div>
+          <div class="htag ht3">🧠 Guru</div>
+          <div class="htag ht4">🛠 Developer</div>
+          <div class="htag ht5">📖 Educator</div>
+        </div>
+
+        <p class="h-desc">Welcome to the SMGDecode Student Portal.<br>
+        Select <strong style="color:var(--text)">Transactions</strong> to view your subjects,
+        <strong style="color:var(--text)">Grades</strong> for your scores, or
+        <strong style="color:var(--text)">Curriculum</strong> to download your program checklist.</p>
+
       </div>
-      <div class="h-logo">SMGDecode</div>
-      <div class="h-logo-sub">Learning Management System</div>
-      <div class="h-tags">
-        <div class="htag ht1">💻 Software Engineer</div>
-        <div class="htag ht2">🎓 Mentor</div>
-        <div class="htag ht3">🧠 Guru</div>
-        <div class="htag ht4">🛠 Developer</div>
-        <div class="htag ht5">📖 Educator</div>
-      </div>
-      <p class="h-desc">Welcome to the SMGDecode Student Portal.<br>
-      Select <strong style="color:var(--text)">Transactions</strong> to view your subjects,
-      <strong style="color:var(--text)">Grades</strong> for your scores, or
-      <strong style="color:var(--text)">Curriculum</strong> to download your program checklist.</p>
     </div>
 
     <!-- TRANSACTIONS -->
@@ -541,13 +564,12 @@ import { getFirestore, doc, getDoc }
                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
-  authDomain: "cfp2526-database.firebaseapp.com",
-  projectId: "cfp2526-database",
-  storageBucket: "cfp2526-database.firebasestorage.app",
-  messagingSenderId: "111042690196",
-  appId: "1:111042690196:web:cd63203bd29b350cea8881",
-  measurementId: "G-Y7CMBZM1G1"
+  apiKey:            "AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
+  authDomain:        "YOUR_PROJECT.firebaseapp.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
 };
 
 const app  = initializeApp(firebaseConfig);
@@ -924,21 +946,118 @@ function showT(name){
   if(name==='home'){
     document.getElementById('th').classList.add('on');
     document.getElementById('ni-home').classList.add('on');
+    setTimeout(startStarfield, 30);
   } else {
+    stopStarfield();
     const el=document.getElementById('t'+name);
     if(el)el.classList.add('on');
     const ni=document.getElementById('ni-'+name);
     if(ni)ni.classList.add('on');
   }
   if(window.innerWidth<=768)closeSB();
-  // Load grades when switching to it
-  if(name==='gr'&&window._loadGrades){
-    try{
-      const {getAuth}=window._fbAuth||{};
-      // will auto-load from onAuthStateChanged above
-    }catch(e){}
-  }
 }
+// ── STARFIELD BACKGROUND ──
+let starAF = null;
+
+function startStarfield() {
+  if (starAF) return; // already running
+  const cv = document.getElementById('stars-canvas');
+  if (!cv) return;
+  const home = document.getElementById('th');
+  cv.width  = home.offsetWidth  || window.innerWidth;
+  cv.height = home.offsetHeight || window.innerHeight;
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+
+  // Static tiny stars
+  const starCount = 120;
+  const stars = Array.from({length: starCount}, () => ({
+    x: Math.random() * W,
+    y: Math.random() * H,
+    r: 0.5 + Math.random() * 1.5,
+    alpha: 0.2 + Math.random() * 0.7,
+    twinkleSpeed: 0.005 + Math.random() * 0.015,
+    twinkleOffset: Math.random() * Math.PI * 2,
+  }));
+
+  // Colored glowing dots (like in your reference image)
+  const glowColors = [
+    'rgba(168,85,247,A)',   // purple
+    'rgba(34,211,238,A)',   // cyan
+    'rgba(249,195,58,A)',   // gold
+    'rgba(59,130,246,A)',   // blue
+    'rgba(58,249,195,A)',   // green
+    'rgba(251,146,60,A)',   // orange
+    'rgba(244,63,94,A)',    // rose
+  ];
+  const glowDots = Array.from({length: 22}, () => {
+    const col = glowColors[Math.floor(Math.random() * glowColors.length)];
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: 1.5 + Math.random() * 2.5,
+      glowR: 6 + Math.random() * 14,
+      color: col,
+      alpha: 0.5 + Math.random() * 0.5,
+      twinkle: Math.random() * Math.PI * 2,
+      speed: 0.008 + Math.random() * 0.018,
+    };
+  });
+
+  let t = 0;
+
+  function drawStars() {
+    ctx.clearRect(0, 0, W, H);
+    t += 0.016;
+
+    // Draw static stars with twinkle
+    stars.forEach(s => {
+      const a = s.alpha * (0.5 + 0.5 * Math.sin(t * s.twinkleSpeed * 60 + s.twinkleOffset));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${a.toFixed(2)})`;
+      ctx.fill();
+    });
+
+    // Draw colored glow dots
+    glowDots.forEach(d => {
+      const pulse = 0.6 + 0.4 * Math.sin(t * d.speed * 60 + d.twinkle);
+      const a = (d.alpha * pulse).toFixed(2);
+      const aLow = (d.alpha * pulse * 0.15).toFixed(2);
+
+      // Outer glow
+      const grad = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, d.glowR);
+      grad.addColorStop(0,   d.color.replace('A', a));
+      grad.addColorStop(1,   d.color.replace('A', '0'));
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.glowR, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Bright center dot
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+      ctx.fillStyle = d.color.replace('A', a);
+      ctx.fill();
+    });
+
+    starAF = requestAnimationFrame(drawStars);
+  }
+  drawStars();
+}
+
+function stopStarfield() {
+  if (starAF) { cancelAnimationFrame(starAF); starAF = null; }
+}
+
+// Start immediately since home is shown first
+window.addEventListener('load', () => { setTimeout(startStarfield, 50); });
+window.addEventListener('resize', () => {
+  if (document.getElementById('th')?.classList.contains('on')) {
+    stopStarfield(); startStarfield();
+  }
+});
+
 window.showT=showT;
 </script>
 </body>
