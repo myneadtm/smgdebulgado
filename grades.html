@@ -315,7 +315,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
     <div class="sb-nav">
       <div class="sb-sec">Main Menu</div>
-      <div class="sb-it" onclick="window.location.href='index1.html'">
+      <div class="sb-it" onclick="window.location.href='index.html'">
         <span class="si">🏠</span><span>Home</span>
       </div>
       <div class="sb-it" onclick="window.location.href='transaction.html'">
@@ -324,7 +324,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="sb-it on">
         <span class="si">📊</span><span>Grades</span>
       </div>
-      <div class="sb-it" onclick="window.location.href='index1.html'">
+      <div class="sb-it" onclick="window.location.href='curriculum.html'">
         <span class="si">📄</span><span>Curriculum</span>
       </div>
       <div class="sb-div"></div>
@@ -475,12 +475,20 @@ onAuthStateChanged(auth, u => {
   }
 });
 
-// ── SUBJECTS FOR GRADES ──
-const GRADE_SUBJECTS = [
-  { id:'BES125', code:'BES 125', name:'Computer Fundamentals and Programming',
-    icon:'💻', instructor:'DEBULGADO, S.M.G', dept:'BS Civil Engineering',
-    color:'var(--accent)' },
-];
+// ── ALL SUBJECTS BY COURSE — add more courses/subjects here as needed ──
+const ALL_GRADE_SUBJECTS = {
+  'BS IN CIVIL ENGINEERING': [
+    { id:'BES125', code:'BES 125', name:'Computer Fundamentals and Programming',
+      icon:'💻', instructor:'DEBULGADO, S.M.G', dept:'BS Civil Engineering',
+      color:'var(--accent)' },
+  ],
+  // Add subjects for other courses below when ready:
+  // 'BS IN ACCOUNTING INFORMATION SYSTEM': [ ... ],
+};
+
+// Only show subjects for the logged-in student's course
+const studentCourse = sess.course || '';
+const GRADE_SUBJECTS = ALL_GRADE_SUBJECTS[studentCourse] || [];
 
 let activeGradeSubject = null;
 
@@ -493,6 +501,18 @@ window.backToSubjectList = function() {
 function buildSubjectList(uid, gradesData) {
   const grid = document.getElementById('grade-subj-cards');
   if(!grid) return;
+
+  // No subjects listed for this course yet
+  if(!GRADE_SUBJECTS.length){
+    grid.innerHTML = `<div class="g-empty">
+      <div class="ge-ic">📭</div>
+      <div class="ge-t">No Subjects Available</div>
+      <p class="ge-s">No grade records are available for <strong>${esc(studentCourse||'your course')}</strong> yet.<br>
+      Check back once your instructor sets up your subjects.</p>
+    </div>`;
+    return;
+  }
+
   const g2 = gradesData || {};
   grid.innerHTML = GRADE_SUBJECTS.map(s => {
     const sg = g2[s.id] || {};
