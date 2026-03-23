@@ -959,19 +959,19 @@ async function loadGrades(uid, subjId) {
 
     // BIG GRADE CARDS
     html += `<div class="grade-hero">
-      <div class="gcard gc-prelim" onclick="openGradePeriod('prelim',${JSON.stringify(items.filter(i=>i.type==='quiz').map(i=>i.l+': '+i.s))})">
+      <div class="gcard gc-prelim" onclick="openGradePeriod('prelim',[])">
         <div class="gc-label">📘 Prelim</div>
         <div class="gc-score ${gradeCol(prelim)}">${gradeLbl(prelim)}</div>
         ${gradeStatus(prelim)}
         <div style="font-size:0.62rem;color:var(--dim);margin-top:6px;">Click to view assessments</div>
       </div>
-      <div class="gcard gc-mid" onclick="openGradePeriod('midterm',${JSON.stringify(items.filter(i=>i.type==='quiz').map(i=>i.l+': '+i.s))})">
+      <div class="gcard gc-mid" onclick="openGradePeriod('midterm',${JSON.stringify(items.map(i=>i.l+': '+i.s))})">
         <div class="gc-label">📗 Midterm</div>
         <div class="gc-score ${gradeCol(midterm)}">${gradeLbl(midterm)}</div>
         ${gradeStatus(midterm)}
         <div style="font-size:0.62rem;color:var(--dim);margin-top:6px;">Click to view assessments</div>
       </div>
-      <div class="gcard gc-finals" onclick="openGradePeriod('finals',${JSON.stringify(items.filter(i=>i.type==='prac').map(i=>i.l+': '+i.s))})">
+      <div class="gcard gc-finals" onclick="openGradePeriod('finals',[])">
         <div class="gc-label">📙 Finals</div>
         <div class="gc-score ${gradeCol(finals)}">${gradeLbl(finals)}</div>
         ${gradeStatus(finals)}
