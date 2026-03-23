@@ -237,8 +237,11 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sn-email-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
 .sn-email-input{flex:1;background:var(--s2);border:1.5px solid var(--border);border-radius:9px;padding:10px 14px;color:var(--text);font-family:var(--font);font-size:0.86rem;outline:none;transition:border-color 0.2s;min-width:200px;}
 .sn-email-input:focus{border-color:var(--cyan);}
-.sn-email-btn{background:linear-gradient(135deg,var(--violet),var(--cyan));color:#fff;border:none;border-radius:9px;padding:10px 20px;font-family:var(--head);font-weight:700;font-size:0.76rem;cursor:pointer;transition:all 0.2s;letter-spacing:1px;white-space:nowrap;}
+.sn-action-btn{border:none;border-radius:9px;padding:10px 20px;font-family:var(--head);font-weight:700;font-size:0.76rem;cursor:pointer;transition:all 0.2s;letter-spacing:1px;white-space:nowrap;color:#fff;}
+.sn-email-btn{background:linear-gradient(135deg,var(--violet),var(--cyan));}
 .sn-email-btn:hover{box-shadow:0 0 20px rgba(0,255,247,0.3);}
+.sn-pdf-btn{background:linear-gradient(135deg,var(--pink),var(--purple));flex-shrink:0;}
+.sn-pdf-btn:hover{box-shadow:0 0 20px rgba(255,45,120,0.35);}
 .sn-email-status{font-size:0.76rem;color:var(--green);margin-top:6px;display:none;}
 .sn-email-status.show{display:block;}
 
@@ -635,12 +638,16 @@ window.firebaseSignOut = async function() {
       </div>
       <div class="sn-email-row">
         <input class="sn-email-input" id="email-input" type="email" placeholder="your.email@example.com">
+        <button class="sn-action-btn sn-email-btn" onclick="sendEmail()">📧 Send Email</button>
       </div>
       <div class="sn-email-status" id="email-status">✅ Results sent! Check your inbox (also check spam).</div>
       <div style="margin-top:14px;">
-        <div class="sn-opt">
-          <span class="sn-opt-icon">📄</span>
-          <span><strong>Download PDF</strong> — Save a printable copy of your answers and score.</span>
+        <div class="sn-opt" style="align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="sn-opt-icon">📄</span>
+            <span><strong>Download PDF</strong> — Save a printable copy of your answers and score.</span>
+          </div>
+          <button class="sn-action-btn sn-pdf-btn" onclick="downloadPDF()">📄 Download PDF</button>
         </div>
       </div>
     </div>
