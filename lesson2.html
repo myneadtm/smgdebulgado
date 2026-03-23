@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Week 2 — Control Structures | Computer Fundamentals and Programming</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07090f;--s1:#0e1218;--s2:#141a24;--s3:#1c2433;
+  --border:#232d3f;--accent:#f9c33a;--accent2:#3af9c3;
+  --accent3:#f93a7a;--blue:#4d9fff;--text:#dde6f0;--muted:#6b7f99;--code:#e2f0ff;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:200;background:rgba(7,9,15,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:66px;}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-logo-icon{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:600;color:#000;flex-shrink:0;}
+.nav-title{font-weight:700;font-size:0.82rem;color:var(--text);line-height:1.3;}
+.nav-sub{font-size:0.62rem;color:var(--muted);line-height:1.3;}
+.nav-instructor{font-size:0.62rem;color:var(--accent);font-weight:600;line-height:1.3;}
+.nav-links{display:flex;gap:4px;align-items:center;}
+.nav-link{padding:6px 14px;border-radius:7px;font-size:0.78rem;font-weight:600;color:var(--muted);text-decoration:none;transition:all 0.2s;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:5px;}
+.nav-link:hover{background:var(--s2);color:var(--text);border-color:var(--border);}
+.nav-link.active{background:var(--s2);color:var(--text);border-color:var(--border);}
+.nav-link.home-link{border-color:var(--border);}
+.nav-link.quiz-link{background:var(--accent);color:#000;font-weight:700;border-color:var(--accent);}
+.nav-link.quiz-link:hover{background:#ffda6e;}
+.nav-link.practical-link{border-color:rgba(0,255,247,0.3);color:#00fff7;}
+.nav-link.profile-link{border-color:rgba(168,85,247,0.3);color:#a855f7;}
+.nav-divider{width:1px;height:18px;background:var(--border);margin:0 4px;}
+
+/* QUICK LINKS BAR */
+
+/* HERO */
+.hero{position:relative;padding:64px 32px 48px;overflow:hidden;border-bottom:1px solid var(--border);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:0.25;}
+.hero-inner{position:relative;z-index:1;max-width:860px;margin:0 auto;}
+.hero-week{font-size:0.62rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.hero-week::before{content:'';width:24px;height:1px;background:var(--muted);}
+.hero-title{font-size:2.4rem;font-weight:900;line-height:1.1;letter-spacing:-1px;margin-bottom:16px;}
+.hero-title span{color:var(--accent);}
+.hero-desc{font-size:0.95rem;color:var(--muted);line-height:1.75;max-width:600px;margin-bottom:24px;}
+.hero-tags{display:flex;gap:8px;flex-wrap:wrap;}
+.htag{background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:0.72rem;font-weight:600;color:var(--muted);}
+.htag.green{border-color:rgba(58,249,195,0.3);color:var(--accent2);}
+.htag.blue{border-color:rgba(77,159,255,0.3);color:var(--blue);}
+
+/* MAIN LAYOUT */
+.main-wrap{display:grid;grid-template-columns:240px 1fr;gap:0;max-width:1200px;margin:0 auto;position:relative;z-index:1;}
+
+/* SIDEBAR */
+.sidebar{position:sticky;top:66px;height:calc(100vh - 66px);overflow-y:auto;padding:28px 20px;border-right:1px solid var(--border);scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.sb-section-title{font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:8px 0 4px;}
+.sb-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:0.8rem;color:var(--muted);transition:all 0.15s;position:relative;margin-bottom:2px;}
+.sb-item:hover{background:var(--s2);color:var(--text);}
+.sb-item.active{background:var(--s2);color:var(--text);}
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background 0.2s;}
+.sb-item.active .sb-dot{background:var(--accent);}
+.sb-dur{margin-left:auto;font-size:0.62rem;color:var(--muted);}
+
+/* CONTENT */
+.content{padding:40px 40px 80px;min-width:0;}
+.lesson-section{margin-bottom:56px;scroll-margin-top:86px;}
+.section-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.sec-number{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#f0a84b);display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:0.8rem;font-weight:700;color:#000;flex-shrink:0;}
+.sec-title{font-size:1.35rem;font-weight:800;line-height:1.2;margin-bottom:4px;}
+.sec-subtitle{font-size:0.8rem;color:var(--muted);}
+.body-text{font-size:0.9rem;line-height:1.85;color:var(--muted);margin-bottom:18px;}
+.body-text strong{color:var(--text);font-weight:700;}
+.body-text code{background:var(--s2);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-family:'Fira Code',monospace;font-size:0.82rem;color:var(--blue);}
+
+/* CODE BLOCKS */
+.code-block{background:var(--s1);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:16px 0 24px;}
+.code-header{background:var(--s2);padding:8px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.code-dots{display:flex;gap:5px;}
+.code-dot{width:10px;height:10px;border-radius:50%;}
+.code-dot.r{background:#ff5f57;}
+.code-dot.y{background:#febc2e;}
+.code-dot.g{background:#28c840;}
+.code-filename{font-family:'Fira Code',monospace;font-size:0.72rem;color:var(--muted);}
+.code-body{padding:20px;font-family:'Fira Code',monospace;font-size:0.84rem;line-height:1.7;color:var(--code);overflow-x:auto;white-space:pre;}
+.code-output{background:#020408;border-top:1px solid var(--border);padding:14px 20px;font-family:'Fira Code',monospace;font-size:0.82rem;color:var(--accent2);white-space:pre;}
+.code-output::before{content:'▶  Output\A';color:var(--muted);font-size:0.68rem;letter-spacing:1px;}
+
+/* CALLOUT BOXES */
+.callout{border-radius:12px;padding:16px 18px;margin:16px 0;font-size:0.86rem;line-height:1.7;display:flex;gap:12px;align-items:flex-start;}
+.callout.info{background:rgba(77,159,255,0.07);border:1px solid rgba(77,159,255,0.2);color:#a0c4ff;}
+.callout.tip{background:rgba(249,195,58,0.07);border:1px solid rgba(249,195,58,0.2);color:#f0d070;}
+.callout.warn{background:rgba(249,58,122,0.07);border:1px solid rgba(249,58,122,0.2);color:#ffa8c0;}
+.callout.success{background:rgba(58,249,195,0.07);border:1px solid rgba(58,249,195,0.2);color:#7ee8c8;}
+.callout-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+.callout-body strong{color:var(--text);}
+
+/* COMPARISON TABLE */
+.cmp-table{width:100%;border-collapse:collapse;margin:16px 0 24px;font-size:0.84rem;}
+.cmp-table th{background:var(--s2);padding:10px 14px;text-align:left;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
+.cmp-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top;}
+.cmp-table td:first-child{font-family:'Fira Code',monospace;font-size:0.8rem;color:var(--blue);}
+.cmp-table tr:hover td{background:rgba(255,255,255,0.02);}
+
+/* SYNTAX BOX */
+.syntax-box{background:var(--s1);border:1px solid rgba(77,159,255,0.25);border-left:4px solid var(--blue);border-radius:10px;padding:16px 18px;margin:14px 0 20px;font-family:'Fira Code',monospace;font-size:0.82rem;color:var(--code);line-height:1.7;white-space:pre;}
+
+/* LESSON FOOTER */
+.lesson-footer{display:flex;justify-content:space-between;align-items:center;padding:32px 0 0;border-top:1px solid var(--border);margin-top:20px;flex-wrap:wrap;gap:12px;}
+.foot-btn{display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px 20px;font-size:0.88rem;font-weight:600;color:var(--text);cursor:pointer;transition:all 0.2s;text-decoration:none;}
+.foot-btn:hover{border-color:var(--accent);color:var(--accent);}
+.foot-btn.primary{background:var(--accent);color:#000;border-color:var(--accent);}
+.foot-btn.primary:hover{background:#ffda6e;}
+.foot-btn.cyan{background:linear-gradient(135deg,rgba(0,255,247,0.15),rgba(0,255,247,0.05));color:#00fff7;border-color:rgba(0,255,247,0.3);}
+
+/* MOBILE */
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .main-wrap{grid-template-columns:1fr;}
+  .content{padding:24px 16px 60px;}
+  .hero{padding:36px 16px 28px;}
+  .hero-title{font-size:1.8rem;}
+  .nav{height:auto;padding:10px 12px 0;flex-direction:column;align-items:stretch;}
+  .nav-logo{gap:8px;padding-bottom:8px;}
+  .nav-logo-icon{width:28px;height:28px;font-size:0.65rem;}
+  .nav-title{font-size:0.76rem;}
+  .nav-sub,.nav-instructor{font-size:0.58rem;}
+  .nav-links{display:flex;flex-direction:row;gap:4px;border-top:1px solid var(--border);padding:8px 0 9px;overflow-x:auto;scrollbar-width:none;}
+  .nav-links::-webkit-scrollbar{display:none;}
+  .nav-link{padding:6px 10px;font-size:0.7rem;white-space:nowrap;flex-shrink:0;}
+  .nav-divider{display:none;}
+    .section-header{gap:10px;}
+  .sec-number{width:34px;height:34px;font-size:0.7rem;}
+  .sec-title{font-size:1.1rem;}
+  .lesson-footer{flex-direction:column;align-items:stretch;}
+  .foot-btn{justify-content:center;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-icon">C++</div>
+    <div>
+      <div class="nav-title">Computer Fundamentals and Programming</div>
+      <div class="nav-sub">BS Civil Engineering</div>
+      <div class="nav-instructor">Instructor: DEBULGADO, S.M.G</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link home-link">🏠 Home</a>
+    <div class="nav-divider"></div>
+    <a href="lesson.html" class="nav-link">📘 W1 Lesson</a>
+    <a href="lesson2.html" class="nav-link active">📗 W2 Lesson</a>
+    <a href="quiz2.html" class="nav-link quiz-link">📝 W2 Quiz →</a>
+    <a href="practical2.html" class="nav-link practical-link">💻 W2 Practical</a>
+    <a href="profile.html" class="nav-link profile-link">👤 Profile</a>
+  </div>
+</nav>
+
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-week">Week 02 · Midterm</div>
+    <h1 class="hero-title">Control Structures, Pseudocode<br>& <span>Flowcharts</span></h1>
+    <p class="hero-desc">Master how programs make decisions and repeat actions — using pseudocode to plan, flowcharts to visualize, and C++ to implement. This week covers if/else, switch, loops, and professional algorithm design techniques used in real engineering.</p>
+    <div class="hero-tags">
+      <span class="htag green">✅ Prerequisite: Week 1</span>
+      <span class="htag blue">📖 3hrs Lecture</span>
+      <span class="htag blue">🔬 3hrs Laboratory</span>
+      <span class="htag">📗 9 Sections</span>
+      <span class="htag">💻 BS Civil Engineering</span>
+    </div>
+  </div>
+</div>
+
+<div class="main-wrap">
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-section-title">📖 Lecture (3 hrs)</div>
+  <div class="sb-item active" id="sb-0" onclick="jumpTo('sec-0')"><div class="sb-dot"></div>Pseudocode Basics<span class="sb-dur">25 min</span></div>
+  <div class="sb-item" id="sb-1" onclick="jumpTo('sec-3')"><div class="sb-dot"></div>Flowcharts<span class="sb-dur">25 min</span></div>
+  <div class="sb-item" id="sb-2" onclick="jumpTo('sec-4')"><div class="sb-dot"></div>if / else if / else<span class="sb-dur">25 min</span></div>
+  <div class="sb-item" id="sb-3" onclick="jumpTo('sec-5')"><div class="sb-dot"></div>switch Statement<span class="sb-dur">20 min</span></div>
+  <div class="sb-item" id="sb-4" onclick="jumpTo('sec-6')"><div class="sb-dot"></div>for Loop<span class="sb-dur">25 min</span></div>
+  <div class="sb-item" id="sb-5" onclick="jumpTo('sec-7')"><div class="sb-dot"></div>while Loop<span class="sb-dur">20 min</span></div>
+  <div class="sb-section-title" style="margin-top:12px;">🔬 Laboratory (3 hrs)</div>
+  <div class="sb-item" id="sb-6" onclick="jumpTo('sec-6')"><div class="sb-dot"></div>do-while Loop<span class="sb-dur">20 min</span></div>
+  <div class="sb-item" id="sb-7" onclick="jumpTo('sec-7')"><div class="sb-dot"></div>Nested Structures<span class="sb-dur">25 min</span></div>
+  <div class="sb-item" id="sb-8" onclick="jumpTo('sec-8')"><div class="sb-dot"></div>Design → Code<span class="sb-dur">30 min</span></div>
+  <div class="sb-section-title" style="margin-top:12px;">Assessment</div>
+  <div class="sb-item" onclick="window.location='quiz2.html'"><div class="sb-dot" style="background:var(--accent)"></div>📝 Quiz (30 pts)</div>
+  <div class="sb-item" onclick="window.location='practical2.html'" style="color:#00fff7;"><div class="sb-dot" style="background:#00fff7"></div>💻 Practical (100 pts)</div>
+</aside>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- ══ SECTION 0: PSEUDOCODE ══ -->
+<div class="lesson-section" id="sec-0">
+  <div class="section-header">
+    <div class="sec-number">01</div>
+    <div><div class="sec-title">Pseudocode Basics</div><div class="sec-subtitle">Plan your logic before you code</div></div>
+  </div>
+
+  <p class="body-text"><strong>Pseudocode</strong> is a plain-English description of what a program will do — written in a structured but informal way. It is not actual code and won't run on a computer. Its purpose is to <strong>plan your algorithm</strong> before writing any syntax.</p>
+
+  <div class="callout info"><span class="callout-icon">💡</span><div class="callout-body"><strong>Why write pseudocode?</strong> It helps you focus on logic without worrying about syntax errors. Engineers use pseudocode to design algorithms on paper before implementing them in any programming language.</div></div>
+
+  <p class="body-text"><strong>Pseudocode rules (no strict standard, but follow these guidelines):</strong></p>
+
+  <table class="cmp-table">
+    <tr><th>Keyword</th><th>Meaning</th><th>Example</th></tr>
+    <tr><td>START / END</td><td>Beginning and end of algorithm</td><td>START GradeChecker</td></tr>
+    <tr><td>INPUT / READ</td><td>Get data from user</td><td>READ grade</td></tr>
+    <tr><td>PRINT / OUTPUT</td><td>Display result</td><td>PRINT "Passed"</td></tr>
+    <tr><td>IF / ELSE / ENDIF</td><td>Decision making</td><td>IF grade >= 75</td></tr>
+    <tr><td>FOR / ENDFOR</td><td>Counted repetition</td><td>FOR i = 1 TO 5</td></tr>
+    <tr><td>WHILE / ENDWHILE</td><td>Conditional repetition</td><td>WHILE count < 10</td></tr>
+    <tr><td>SET / LET</td><td>Assign a value</td><td>SET total = 0</td></tr>
+  </table>
+
+  <p class="body-text">Here is a pseudocode example for a grade checker:</p>
+
+  <div class="syntax-box">START GradeChecker
+
+    READ grade
+
+    IF grade >= 90 THEN
+        PRINT "Excellent — A"
+    ELSE IF grade >= 80 THEN
+        PRINT "Good — B"
+    ELSE IF grade >= 75 THEN
+        PRINT "Passed — C"
+    ELSE
+        PRINT "Failed — study harder"
+    ENDIF
+
+END GradeChecker</div>
+
+  <p class="body-text">And here is the same logic converted to C++:</p>
+
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><span class="code-filename">grade_checker.cpp</span></div>
+    <div class="code-body">#include &lt;iostream&gt;
+using namespace std;
+int main() {
+    int grade;
+    cin &gt;&gt; grade;
+    if (grade >= 90)       cout &lt;&lt; "Excellent — A" &lt;&lt; endl;
+    else if (grade >= 80)  cout &lt;&lt; "Good — B"      &lt;&lt; endl;
+    else if (grade >= 75)  cout &lt;&lt; "Passed — C"    &lt;&lt; endl;
+    else                   cout &lt;&lt; "Failed"         &lt;&lt; endl;
+    return 0;
+}</div>
+    <div class="code-output">Excellent — A</div>
+  </div>
+
+  <div class="callout tip"><span class="callout-icon">📝</span><div class="callout-body"><strong>Civil Engineering Application:</strong> Before writing code to check if a beam's load exceeds its capacity, write pseudocode first: <em>IF applied_load > allowable_load THEN PRINT "Unsafe — Redesign Required"</em></div></div>
+</div>
+
+<!-- ══ SECTION 1: FLOWCHARTS ══ -->
+<div class="lesson-section" id="sec-1">
+  <div class="section-header">
+    <div class="sec-number">02</div>
+    <div><div class="sec-title">Flowcharts</div><div class="sec-subtitle">Visualize your algorithm with diagrams</div></div>
+  </div>
+
+  <p class="body-text">A <strong>flowchart</strong> is a graphical representation of an algorithm using standard shapes. It shows the <strong>flow of execution</strong> step by step — making it easy to understand and communicate your logic to others.</p>
+
+  <p class="body-text"><strong>Standard Flowchart Symbols:</strong></p>
+
+  <table class="cmp-table">
+    <tr><th>Shape</th><th>Symbol</th><th>Used For</th></tr>
+    <tr><td>Oval / Pill</td><td>⬭ (rounded rect)</td><td>START and END (Terminal)</td></tr>
+    <tr><td>Rectangle</td><td>▭ (box)</td><td>Process / Computation / Assignment</td></tr>
+    <tr><td>Parallelogram</td><td>▱ (slanted box)</td><td>INPUT or OUTPUT</td></tr>
+    <tr><td>Diamond</td><td>◇ (diamond)</td><td>Decision / Condition (Yes/No)</td></tr>
+    <tr><td>Arrow</td><td>→ (line)</td><td>Flow direction</td></tr>
+  </table>
+
+  <!-- SVG Flowchart: Grade Checker -->
+  <p class="body-text">Here is a flowchart for the Grade Checker algorithm:</p>
+  <div style="background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:24px;margin:16px 0;overflow-x:auto;text-align:center;">
+    <svg width="320" height="580" viewBox="0 0 320 580" xmlns="http://www.w3.org/2000/svg" style="font-family:'Fira Code',monospace;max-width:100%;">
+      <!-- START -->
+      <rect x="100" y="10" width="120" height="40" rx="20" fill="#a855f7" stroke="#c084fc" stroke-width="1.5"/>
+      <text x="160" y="35" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">START</text>
+      <!-- Arrow -->
+      <line x1="160" y1="50" x2="160" y2="72" stroke="#4d9fff" stroke-width="1.5" marker-end="url(#arr)"/>
+      <!-- INPUT -->
+      <polygon points="100,72 220,72 210,102 110,102" fill="#1c2433" stroke="#4d9fff" stroke-width="1.5"/>
+      <text x="160" y="91" text-anchor="middle" fill="#4d9fff" font-size="12">INPUT grade</text>
+      <!-- Arrow -->
+      <line x1="160" y1="102" x2="160" y2="124" stroke="#4d9fff" stroke-width="1.5" marker-end="url(#arr)"/>
+      <!-- Decision 1 -->
+      <polygon points="160,124 240,154 160,184 80,154" fill="#1c2433" stroke="#f9c33a" stroke-width="1.5"/>
+      <text x="160" y="150" text-anchor="middle" fill="#f9c33a" font-size="11">grade</text>
+      <text x="160" y="165" text-anchor="middle" fill="#f9c33a" font-size="11">>= 90?</text>
+      <!-- Yes branch -->
+      <line x1="240" y1="154" x2="285" y2="154" stroke="#3af9c3" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="252" y="147" fill="#3af9c3" font-size="10">YES</text>
+      <rect x="285" y="136" width="30" height="36" rx="4" fill="#1c2433" stroke="#3af9c3" stroke-width="1.5"/>
+      <text x="300" y="152" text-anchor="middle" fill="#3af9c3" font-size="9">Print</text>
+      <text x="300" y="164" text-anchor="middle" fill="#3af9c3" font-size="9">"A"</text>
+      <!-- No arrow down -->
+      <line x1="160" y1="184" x2="160" y2="206" stroke="#4d9fff" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="170" y="200" fill="#f93a7a" font-size="10">NO</text>
+      <!-- Decision 2 -->
+      <polygon points="160,206 240,236 160,266 80,236" fill="#1c2433" stroke="#f9c33a" stroke-width="1.5"/>
+      <text x="160" y="232" text-anchor="middle" fill="#f9c33a" font-size="11">grade</text>
+      <text x="160" y="247" text-anchor="middle" fill="#f9c33a" font-size="11">>= 80?</text>
+      <!-- Yes branch -->
+      <line x1="240" y1="236" x2="285" y2="236" stroke="#3af9c3" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="252" y="229" fill="#3af9c3" font-size="10">YES</text>
+      <rect x="285" y="218" width="30" height="36" rx="4" fill="#1c2433" stroke="#3af9c3" stroke-width="1.5"/>
+      <text x="300" y="234" text-anchor="middle" fill="#3af9c3" font-size="9">Print</text>
+      <text x="300" y="246" text-anchor="middle" fill="#3af9c3" font-size="9">"B"</text>
+      <!-- No arrow down -->
+      <line x1="160" y1="266" x2="160" y2="288" stroke="#4d9fff" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="170" y="282" fill="#f93a7a" font-size="10">NO</text>
+      <!-- Decision 3 -->
+      <polygon points="160,288 240,318 160,348 80,318" fill="#1c2433" stroke="#f9c33a" stroke-width="1.5"/>
+      <text x="160" y="314" text-anchor="middle" fill="#f9c33a" font-size="11">grade</text>
+      <text x="160" y="329" text-anchor="middle" fill="#f9c33a" font-size="11">>= 75?</text>
+      <!-- Yes branch -->
+      <line x1="240" y1="318" x2="285" y2="318" stroke="#3af9c3" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="252" y="311" fill="#3af9c3" font-size="10">YES</text>
+      <rect x="285" y="300" width="30" height="36" rx="4" fill="#1c2433" stroke="#3af9c3" stroke-width="1.5"/>
+      <text x="300" y="316" text-anchor="middle" fill="#3af9c3" font-size="9">Print</text>
+      <text x="300" y="328" text-anchor="middle" fill="#3af9c3" font-size="9">"C"</text>
+      <!-- No arrow down -->
+      <line x1="160" y1="348" x2="160" y2="378" stroke="#4d9fff" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="170" y="370" fill="#f93a7a" font-size="10">NO</text>
+      <!-- Else: Print Failed -->
+      <polygon points="100,378 220,378 210,408 110,408" fill="#1c2433" stroke="#f93a7a" stroke-width="1.5"/>
+      <text x="160" y="397" text-anchor="middle" fill="#f93a7a" font-size="12">Print "Failed"</text>
+      <!-- Arrow to END -->
+      <line x1="160" y1="408" x2="160" y2="440" stroke="#4d9fff" stroke-width="1.5" marker-end="url(#arr)"/>
+      <!-- Lines from YES branches merging -->
+      <line x1="300" y1="172" x2="300" y2="452" stroke="#3af9c3" stroke-width="1" stroke-dasharray="4"/>
+      <line x1="300" y1="452" x2="200" y2="452" stroke="#3af9c3" stroke-width="1" stroke-dasharray="4"/>
+      <!-- END -->
+      <rect x="100" y="440" width="120" height="40" rx="20" fill="#a855f7" stroke="#c084fc" stroke-width="1.5"/>
+      <text x="160" y="465" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">END</text>
+      <!-- Arrow marker -->
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#4d9fff"/>
+        </marker>
+      </defs>
+    </svg>
+    <p style="font-size:0.72rem;color:var(--muted);margin-top:8px;">Flowchart: Grade Checker Algorithm</p>
+  </div>
+
+  <!-- SVG Flowchart: For Loop -->
+  <p class="body-text">Here is a flowchart for a for loop that counts 1 to 5:</p>
+  <div style="background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:24px;margin:16px 0;overflow-x:auto;text-align:center;">
+    <svg width="280" height="460" viewBox="0 0 280 460" xmlns="http://www.w3.org/2000/svg" style="font-family:'Fira Code',monospace;max-width:100%;">
+      <defs>
+        <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#4d9fff"/>
+        </marker>
+      </defs>
+      <!-- START -->
+      <rect x="90" y="10" width="100" height="36" rx="18" fill="#a855f7" stroke="#c084fc" stroke-width="1.5"/>
+      <text x="140" y="33" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">START</text>
+      <line x1="140" y1="46" x2="140" y2="68" stroke="#4d9fff" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <!-- SET i=1 -->
+      <rect x="70" y="68" width="140" height="34" rx="5" fill="#1c2433" stroke="#4d9fff" stroke-width="1.5"/>
+      <text x="140" y="90" text-anchor="middle" fill="#4d9fff" font-size="12">SET i = 1</text>
+      <line x1="140" y1="102" x2="140" y2="124" stroke="#4d9fff" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <!-- Decision: i <= 5 -->
+      <polygon points="140,124 220,156 140,188 60,156" fill="#1c2433" stroke="#f9c33a" stroke-width="1.5"/>
+      <text x="140" y="152" text-anchor="middle" fill="#f9c33a" font-size="11">i &lt;= 5?</text>
+      <!-- YES down -->
+      <line x1="140" y1="188" x2="140" y2="210" stroke="#3af9c3" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <text x="150" y="204" fill="#3af9c3" font-size="10">YES</text>
+      <!-- Print i -->
+      <polygon points="70,210 210,210 200,244 80,244" fill="#1c2433" stroke="#3af9c3" stroke-width="1.5"/>
+      <text x="140" y="231" text-anchor="middle" fill="#3af9c3" font-size="12">PRINT i</text>
+      <line x1="140" y1="244" x2="140" y2="266" stroke="#4d9fff" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <!-- i++ -->
+      <rect x="70" y="266" width="140" height="34" rx="5" fill="#1c2433" stroke="#4d9fff" stroke-width="1.5"/>
+      <text x="140" y="288" text-anchor="middle" fill="#4d9fff" font-size="12">i = i + 1</text>
+      <!-- Loop back -->
+      <line x1="70" y1="283" x2="30" y2="283" stroke="#4d9fff" stroke-width="1.5"/>
+      <line x1="30" y1="283" x2="30" y2="156" stroke="#4d9fff" stroke-width="1.5"/>
+      <line x1="30" y1="156" x2="60" y2="156" stroke="#4d9fff" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <!-- NO right -->
+      <line x1="220" y1="156" x2="255" y2="156" stroke="#f93a7a" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <text x="223" y="149" fill="#f93a7a" font-size="10">NO</text>
+      <line x1="255" y1="156" x2="255" y2="390" stroke="#f93a7a" stroke-width="1.5"/>
+      <line x1="255" y1="390" x2="200" y2="390" stroke="#f93a7a" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <!-- END -->
+      <rect x="90" y="374" width="100" height="36" rx="18" fill="#a855f7" stroke="#c084fc" stroke-width="1.5"/>
+      <text x="140" y="397" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">END</text>
+    </svg>
+    <p style="font-size:0.72rem;color:var(--muted);margin-top:8px;">Flowchart: for Loop (Count 1 to 5)</p>
+  </div>
+
+  <div class="callout success"><span class="callout-icon">🏗️</span><div class="callout-body"><strong>Design Process:</strong> Always design in this order: <strong>(1) Pseudocode</strong> → think through the logic in plain words. <strong>(2) Flowchart</strong> → draw the visual diagram. <strong>(3) Code</strong> → implement in C++. This prevents errors and saves time.</div></div>
+</div>
+
+<!-- ══ SECTION 2: if/else ══ -->
+<div class="lesson-section" id="sec-2">
+  <div class="section-header">
+    <div class="sec-number">03</div>
+    <div><div class="sec-title">if / else if / else</div><div class="sec-subtitle">Making decisions in your code</div></div>
+  </div>
+
+  <p class="body-text">A program that always does the same thing isn't very useful. <strong>Conditional statements</strong> let your program choose what to do based on a condition — just like how we make decisions in real life.</p>
+
+  <div class="callout info"><span class="callout-icon">💡</span><div class="callout-body"><strong>Think of it like a road sign:</strong> If the road is clear → go straight. Else if there's a detour → turn right. Else → stop.</div></div>
+
+  <p class="body-text">The <code>if</code> statement checks a condition. If it's <strong>true</strong>, the code inside the braces runs. If it's <strong>false</strong>, it's skipped.</p>
+
+  <div class="syntax-box">if (condition) {
+    // runs if condition is TRUE
+} else if (another_condition) {
+    // runs if first was false but this is TRUE
+} else {
+    // runs if ALL above conditions were false
+}</div>
+
+  <p class="body-text">Let's look at a real example — a grade checker:</p>
+
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><span class="code-filename">grade_checker.cpp</span></div>
+    <div class="code-body">#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int grade;
+    cout &lt;&lt; "Enter your grade: ";
+    cin &gt;&gt; grade;
+
+    if (grade >= 90) {
+        cout &lt;&lt; "Excellent! You got an A." &lt;&lt; endl;
+    } else if (grade >= 80) {
+        cout &lt;&lt; "Good job! You got a B." &lt;&lt; endl;
+    } else if (grade >= 70) {
+        cout &lt;&lt; "You passed with a C." &lt;&lt; endl;
+    } else if (grade >= 60) {
+        cout &lt;&lt; "You passed with a D." &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; "You failed. Please study harder." &lt;&lt; endl;
+    }
+
+    return 0;
+}</div>
+    <div class="code-output">Enter your grade: 85
+Good job! You got a B.</div>
+  </div>
+
+  <p class="body-text"><strong>Comparison operators</strong> used in conditions:</p>
+
+  <table class="cmp-table">
+    <tr><th>Operator</th><th>Meaning</th><th>Example</th><th>Result</th></tr>
+    <tr><td>==</td><td>Equal to</td><td>5 == 5</td><td>true</td></tr>
+    <tr><td>!=</td><td>Not equal to</td><td>5 != 3</td><td>true</td></tr>
+    <tr><td>&gt;</td><td>Greater than</td><td>7 > 3</td><td>true</td></tr>
+    <tr><td>&lt;</td><td>Less than</td><td>2 < 9</td><td>true</td></tr>
+    <tr><td>&gt;=</td><td>Greater or equal</td><td>5 >= 5</td><td>true</td></tr>
+    <tr><td>&lt;=</td><td>Less or equal</td><td>4 <= 6</td><td>true</td></tr>
+  </table>
+
+  <p class="body-text"><strong>Logical operators</strong> let you combine conditions:</p>
+
+  <table class="cmp-table">
+    <tr><th>Operator</th><th>Meaning</th><th>Example</th></tr>
+    <tr><td>&&</td><td>AND — both must be true</td><td>age > 18 && hasID == true</td></tr>
+    <tr><td>||</td><td>OR — at least one true</td><td>day == "Sat" || day == "Sun"</td></tr>
+    <tr><td>!</td><td>NOT — reverses condition</td><td>!isRaining</td></tr>
+  </table>
+
+  <div class="callout warn"><span class="callout-icon">⚠️</span><div class="callout-body"><strong>Common Mistake:</strong> Do NOT confuse <code>=</code> (assignment) with <code>==</code> (comparison). Writing <code>if (x = 5)</code> sets x to 5 — it does NOT check if x equals 5!</div></div>
+</div>
+
+<!-- ══ SECTION 1: switch ══ -->
+<div class="lesson-section" id="sec-3">
+  <div class="section-header">
+    <div class="sec-number">04</div>
+    <div><div class="sec-title">switch Statement</div><div class="sec-subtitle">Clean multi-choice decisions</div></div>
+  </div>
+
+  <p class="body-text">When you have many specific values to check against one variable, <code>switch</code> is cleaner than writing many <code>else if</code> blocks. Think of it like a menu — each <code>case</code> is one menu option.</p>
+
+  <div class="syntax-box">switch (variable) {
+    case value1:
+        // code for value1
+        break;
+    case value2:
+        // code for value2
+        break;
+    default:
+        // runs if no case matched
+        break;
+}</div>
+
+  <div class="callout tip"><span class="callout-icon">💡</span><div class="callout-body"><strong>Always include <code>break</code>!</strong> Without break, execution "falls through" to the next case even if it doesn't match.</div></div>
+
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><span class="code-filename">day_checker.cpp</span></div>
+    <div class="code-body">#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int day;
+    cout &lt;&lt; "Enter day number (1-7): ";
+    cin &gt;&gt; day;
+
+    switch (day) {
+        case 1: cout &lt;&lt; "Monday"    &lt;&lt; endl; break;
+        case 2: cout &lt;&lt; "Tuesday"   &lt;&lt; endl; break;
+        case 3: cout &lt;&lt; "Wednesday" &lt;&lt; endl; break;
+        case 4: cout &lt;&lt; "Thursday"  &lt;&lt; endl; break;
+        case 5: cout &lt;&lt; "Friday"    &lt;&lt; endl; break;
+        case 6: cout &lt;&lt; "Saturday"  &lt;&lt; endl; break;
+        case 7: cout &lt;&lt; "Sunday"    &lt;&lt; endl; break;
+        default: cout &lt;&lt; "Invalid day number!" &lt;&lt; endl; break;
+    }
+
+    return 0;
+}</div>
+    <div class="code-output">Enter day number (1-7): 5
+Friday</div>
+  </div>
+
+  <p class="body-text">switch works with <code>int</code> and <code>char</code> types — not with strings or floating-point numbers.</p>
+</div>
+
+<!-- ══ SECTION 2: for loop ══ -->
+<div class="lesson-section" id="sec-4">
+  <div class="section-header">
+    <div class="sec-number">05</div>
+    <div><div class="sec-title">for Loop</div><div class="sec-subtitle">Repeat a fixed number of times</div></div>
+  </div>
+
+  <p class="body-text">A <strong>loop</strong> lets you repeat a block of code multiple times without writing it again and again. The <code>for</code> loop is used when you know <strong>exactly how many times</strong> to repeat.</p>
+
+  <div class="syntax-box">for (initialization; condition; update) {
+    // code to repeat
+}</div>
+
+  <table class="cmp-table">
+    <tr><th>Part</th><th>What it does</th><th>Example</th></tr>
+    <tr><td>initialization</td><td>Runs once at start — sets the counter</td><td>int i = 0</td></tr>
+    <tr><td>condition</td><td>Checked before each repeat — loop continues while true</td><td>i &lt; 5</td></tr>
+    <tr><td>update</td><td>Runs after each repeat — changes the counter</td><td>i++</td></tr>
+  </table>
+
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><span class="code-filename">for_loop.cpp</span></div>
+    <div class="code-body">#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    // Print numbers 1 to 5
+    for (int i = 1; i &lt;= 5; i++) {
+        cout &lt;&lt; "Count: " &lt;&lt; i &lt;&lt; endl;
+    }
+
+    // Calculate sum of 1 to 10
+    int sum = 0;
+    for (int i = 1; i &lt;= 10; i++) {
+        sum += i;  // same as: sum = sum + i
+    }
+    cout &lt;&lt; "Sum 1-10: " &lt;&lt; sum &lt;&lt; endl;
+
+    return 0;
+}</div>
+    <div class="code-output">Count: 1
+Count: 2
+Count: 3
+Count: 4
+Count: 5
+Sum 1-10: 55</div>
+  </div>
+
+  <div class="callout success"><span class="callout-icon">🏗️</span><div class="callout-body"><strong>Civil Engineering use:</strong> A for loop can automate calculating beam loads for each floor: <code>for (int floor = 1; floor &lt;= 10; floor++)</code> — calculates load for all 10 floors automatically.</div></div>
+</div>
+
+<!-- ══ SECTION 3: while loop ══ -->
+<div class="lesson-section" id="sec-5">
+  <div class="section-header">
+    <div class="sec-number">06</div>
+    <div><div class="sec-title">while Loop</div><div class="sec-subtitle">Repeat while a condition is true</div></div>
+  </div>
+
+  <p class="body-text">The <code>while</code> loop repeats as long as a condition is <strong>true</strong>. Use it when you don't know in advance how many times to repeat — you repeat until something changes.</p>
+
+  <div class="syntax-box">while (condition) {
+    // code to repeat
+    // must update something or loop runs forever!
+}</div>
+
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><span class="code-filename">while_loop.cpp</span></div>
+    <div class="code-body">#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int number = 1;
+
+    while (number &lt;= 5) {
+        cout &lt;&lt; "Number: " &lt;&lt; number &lt;&lt; endl;
+        number++;  // IMPORTANT: update the variable!
+    }
+
+    // Countdown example
+    int countdown = 5;
+    while (countdown > 0) {
+        cout &lt;&lt; countdown &lt;&lt; "... ";
+        countdown--;
+    }
+    cout &lt;&lt; "Launch!" &lt;&lt; endl;
+
+    return 0;
+}</div>
+    <div class="code-output">Number: 1
+Number: 2
+Number: 3
+Number: 4
+Number: 5
+5... 4... 3... 2... 1... Launch!</div>
+  </div>
+
+  <div class="callout warn"><span class="callout-icon">⚠️</span><div class="callout-body"><strong>Infinite Loop:</strong> If you forget to update the variable inside the loop, the condition never becomes false and the loop runs forever — freezing your program!</div></div>
+</div>
+
+<!-- ══ SECTION 4: do-while ══ -->
+<div class="lesson-section" id="sec-6">
+  <div class="section-header">
+    <div class="sec-number">07</div>
+    <div><div class="sec-title">do-while Loop</div><div class="sec-subtitle">Run at least once, then check</div></div>
+  </div>
+
+  <p class="body-text">The <code>do-while</code> loop is like the while loop, but it <strong>always runs at least once</strong> — it checks the condition <em>after</em> the first execution. Perfect for menus or input validation where you need to run the code before checking.</p>
+
+  <div class="syntax-box">do {
+    // code runs at least once
+} while (condition);   // ← note the semicolon!</div>
+
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><span class="code-filename">do_while.cpp</span></div>
+    <div class="code-body">#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int choice;
+
+    do {
+        cout &lt;&lt; "\n=== MAIN MENU ===" &lt;&lt; endl;
+        cout &lt;&lt; "1. Calculate area" &lt;&lt; endl;
+        cout &lt;&lt; "2. Calculate perimeter" &lt;&lt; endl;
+        cout &lt;&lt; "0. Exit" &lt;&lt; endl;
+        cout &lt;&lt; "Enter choice: ";
+        cin &gt;&gt; choice;
+
+        if (choice == 1) cout &lt;&lt; "Calculating area..." &lt;&lt; endl;
+        if (choice == 2) cout &lt;&lt; "Calculating perimeter..." &lt;&lt; endl;
+
+    } while (choice != 0);  // repeat until user enters 0
+
+    cout &lt;&lt; "Goodbye!" &lt;&lt; endl;
+    return 0;
+}</div>
+    <div class="code-output">=== MAIN MENU ===
+1. Calculate area
+2. Calculate perimeter
+0. Exit
+Enter choice: 1
+Calculating area...
+
+=== MAIN MENU ===
+...
+Enter choice: 0
+Goodbye!</div>
+  </div>
+
+  <table class="cmp-table">
+    <tr><th>Loop</th><th>Use when...</th><th>Checks condition</th></tr>
+    <tr><td>for</td><td>You know exact number of repeats</td><td>Before each iteration</td></tr>
+    <tr><td>while</td><td>Repeat while something is true</td><td>Before each iteration</td></tr>
+    <tr><td>do-while</td><td>Must run at least once</td><td>After each iteration</td></tr>
+  </table>
+</div>
+
+<!-- ══ SECTION 5: Nested ══ -->
+<div class="lesson-section" id="sec-7">
+  <div class="section-header">
+    <div class="sec-number">08</div>
+    <div><div class="sec-title">Nested Structures</div><div class="sec-subtitle">Loops inside loops, conditions inside loops</div></div>
+  </div>
+
+  <p class="body-text"><strong>Nesting</strong> means putting one structure inside another. You can put a loop inside an if, an if inside a loop, or even a loop inside another loop. This is very powerful but requires careful thinking.</p>
+
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><span class="code-filename">nested.cpp</span></div>
+    <div class="code-body">#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    // Multiplication table (nested for loops)
+    for (int i = 1; i &lt;= 3; i++) {
+        for (int j = 1; j &lt;= 3; j++) {
+            cout &lt;&lt; i * j &lt;&lt; "\t";  // \t = tab space
+        }
+        cout &lt;&lt; endl;  // new line after each row
+    }
+
+    cout &lt;&lt; endl;
+
+    // Loop with if inside
+    for (int i = 1; i &lt;= 10; i++) {
+        if (i % 2 == 0) {
+            cout &lt;&lt; i &lt;&lt; " is even" &lt;&lt; endl;
+        } else {
+            cout &lt;&lt; i &lt;&lt; " is odd" &lt;&lt; endl;
+        }
+    }
+
+    return 0;
+}</div>
+    <div class="code-output">1	2	3	
+2	4	6	
+3	6	9	
+
+1 is odd
+2 is even
+3 is odd
+...
+10 is even</div>
+  </div>
+
+  <div class="callout tip"><span class="callout-icon">💡</span><div class="callout-body"><strong>break and continue:</strong> Use <code>break</code> to exit a loop early. Use <code>continue</code> to skip the current iteration and go to the next one.</div></div>
+
+
+<!-- ══ SECTION 8: Design → Code ══ -->
+<div class="lesson-section" id="sec-8">
+  <div class="section-header">
+    <div class="sec-number">09</div>
+    <div><div class="sec-title">Design → Code Integration</div><div class="sec-subtitle">Putting it all together: pseudocode, flowchart, and C++ implementation</div></div>
+  </div>
+
+  <p class="body-text">Now that you know all the tools — <strong>pseudocode</strong>, <strong>flowcharts</strong>, and C++ control structures — let us apply the full design process to a complete engineering problem.</p>
+
+  <div class="callout info"><span class="callout-icon">🏗️</span><div class="callout-body"><strong>Problem:</strong> A civil engineering program should accept 5 concrete strength values from a sensor, compute their average, then classify it as "Safe", "Marginal", or "Unsafe" based on the threshold.</div></div>
+
+  <p class="body-text"><strong>Step 1 — Write the Pseudocode:</strong></p>
+
+  <div class="syntax-box">START ConcreteCheck
+
+    SET total = 0
+    FOR i = 1 TO 5
+        READ strength
+        SET total = total + strength
+    ENDFOR
+
+    SET average = total / 5
+
+    IF average >= 30 THEN
+        PRINT "Safe — Concrete meets standard"
+    ELSE IF average >= 25 THEN
+        PRINT "Marginal — Monitor closely"
+    ELSE
+        PRINT "Unsafe — Replace concrete"
+    ENDIF
+
+END ConcreteCheck</div>
+
+  <p class="body-text"><strong>Step 2 — Implement in C++:</strong></p>
+
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><span class="code-filename">concrete_check.cpp</span></div>
+    <div class="code-body">#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    double total = 0, strength;
+
+    // Step 1: Read 5 strength values
+    for (int i = 1; i &lt;= 5; i++) {
+        cout &lt;&lt; "Enter strength reading " &lt;&lt; i &lt;&lt; ": ";
+        cin &gt;&gt; strength;
+        total += strength;
+    }
+
+    // Step 2: Compute average
+    double average = total / 5;
+    cout &lt;&lt; "Average strength: " &lt;&lt; average &lt;&lt; " MPa" &lt;&lt; endl;
+
+    // Step 3: Classify
+    if (average >= 30) {
+        cout &lt;&lt; "Result: Safe — Concrete meets standard." &lt;&lt; endl;
+    } else if (average >= 25) {
+        cout &lt;&lt; "Result: Marginal — Monitor closely." &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; "Result: Unsafe — Replace concrete." &lt;&lt; endl;
+    }
+
+    return 0;
+}</div>
+    <div class="code-output">Enter strength reading 1: 28
+Enter strength reading 2: 31
+Enter strength reading 3: 27
+Enter strength reading 4: 30
+Enter strength reading 5: 29
+Average strength: 29 MPa
+Result: Marginal — Monitor closely.</div>
+  </div>
+
+  <div class="callout success"><span class="callout-icon">✅</span><div class="callout-body"><strong>You are now ready for the Lab!</strong> You have completed the 3-hour lecture. In the laboratory session, you will write pseudocode, draw flowcharts, and implement C++ programs for the practical tasks. Use the Design → Code process you learned here.</div></div>
+</div>
+
+</div><!-- end content -->
+</div><!-- end main-wrap -->
+
+<script>
+function jumpTo(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const offset=66+48+16;
+  const top=el.getBoundingClientRect().top+window.scrollY-offset;
+  window.scrollTo({top,behavior:'smooth'});
+}
+
+// Sidebar active tracking
+const sections=document.querySelectorAll('.lesson-section');
+const sbItems=document.querySelectorAll('.sb-item[id]');
+window.addEventListener('scroll',()=>{
+  let current='';
+  sections.forEach(s=>{
+    if(s.getBoundingClientRect().top<160) current=s.id.replace('sec-','');
+  });
+  sbItems.forEach(item=>{
+    item.classList.remove('active');
+    item.querySelector('.sb-dot').style.background='var(--border)';
+  });
+  const active=document.getElementById('sb-'+current);
+  if(active){
+    active.classList.add('active');
+    active.querySelector('.sb-dot').style.background='var(--accent)';
+  }
+},{passive:true});
+</script>
+</body>
+</html>
+
+</div><!-- end content -->
+</div><!-- end main-wrap -->
+
+<script>
+function jumpTo(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const offset=66+48+16;
+  const top=el.getBoundingClientRect().top+window.scrollY-offset;
+  window.scrollTo({top,behavior:'smooth'});
+}
+
+// Sidebar active tracking
+const sections=document.querySelectorAll('.lesson-section');
+const sbItems=document.querySelectorAll('.sb-item[id]');
+window.addEventListener('scroll',()=>{
+  let current='';
+  sections.forEach(s=>{
+    if(s.getBoundingClientRect().top<160) current=s.id.replace('sec-','');
+  });
+  sbItems.forEach(item=>{
+    item.classList.remove('active');
+    item.querySelector('.sb-dot').style.background='var(--border)';
+  });
+  const active=document.getElementById('sb-'+current);
+  if(active){
+    active.classList.add('active');
+    active.querySelector('.sb-dot').style.background='var(--accent)';
+  }
+},{passive:true});
+</script>
+</body>
+</html>
