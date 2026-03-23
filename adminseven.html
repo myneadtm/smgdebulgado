@@ -230,6 +230,67 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
 /* Status grid */
 .status-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;}
+
+/* PERIOD POPUP MODAL (admin) */
+#admin-period-modal{display:none;position:fixed;inset:0;z-index:9000;
+  background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;padding:16px;}
+#admin-period-modal.show{display:flex;}
+.apm-box{background:var(--s1);border:1.5px solid var(--border2);border-radius:20px;
+  width:100%;max-width:560px;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 24px 80px rgba(0,0,0,0.7);}
+.apm-top{height:3px;}
+.apm-head{padding:18px 22px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.apm-title{font-size:1rem;font-weight:800;}
+.apm-close{background:var(--s2);border:1px solid var(--border);border-radius:8px;
+  width:28px;height:28px;cursor:pointer;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all 0.2s;}
+.apm-close:hover{color:var(--red);border-color:var(--red);}
+.apm-body{padding:18px 22px;overflow-y:auto;flex:1;}
+
+/* Period tabs */
+.apm-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+.apm-tab{padding:7px 16px;border-radius:8px;font-size:0.78rem;font-weight:700;
+  cursor:pointer;border:1.5px solid var(--border2);background:var(--s2);
+  color:var(--muted);transition:all 0.18s;user-select:none;}
+.apm-tab:hover{color:var(--text);}
+.apm-tab.active{color:var(--text);border-color:var(--accent);background:rgba(249,195,58,0.08);}
+
+/* Week section */
+.apm-week{margin-bottom:16px;}
+.apm-week-title{font-size:0.62rem;font-weight:800;color:var(--purple);
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;}
+.apm-week-title::after{content:'';flex:1;height:1px;background:rgba(168,85,247,0.2);}
+.apm-rows{display:flex;flex-direction:column;gap:6px;}
+.apm-row{display:flex;align-items:center;justify-content:space-between;
+  background:var(--s2);border-radius:10px;padding:10px 14px;}
+.apm-row-left{display:flex;align-items:center;gap:10px;}
+.apm-row-icon{font-size:1rem;width:22px;text-align:center;flex-shrink:0;}
+.apm-row-lbl{font-size:0.82rem;color:var(--muted);}
+.apm-row-right{display:flex;align-items:center;gap:8px;}
+.apm-score{font-size:0.88rem;font-weight:800;font-family:var(--mono);}
+.apm-pct{font-size:0.76rem;font-weight:700;font-family:var(--mono);}
+.as-hi{color:var(--green);}.as-mid{color:var(--accent);}.as-lo{color:var(--red);}.as-na{color:var(--dim);}
+.apm-badge{font-size:0.62rem;font-weight:700;padding:2px 8px;border-radius:10px;}
+.ab-pass{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.2);}
+.ab-fail{background:rgba(249,58,122,0.1);color:var(--red);border:1px solid rgba(249,58,122,0.2);}
+.ab-na{background:rgba(90,116,153,0.1);color:var(--muted);border:1px solid var(--border);}
+.apm-lesson-row{background:rgba(59,130,246,0.04);border:1px dashed rgba(59,130,246,0.15);}
+
+/* Period buttons in status grid */
+.period-btn-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:4px;}
+.period-btn{background:var(--s2);border:1.5px solid var(--border2);border-radius:12px;
+  padding:14px 10px;text-align:center;cursor:pointer;transition:all 0.22s;position:relative;overflow:hidden;}
+.period-btn::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.pb-prelim::after{background:linear-gradient(90deg,var(--blue),var(--cyan));}
+.pb-mid::after{background:linear-gradient(90deg,var(--purple),var(--cyan));}
+.pb-finals::after{background:linear-gradient(90deg,var(--green),var(--blue));}
+.period-btn:hover{transform:translateY(-2px);border-color:rgba(168,85,247,0.4);}
+.pb-icon{font-size:1.2rem;margin-bottom:6px;}
+.pb-name{font-size:0.62rem;font-weight:800;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;}
+.pb-count{font-size:0.7rem;color:var(--dim);margin-top:3px;}
 .status-cell{background:var(--s2);border-radius:10px;padding:12px 14px;}
 .sc-lbl{font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
 .sc-val{font-size:0.9rem;font-weight:800;font-family:var(--mono);}
@@ -296,6 +357,58 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 /* EXPORT BTN */
 .btn-export{border-color:rgba(58,249,195,0.35);color:var(--green);background:rgba(58,249,195,0.05);}
 .btn-export:hover{background:rgba(58,249,195,0.1);}
+
+/* MERGE PANEL */
+.merge-strip{background:rgba(34,211,238,0.05);border:1.5px solid rgba(34,211,238,0.25);
+  border-radius:12px;padding:14px 16px;margin-top:10px;}
+.merge-strip-title{font-size:0.7rem;font-weight:800;color:var(--cyan);
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.merge-search-row{display:flex;gap:8px;margin-bottom:10px;}
+.merge-search-in{flex:1;background:var(--s1);border:1.5px solid var(--border2);border-radius:8px;
+  padding:8px 12px;color:var(--text);font-family:var(--font);font-size:0.82rem;outline:none;
+  transition:border-color 0.2s;}
+.merge-search-in:focus{border-color:var(--cyan);}
+.merge-search-in::placeholder{color:var(--dim);}
+.btn-merge-search{background:var(--s2);border:1.5px solid var(--border2);border-radius:8px;
+  padding:8px 14px;color:var(--text);font-family:var(--font);font-weight:700;
+  font-size:0.78rem;cursor:pointer;transition:all 0.2s;flex-shrink:0;}
+.btn-merge-search:hover{border-color:var(--cyan);color:var(--cyan);}
+.merge-results{display:flex;flex-direction:column;gap:5px;max-height:160px;overflow-y:auto;margin-bottom:8px;}
+.merge-result-item{display:flex;align-items:center;gap:10px;background:var(--s2);
+  border:1.5px solid var(--border2);border-radius:8px;padding:8px 12px;
+  cursor:pointer;transition:all 0.18s;font-size:0.8rem;}
+.merge-result-item:hover{border-color:var(--cyan);background:rgba(34,211,238,0.05);}
+.merge-result-item.selected{border-color:var(--cyan);background:rgba(34,211,238,0.08);}
+.mri-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--blue));
+  display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:#fff;flex-shrink:0;}
+.mri-info{flex:1;min-width:0;}
+.mri-name{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mri-sub{font-size:0.68rem;color:var(--muted);}
+.mri-badges{display:flex;gap:3px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
+.mrib{font-size:0.55rem;font-weight:700;padding:1px 5px;border-radius:5px;}
+.mrib-y{background:rgba(58,249,195,0.12);color:var(--green);border:1px solid rgba(58,249,195,0.2);}
+.mrib-n{background:rgba(90,116,153,0.1);color:var(--dim);border:1px solid var(--border);}
+.merge-preview{background:var(--s1);border:1.5px solid rgba(34,211,238,0.2);border-radius:10px;
+  padding:12px 14px;margin-bottom:8px;}
+.mp-preview-title{font-size:0.62rem;font-weight:800;color:var(--cyan);letter-spacing:1.5px;
+  text-transform:uppercase;margin-bottom:8px;}
+.mp-check-row{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.mp-check-item{display:flex;align-items:center;gap:8px;font-size:0.8rem;}
+.mp-check-item input[type=checkbox]{accent-color:var(--cyan);width:14px;height:14px;cursor:pointer;}
+.mp-check-label{flex:1;}
+.mp-check-badge{font-size:0.62rem;font-weight:700;padding:1px 7px;border-radius:6px;}
+.mp-check-has{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.2);}
+.mp-check-no{background:rgba(90,116,153,0.1);color:var(--dim);border:1px solid var(--border);}
+.btn-do-merge{width:100%;background:linear-gradient(135deg,var(--cyan),var(--blue));
+  color:#000;border:none;border-radius:8px;padding:10px;font-family:var(--font);
+  font-weight:800;font-size:0.82rem;cursor:pointer;transition:all 0.2s;margin-top:4px;}
+.btn-do-merge:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(34,211,238,0.3);}
+.btn-do-merge:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.merge-msg{font-size:0.76rem;text-align:center;margin-top:6px;min-height:16px;}
+.btn-merge-toggle{background:rgba(34,211,238,0.07);border:1.5px solid rgba(34,211,238,0.3);
+  border-radius:8px;padding:6px 14px;color:var(--cyan);font-family:var(--font);font-weight:700;
+  font-size:0.74rem;cursor:pointer;transition:all 0.2s;margin-top:2px;width:100%;}
+.btn-merge-toggle:hover{background:rgba(34,211,238,0.12);}
 
 /* COURSE CARDS */
 .course-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;
@@ -468,7 +581,7 @@ import { getFirestore, collection, getDocs, doc, getDoc, setDoc, deleteDoc, serv
                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
+   apiKey: "AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
   authDomain: "cfp2526-database.firebaseapp.com",
   projectId: "cfp2526-database",
   storageBucket: "cfp2526-database.firebasestorage.app",
@@ -825,13 +938,40 @@ window.openModal = function(uid) {
       </div>
     </div>
 
-    <div class="ms-title">📝 Assessment Status</div>
-    <div class="status-grid">
-      ${scoreCell('W1 Quiz',r.q1)}${scoreCell('W2 Quiz',r.q2)}
-      ${scoreCell('W1 Practical',r.p1)}${scoreCell('W2 Practical',r.p2)}
+    <div class="ms-title">📝 Assessment Status — Click a Period</div>
+    <div class="period-btn-grid">
+      <div class="period-btn pb-prelim" onclick="openAdminPeriod('${uid}','prelim')">
+        <div class="pb-icon">📘</div>
+        <div class="pb-name">Prelim</div>
+        <div class="pb-count">—</div>
+      </div>
+      <div class="period-btn pb-mid" onclick="openAdminPeriod('${uid}','midterm')">
+        <div class="pb-icon">📗</div>
+        <div class="pb-name">Midterm</div>
+        <div class="pb-count">${[r.q1,r.p1,r.q2,r.p2].filter(Boolean).length}/4 done</div>
+      </div>
+      <div class="period-btn pb-finals" onclick="openAdminPeriod('${uid}','finals')">
+        <div class="pb-icon">📙</div>
+        <div class="pb-name">Finals</div>
+        <div class="pb-count">—</div>
+      </div>
     </div>
 
     ${fbHtml}
+
+    <div class="ms-title">🔗 Copy Submissions from Another Account</div>
+    <button class="btn-merge-toggle" onclick="toggleMergePanel('${uid}')">🔗 Open Merge Tool — copy W1/W2 quiz &amp; practical from a duplicate account</button>
+    <div id="merge-panel-${uid}" style="display:none;margin-top:8px;">
+      <div class="merge-strip">
+        <div class="merge-strip-title">🔗 Merge Submissions Into This Account</div>
+        <div class="merge-search-row">
+          <input class="merge-search-in" id="merge-srch-${uid}" placeholder="Search by name or student ID…" oninput="searchMergeSource('${uid}')">
+        </div>
+        <div class="merge-results" id="merge-results-${uid}"></div>
+        <div id="merge-preview-${uid}"></div>
+        <div class="merge-msg" id="merge-msg-${uid}"></div>
+      </div>
+    </div>
 
     <div class="ms-title">📚 Select Subject to Enter Grades</div>
     <div class="ms-subj-list">${subjectRows}</div>
@@ -1049,6 +1189,279 @@ window.executeDelete = async function() {
   setTimeout(()=>toast.remove(), 3000);
 };
 
+// ── MERGE SUBMISSIONS ──
+let _mergeSelectedSource = {}; // uid → source record
+
+window.toggleMergePanel = function(uid) {
+  const panel = g('merge-panel-'+uid);
+  if (!panel) return;
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'block';
+  if (!isOpen) {
+    const inp = g('merge-srch-'+uid);
+    if(inp) { inp.value=''; }
+    const res = g('merge-results-'+uid);
+    if(res) res.innerHTML='<div style="font-size:0.76rem;color:var(--muted);text-align:center;padding:6px">Type a name or student ID to search…</div>';
+    const prev = g('merge-preview-'+uid);
+    if(prev) prev.innerHTML='';
+    _mergeSelectedSource[uid]=null;
+  }
+};
+
+window.searchMergeSource = function(targetUid) {
+  const q = (g('merge-srch-'+targetUid)?.value||'').toLowerCase().trim();
+  const container = g('merge-results-'+targetUid);
+  if(!container) return;
+  if(!q) {
+    container.innerHTML='<div style="font-size:0.76rem;color:var(--muted);text-align:center;padding:6px">Type a name or student ID to search…</div>';
+    return;
+  }
+  const matches = Object.values(allData).filter(r => {
+    if(r.uid===targetUid) return false;
+    const txt=[r.name,r.gmail,r.studentId].join(' ').toLowerCase();
+    return txt.includes(q);
+  }).slice(0,8);
+  if(!matches.length){
+    container.innerHTML='<div style="font-size:0.76rem;color:var(--muted);text-align:center;padding:8px">No students found.</div>';
+    return;
+  }
+  container.innerHTML = matches.map(r => {
+    const init=(r.firstName||r.name||'?')[0].toUpperCase();
+    const badges=[
+      r.q1?'<span class="mrib mrib-y">Q1✓</span>':'<span class="mrib mrib-n">Q1—</span>',
+      r.q2?'<span class="mrib mrib-y">Q2✓</span>':'<span class="mrib mrib-n">Q2—</span>',
+      r.p1?'<span class="mrib mrib-y">P1✓</span>':'<span class="mrib mrib-n">P1—</span>',
+      r.p2?'<span class="mrib mrib-y">P2✓</span>':'<span class="mrib mrib-n">P2—</span>',
+      r.fb?'<span class="mrib mrib-y">FB✓</span>':'',
+    ].join('');
+    const selectedClass = (_mergeSelectedSource[targetUid]?.uid===r.uid)?' selected':'';
+    return `<div class="merge-result-item${selectedClass}" onclick="selectMergeSource('${targetUid}','${r.uid}')">
+      <div class="mri-av">${esc(init)}</div>
+      <div class="mri-info">
+        <div class="mri-name">${esc(r.name||r.gmail)}</div>
+        <div class="mri-sub">${esc(r.studentId||'—')} · ${esc(r.course?r.course.split(' ').slice(-1)[0]:'—')}</div>
+      </div>
+      <div class="mri-badges">${badges}</div>
+    </div>`;
+  }).join('');
+};
+
+window.selectMergeSource = function(targetUid, sourceUid) {
+  const src = allData[sourceUid];
+  const tgt = allData[targetUid];
+  if(!src||!tgt) return;
+  _mergeSelectedSource[targetUid] = src;
+
+  // Re-render results to show selection
+  searchMergeSource(targetUid);
+
+  const fields = [
+    {key:'q1', label:'W1 Theory Quiz',  col:'quiz_submissions'},
+    {key:'q2', label:'W2 Theory Quiz',  col:'quiz2_submissions'},
+    {key:'p1', label:'W1 Practical',    col:'practical_submissions'},
+    {key:'p2', label:'W2 Practical',    col:'practical2_submissions'},
+    {key:'fb', label:'Feedback',        col:'quiz_feedback'},
+  ];
+
+  const rows = fields.map(f => {
+    const srcHas = !!src[f.key];
+    const tgtHas = !!tgt[f.key];
+    const disabled = !srcHas ? 'disabled' : '';
+    const chkId = `mchk-${targetUid}-${f.key}`;
+    const badge = srcHas
+      ? `<span class="mp-check-badge mp-check-has">Source has ✓</span>`
+      : `<span class="mp-check-badge mp-check-no">Source empty</span>`;
+    const tgtBadge = tgtHas
+      ? `<span style="font-size:0.6rem;color:var(--accent);margin-left:4px;">(will overwrite)</span>`
+      : '';
+    return `<div class="mp-check-item">
+      <input type="checkbox" id="${chkId}" ${srcHas?'checked':''} ${disabled}>
+      <label class="mp-check-label" for="${chkId}">${esc(f.label)}${tgtBadge}</label>
+      ${badge}
+    </div>`;
+  }).join('');
+
+  g('merge-preview-'+targetUid).innerHTML = `
+    <div class="merge-preview">
+      <div class="mp-preview-title">📋 Select what to copy from "${esc(src.name||src.gmail)}"</div>
+      <div class="mp-check-row">${rows}</div>
+      <button class="btn-do-merge" id="btn-do-merge-${targetUid}" onclick="executeMerge('${targetUid}','${sourceUid}')">
+        ⚡ Copy Selected into This Account
+      </button>
+    </div>`;
+};
+
+window.executeMerge = async function(targetUid, sourceUid) {
+  const src = allData[sourceUid];
+  const tgt = allData[targetUid];
+  if(!src||!tgt) return;
+
+  const btn = g('btn-do-merge-'+targetUid);
+  const msg = g('merge-msg-'+targetUid);
+  if(btn) { btn.disabled=true; btn.textContent='⟳ Copying…'; }
+  if(msg) msg.textContent='';
+
+  const fieldMap = [
+    {key:'q1', col:'quiz_submissions'},
+    {key:'q2', col:'quiz2_submissions'},
+    {key:'p1', col:'practical_submissions'},
+    {key:'p2', col:'practical2_submissions'},
+    {key:'fb', col:'quiz_feedback'},
+  ];
+
+  const copied=[], skipped=[];
+  try {
+    for(const f of fieldMap) {
+      const chk = document.getElementById(`mchk-${targetUid}-${f.key}`);
+      if(!chk || !chk.checked) { skipped.push(f.key); continue; }
+      if(!src[f.key]) { skipped.push(f.key); continue; }
+      const data = {...src[f.key]};
+      // Update identifiers to match target account
+      if(data.gmail !== undefined) data.gmail = tgt.gmail||data.gmail;
+      if(data.name  !== undefined) data.name  = tgt.name||data.name;
+      if(data.studentNo !== undefined) data.studentNo = tgt.studentId||data.studentNo;
+      await setDoc(doc(db, f.col, targetUid), data, {merge:true});
+      allData[targetUid][f.key] = data;
+      copied.push(f.key.toUpperCase());
+    }
+    if(msg) {
+      msg.className='merge-msg save-ok';
+      msg.textContent = copied.length
+        ? `✅ Copied: ${copied.join(', ')} → refresh to see updated cards.`
+        : '⚠ Nothing was copied — check selections.';
+    }
+    if(btn) { btn.textContent='⚡ Copy Selected into This Account'; btn.disabled=false; }
+    renderCards();
+  } catch(e) {
+    if(msg) { msg.className='merge-msg save-err'; msg.textContent='❌ '+e.message; }
+    if(btn) { btn.textContent='⚡ Copy Selected into This Account'; btn.disabled=false; }
+  }
+};
+
+// ── ADMIN PERIOD DETAIL ──
+const PERIOD_MAP = {
+  prelim:  { label:'📘 Prelim Period',   color:'linear-gradient(90deg,#3b82f6,#22d3ee)', weeks:[] },
+  midterm: { label:'📗 Midterm Period',  color:'linear-gradient(90deg,#a855f7,#22d3ee)', weeks:['Week 1','Week 2'] },
+  finals:  { label:'📙 Finals Period',   color:'linear-gradient(90deg,#3af9c3,#3b82f6)', weeks:[] },
+};
+
+// Week → data mapping
+const WEEK_DATA = (r) => ({
+  'Week 1': {
+    lesson:    { done: true,  label:'Week 1 Lesson',    link:'lesson.html' },
+    quiz:      r.q1 ? { done:true, label:'W1 Theory Quiz', score:r.q1.score, pct:r.q1.percent, ts:r.q1.timestamp } : null,
+    practical: r.p1 ? { done:true, label:'W1 Practical',   score:r.p1.score, pct:r.p1.percent, ts:r.p1.timestamp, time:r.p1.timeTaken } : null,
+  },
+  'Week 2': {
+    lesson:    { done: true,  label:'Week 2 Lesson',    link:'lesson2.html' },
+    quiz:      r.q2 ? { done:true, label:'W2 Theory Quiz', score:r.q2.score, pct:r.q2.percent, ts:r.q2.timestamp } : null,
+    practical: r.p2 ? { done:true, label:'W2 Practical',   score:r.p2.score, pct:r.p2.percent, ts:r.p2.timestamp, time:r.p2.timeTaken } : null,
+  },
+});
+
+const scoreColor = pct => {
+  const n = parseFloat((pct||'0').replace('%',''));
+  return n>=75?'as-hi':n>=50?'as-mid':n>0?'as-lo':'as-na';
+};
+const scoreBadge = pct => {
+  const n = parseFloat((pct||'0').replace('%',''));
+  return n>=75?'<span class="apm-badge ab-pass">Passed</span>':
+         n>0  ?'<span class="apm-badge ab-fail">Failed</span>':
+               '<span class="apm-badge ab-na">Not submitted</span>';
+};
+
+window.openAdminPeriod = function(uid, period) {
+  const r = allData[uid];
+  if(!r) return;
+  const pm  = PERIOD_MAP[period];
+  if(!pm) return;
+  const wd  = WEEK_DATA(r);
+
+  g('apm-title').textContent = pm.label;
+  g('apm-top-bar').style.background = pm.color;
+
+  let html = '';
+  pm.weeks.forEach(wk => {
+    const w = wd[wk];
+    if(!w) return;
+    html += `<div class="apm-week">
+      <div class="apm-week-title">${wk}</div>
+      <div class="apm-rows">`;
+
+    // Lesson row
+    html += `<div class="apm-row apm-lesson-row">
+      <div class="apm-row-left">
+        <span class="apm-row-icon">📖</span>
+        <span class="apm-row-lbl">${esc(w.lesson.label)}</span>
+      </div>
+      <span class="apm-badge" style="background:rgba(59,130,246,0.1);color:var(--blue);border:1px solid rgba(59,130,246,0.2);">Available</span>
+    </div>`;
+
+    // Quiz row
+    if(w.quiz) {
+      const sc = scoreColor(w.quiz.pct);
+      html += `<div class="apm-row">
+        <div class="apm-row-left">
+          <span class="apm-row-icon">📝</span>
+          <div>
+            <div class="apm-row-lbl">${esc(w.quiz.label)}</div>
+            <div style="font-size:0.68rem;color:var(--dim)">${(w.quiz.ts||'').split(',')[0]||'—'}</div>
+          </div>
+        </div>
+        <div class="apm-row-right">
+          <span class="apm-score ${sc}">${esc(w.quiz.score||'—')}</span>
+          <span class="apm-pct ${sc}">${esc(w.quiz.pct||'—')}</span>
+          ${scoreBadge(w.quiz.pct)}
+        </div>
+      </div>`;
+    } else {
+      html += `<div class="apm-row">
+        <div class="apm-row-left">
+          <span class="apm-row-icon">📝</span>
+          <span class="apm-row-lbl">${wk} Theory Quiz</span>
+        </div>
+        <span class="apm-badge ab-na">Not submitted</span>
+      </div>`;
+    }
+
+    // Practical row
+    if(w.practical) {
+      const sc = scoreColor(w.practical.pct);
+      html += `<div class="apm-row">
+        <div class="apm-row-left">
+          <span class="apm-row-icon">💻</span>
+          <div>
+            <div class="apm-row-lbl">${esc(w.practical.label)}</div>
+            <div style="font-size:0.68rem;color:var(--dim)">${w.practical.time?'⏱ '+esc(w.practical.time)+' · ':''} ${(w.practical.ts||'').split(',')[0]||'—'}</div>
+          </div>
+        </div>
+        <div class="apm-row-right">
+          <span class="apm-score ${sc}">${esc(w.practical.score||'—')}</span>
+          <span class="apm-pct ${sc}">${esc(w.practical.pct||'—')}</span>
+          ${scoreBadge(w.practical.pct)}
+        </div>
+      </div>`;
+    } else {
+      html += `<div class="apm-row">
+        <div class="apm-row-left">
+          <span class="apm-row-icon">💻</span>
+          <span class="apm-row-lbl">${wk} Practical</span>
+        </div>
+        <span class="apm-badge ab-na">Not submitted</span>
+      </div>`;
+    }
+
+    html += `</div></div>`;
+  });
+
+  g('apm-body').innerHTML = html;
+  g('admin-period-modal').classList.add('show');
+};
+
+window.closeAdminPeriod = function() {
+  g('admin-period-modal').classList.remove('show');
+};
+
 // ── CLOSE MODAL ──
 window.closeModal = () => g('modal-ov').classList.remove('show');
 window.closeModalBg = e => { if(e.target===g('modal-ov')) closeModal(); };
@@ -1073,5 +1486,16 @@ window.exportCSV = function() {
   a.click();
 };
 </script>
+<!-- ADMIN PERIOD DETAIL MODAL -->
+<div id="admin-period-modal" onclick="if(event.target===this)closeAdminPeriod()">
+  <div class="apm-box">
+    <div class="apm-top" id="apm-top-bar"></div>
+    <div class="apm-head">
+      <div class="apm-title" id="apm-title">Assessment Details</div>
+      <div class="apm-close" onclick="closeAdminPeriod()">✕</div>
+    </div>
+    <div class="apm-body" id="apm-body"></div>
+  </div>
+</div>
 </body>
 </html>
