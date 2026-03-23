@@ -423,6 +423,106 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   line-height:1.4;text-transform:uppercase;}
 .cc-sub{font-size:0.62rem;color:var(--dim);margin-top:3px;}
 
+/* ── CURRICULUM MANAGER ── */
+.cm-panel{background:var(--s1);border:1.5px solid var(--border2);border-radius:18px;
+  padding:24px;margin-bottom:28px;position:relative;overflow:hidden;}
+.cm-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent));}
+.cm-title{font-size:0.64rem;font-weight:800;color:var(--purple);letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+
+/* Curriculum selectors row */
+.cm-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:18px;}
+.cm-group{display:flex;flex-direction:column;gap:5px;flex:1;min-width:150px;}
+.cm-label{font-size:0.62rem;font-weight:700;color:var(--muted);letter-spacing:0.5px;}
+.cm-select{background:var(--s2);border:1.5px solid var(--border2);border-radius:10px;
+  padding:10px 13px;color:var(--text);font-family:var(--font);font-size:0.84rem;
+  outline:none;cursor:pointer;transition:border-color 0.2s;width:100%;}
+.cm-select:focus{border-color:var(--purple);}
+.cm-select option{background:var(--s2);}
+
+/* Drop zone */
+.cm-dropzone{border:2px dashed var(--border2);border-radius:14px;
+  padding:32px 20px;text-align:center;cursor:pointer;
+  transition:all 0.25s;background:var(--s2);margin-bottom:16px;}
+.cm-dropzone:hover,.cm-dropzone.drag{border-color:var(--purple);
+  background:rgba(168,85,247,0.06);}
+.cm-dz-icon{font-size:2.4rem;margin-bottom:10px;}
+.cm-dz-t{font-size:0.88rem;font-weight:700;margin-bottom:4px;}
+.cm-dz-s{font-size:0.72rem;color:var(--muted);}
+.cm-file-input{display:none;}
+.cm-selected-files{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.cm-sf-item{display:flex;align-items:center;gap:10px;
+  background:var(--s3);border-radius:8px;padding:8px 12px;}
+.cm-sf-icon{font-size:1rem;flex-shrink:0;}
+.cm-sf-name{flex:1;font-size:0.78rem;font-weight:600;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cm-sf-size{font-size:0.68rem;color:var(--muted);flex-shrink:0;}
+.cm-sf-rm{background:rgba(249,58,122,0.12);color:var(--red);border:none;
+  border-radius:6px;padding:3px 8px;font-size:0.72rem;cursor:pointer;flex-shrink:0;}
+.cm-sf-rm:hover{background:rgba(249,58,122,0.22);}
+
+/* Upload progress */
+.cm-prog-wrap{margin-bottom:10px;}
+.cm-prog-label{font-size:0.72rem;color:var(--muted);margin-bottom:4px;}
+.cm-prog-track{background:var(--s3);border-radius:4px;height:6px;overflow:hidden;}
+.cm-prog-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--purple),var(--cyan));
+  transition:width 0.3s ease;width:0%;}
+
+.btn-upload{background:linear-gradient(135deg,var(--purple),var(--blue));
+  color:#fff;border:none;border-radius:10px;padding:11px 26px;
+  font-family:var(--font);font-weight:800;font-size:0.86rem;cursor:pointer;
+  transition:all 0.2s;box-shadow:0 4px 16px rgba(168,85,247,0.3);}
+.btn-upload:hover{transform:translateY(-2px);}
+.btn-upload:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.cm-msg{font-size:0.78rem;margin-top:8px;min-height:18px;font-weight:600;}
+.cm-ok{color:var(--green);}.cm-err{color:var(--red);}
+
+/* Uploaded files list */
+.cm-files-hd{display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:10px;margin-top:4px;}
+.cm-files-title{font-size:0.62rem;font-weight:800;color:var(--cyan);
+  letter-spacing:2px;text-transform:uppercase;}
+.btn-cm-refresh{background:var(--s2);border:1.5px solid var(--border2);border-radius:8px;
+  padding:5px 12px;color:var(--muted);font-family:var(--font);font-weight:700;
+  font-size:0.72rem;cursor:pointer;transition:all 0.2s;}
+.btn-cm-refresh:hover{color:var(--cyan);border-color:rgba(34,211,238,0.4);}
+
+.cm-file-list{display:flex;flex-direction:column;gap:7px;max-height:360px;overflow-y:auto;}
+.cm-fl-item{display:flex;align-items:center;gap:12px;
+  background:var(--s2);border:1.5px solid var(--border2);border-radius:10px;padding:10px 14px;
+  transition:border-color 0.2s;}
+.cm-fl-item:hover{border-color:rgba(168,85,247,0.35);}
+.cm-fl-thumb{width:40px;height:40px;border-radius:8px;flex-shrink:0;
+  object-fit:cover;background:var(--s3);
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+.cm-fl-thumb img{width:40px;height:40px;border-radius:8px;object-fit:cover;}
+.cm-fl-info{flex:1;min-width:0;}
+.cm-fl-name{font-size:0.8rem;font-weight:700;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cm-fl-meta{font-size:0.65rem;color:var(--muted);margin-top:2px;}
+.cm-fl-badges{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;}
+.cm-fl-badge{font-size:0.58rem;font-weight:700;padding:2px 7px;border-radius:8px;}
+.cb-course{background:rgba(168,85,247,0.1);color:var(--purple);border:1px solid rgba(168,85,247,0.2);}
+.cb-subj{background:rgba(34,211,238,0.1);color:var(--cyan);border:1px solid rgba(34,211,238,0.2);}
+.cb-term{background:rgba(249,195,58,0.1);color:var(--accent);border:1px solid rgba(249,195,58,0.2);}
+.btn-cm-del{background:rgba(249,58,122,0.1);color:var(--red);border:1px solid rgba(249,58,122,0.25);
+  border-radius:7px;padding:5px 10px;font-family:var(--font);font-weight:700;
+  font-size:0.7rem;cursor:pointer;transition:all 0.2s;flex-shrink:0;}
+.btn-cm-del:hover{background:rgba(249,58,122,0.22);}
+.cm-empty-files{font-size:0.78rem;color:var(--dim);text-align:center;
+  padding:20px;font-style:italic;}
+
+/* Admin tab nav */
+.admin-tabs{display:flex;gap:8px;margin-bottom:24px;border-bottom:1px solid var(--border);
+  padding-bottom:0;}
+.admin-tab{padding:10px 20px;font-size:0.8rem;font-weight:700;cursor:pointer;
+  color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
+.admin-tab:hover{color:var(--text);}
+.admin-tab.on{color:var(--purple);border-bottom-color:var(--purple);}
+.admin-section{display:none;}
+.admin-section.on{display:block;}
+
 /* keep old stat CSS refs clean */
 @media(max-width:800px){
   .stat-row{grid-template-columns:1fr 1fr;}
@@ -482,6 +582,116 @@ window.onerror = function(msg, src, line, col, err) {
   </div>
 
   <div class="page">
+
+    <!-- ADMIN NAV TABS -->
+    <div class="admin-tabs">
+      <div class="admin-tab on" id="atab-students" onclick="switchAdminTab('students')">👥 Students</div>
+      <div class="admin-tab"    id="atab-curriculum" onclick="switchAdminTab('curriculum')">📁 Curriculum Manager</div>
+    </div>
+
+    <!-- ═══════ CURRICULUM MANAGER SECTION ═══════ -->
+    <div class="admin-section" id="asec-curriculum">
+
+      <div class="cm-panel">
+        <div class="cm-title">📁 Curriculum File Manager — Upload & Manage Student Files</div>
+
+        <!-- SELECTORS -->
+        <div class="cm-row">
+          <div class="cm-group">
+            <label class="cm-label">🎓 Course</label>
+            <select class="cm-select" id="cm-course" onchange="onCmCourseChange()">
+              <option value="">— Select Course —</option>
+              <option>BS IN ACCOUNTING INFORMATION SYSTEM</option>
+              <option>BS IN CRIMINOLOGY</option>
+              <option>BS IN HOSPITALITY MANAGEMENT</option>
+              <option>BS IN SOCIAL WORK</option>
+              <option>BS IN CIVIL ENGINEERING</option>
+              <option>BS IN SECONDARY EDUCATION</option>
+              <option>BACHELOR OF ELEMENTARY EDUCATION</option>
+            </select>
+          </div>
+          <div class="cm-group">
+            <label class="cm-label">📚 Subject</label>
+            <select class="cm-select" id="cm-subject">
+              <option value="">— Select Course First —</option>
+            </select>
+          </div>
+          <div class="cm-group">
+            <label class="cm-label">📋 Semester</label>
+            <select class="cm-select" id="cm-term">
+              <option value="">— Select Term —</option>
+              <option>1st Semester</option>
+              <option>2nd Semester</option>
+            </select>
+          </div>
+          <div class="cm-group" style="max-width:200px;">
+            <label class="cm-label">🏷 Display Name (optional)</label>
+            <input class="cm-select" id="cm-dispname" placeholder="e.g. Lecture Notes Week 1"
+              style="font-size:0.8rem;">
+          </div>
+        </div>
+
+        <!-- DROP ZONE -->
+        <div class="cm-dropzone" id="cm-dz"
+          onclick="document.getElementById('cm-file-input').click()"
+          ondragover="dzOver(event)" ondragleave="dzLeave()" ondrop="dzDrop(event)">
+          <div class="cm-dz-icon">📂</div>
+          <div class="cm-dz-t">Click to browse or drag files here</div>
+          <div class="cm-dz-s">Supports: PDF, JPG, PNG, JPEG, MP4, MOV, GIF, WEBP, DOC, DOCX, PPT, PPTX</div>
+        </div>
+        <input type="file" class="cm-file-input" id="cm-file-input" multiple
+          accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.mp4,.mov,.avi,.doc,.docx,.ppt,.pptx,.xlsx,.xls"
+          onchange="onFilesSelected(this.files)">
+
+        <!-- SELECTED FILES PREVIEW -->
+        <div class="cm-selected-files" id="cm-selected-files"></div>
+
+        <!-- PROGRESS -->
+        <div class="cm-prog-wrap" id="cm-prog-wrap" style="display:none;">
+          <div class="cm-prog-label" id="cm-prog-label">Uploading…</div>
+          <div class="cm-prog-track"><div class="cm-prog-fill" id="cm-prog-fill"></div></div>
+        </div>
+
+        <button class="btn-upload" id="btn-cm-upload" onclick="uploadCurriculumFiles()">
+          ⬆ Upload Files
+        </button>
+        <div class="cm-msg" id="cm-msg"></div>
+      </div>
+
+      <!-- UPLOADED FILES LIST -->
+      <div class="cm-panel">
+        <div class="cm-files-hd">
+          <div class="cm-files-title">📋 Uploaded Curriculum Files</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <select class="cm-select" id="cm-filter-course" style="font-size:0.74rem;padding:6px 10px;min-width:160px;"
+              onchange="loadExistingFiles()">
+              <option value="">All Courses</option>
+              <option>BS IN ACCOUNTING INFORMATION SYSTEM</option>
+              <option>BS IN CRIMINOLOGY</option>
+              <option>BS IN HOSPITALITY MANAGEMENT</option>
+              <option>BS IN SOCIAL WORK</option>
+              <option>BS IN CIVIL ENGINEERING</option>
+              <option>BS IN SECONDARY EDUCATION</option>
+              <option>BACHELOR OF ELEMENTARY EDUCATION</option>
+            </select>
+            <select class="cm-select" id="cm-filter-term" style="font-size:0.74rem;padding:6px 10px;min-width:130px;"
+              onchange="loadExistingFiles()">
+              <option value="">All Semesters</option>
+              <option>1st Semester</option>
+              <option>2nd Semester</option>
+            </select>
+            <button class="btn-cm-refresh" onclick="loadExistingFiles()">🔄 Refresh</button>
+          </div>
+        </div>
+        <div class="cm-file-list" id="cm-file-list">
+          <div class="cm-empty-files">Select the Curriculum Manager tab to load files.</div>
+        </div>
+      </div>
+
+    </div><!-- /asec-curriculum -->
+
+    <!-- ═══════ STUDENTS SECTION ═══════ -->
+    <div class="admin-section on" id="asec-students">
 
     <!-- FILTER CARD -->
     <div class="filter-card">
@@ -558,8 +768,9 @@ window.onerror = function(msg, src, line, col, err) {
       <div class="ld"><span class="spin">⟳</span> Loading students...</div>
     </div>
 
-  </div>
-</div>
+  </div><!-- /asec-students -->
+  </div><!-- /page -->
+</div><!-- /admin-main -->
 
 <!-- STUDENT MODAL -->
 <div id="modal-ov" onclick="closeModalBg(event)">
@@ -577,7 +788,7 @@ window.onerror = function(msg, src, line, col, err) {
 <script type="module">
 import { initializeApp }  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth }        from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, collection, getDocs, doc, getDoc, setDoc, deleteDoc, serverTimestamp }
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc, deleteDoc, serverTimestamp, query, where }
                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -1462,8 +1673,309 @@ window.closeAdminPeriod = function() {
   g('admin-period-modal').classList.remove('show');
 };
 
-// ── CLOSE MODAL ──
-window.closeModal = () => g('modal-ov').classList.remove('show');
+// ── ADMIN TAB SWITCHING ──
+window.switchAdminTab = function(tab) {
+  ['students','curriculum'].forEach(t => {
+    g('atab-'+t)?.classList.toggle('on', t===tab);
+    g('asec-'+t)?.classList.toggle('on', t===tab);
+  });
+  if(tab==='curriculum') loadExistingFiles();
+};
+
+// ── SUBJECTS BY COURSE (matches curriculum.html) ──
+const CM_SUBJECTS = {
+  'BS IN CIVIL ENGINEERING': [
+    { id:'BSCE-MATH1', code:'MATH 1', name:'Mathematics in the Modern World' },
+    { id:'BSCE-PHYS1', code:'PHYS 1', name:'Physics for Engineers' },
+    { id:'BSCE-CE1',   code:'CE 1',   name:'Surveying' },
+    { id:'BSCE-DRAW1', code:'DRAW 1', name:'Engineering Drawing' },
+    { id:'BSCE-CE2',   code:'CE 2',   name:'Hydraulics' },
+  ],
+  'BS IN ACCOUNTING INFORMATION SYSTEM': [
+    { id:'BSAIS-ACC1', code:'ACC 1',  name:'Accounting Fundamentals' },
+    { id:'BSAIS-IT1',  code:'IT 1',   name:'Information Systems' },
+    { id:'BSAIS-FIN1', code:'FIN 1',  name:'Financial Accounting' },
+    { id:'BSAIS-BES',  code:'BES 125',name:'Computer Fundamentals' },
+  ],
+  'BS IN CRIMINOLOGY': [
+    { id:'BSCrim-CRIM1', code:'CRIM 1', name:'Introduction to Criminology' },
+    { id:'BSCrim-LAW1',  code:'LAW 1',  name:'Criminal Law' },
+    { id:'BSCrim-FOR1',  code:'FOR 1',  name:'Forensic Science' },
+  ],
+  'BS IN HOSPITALITY MANAGEMENT': [
+    { id:'BSHM-HM1', code:'HM 1', name:'Introduction to Hospitality' },
+    { id:'BSHM-FC1', code:'FC 1', name:'Food and Beverage Service' },
+    { id:'BSHM-HK1', code:'HK 1', name:'Housekeeping Operations' },
+  ],
+  'BS IN SOCIAL WORK': [
+    { id:'BSSW-SW1', code:'SW 1', name:'Introduction to Social Work' },
+    { id:'BSSW-SW2', code:'SW 2', name:'Social Welfare Administration' },
+  ],
+  'BS IN SECONDARY EDUCATION': [
+    { id:'BSEd-EDU1',  code:'EDU 1',  name:'Foundations of Education' },
+    { id:'BSEd-TCH1',  code:'TCH 1',  name:'Teaching Principles' },
+    { id:'BSEd-CURR1', code:'CURR 1', name:'Curriculum Development' },
+  ],
+  'BACHELOR OF ELEMENTARY EDUCATION': [
+    { id:'BEEd-EDU1',  code:'EDU 1',  name:'Child Development' },
+    { id:'BEEd-TCH1',  code:'TCH 1',  name:'Principles of Teaching' },
+    { id:'BEEd-MATH1', code:'MATH 1', name:'Elementary Mathematics' },
+  ],
+};
+
+window.onCmCourseChange = function() {
+  const course = g('cm-course').value;
+  const subj   = g('cm-subject');
+  const subjects = CM_SUBJECTS[course] || [];
+  if(!subjects.length){
+    subj.innerHTML = '<option value="">— Select Course First —</option>';
+    return;
+  }
+  subj.innerHTML = '<option value="">— Select Subject —</option>'
+    + subjects.map(s => `<option value="${esc(s.id)}">${esc(s.code)} — ${esc(s.name)}</option>`).join('');
+};
+
+// ── DROP ZONE ──
+let selectedFiles = [];
+
+window.dzOver = function(e) {
+  e.preventDefault();
+  g('cm-dz').classList.add('drag');
+};
+window.dzLeave = function() { g('cm-dz').classList.remove('drag'); };
+window.dzDrop  = function(e) {
+  e.preventDefault();
+  g('cm-dz').classList.remove('drag');
+  onFilesSelected(e.dataTransfer.files);
+};
+
+window.onFilesSelected = function(fileList) {
+  const newFiles = Array.from(fileList);
+  newFiles.forEach(f => {
+    if(!selectedFiles.find(x=>x.name===f.name && x.size===f.size)) selectedFiles.push(f);
+  });
+  renderSelectedFiles();
+  g('cm-file-input').value = '';
+};
+
+function renderSelectedFiles() {
+  const cont = g('cm-selected-files');
+  if(!selectedFiles.length){ cont.innerHTML=''; return; }
+  const fileTypeIcon = f => {
+    const ext = f.name.split('.').pop().toLowerCase();
+    if(f.type.startsWith('image/')) return '🖼️';
+    if(f.type.startsWith('video/')) return '🎬';
+    if(ext==='pdf') return '📄';
+    if(['doc','docx'].includes(ext)) return '📝';
+    if(['ppt','pptx'].includes(ext)) return '📊';
+    return '📎';
+  };
+  cont.innerHTML = selectedFiles.map((f,i) => `
+    <div class="cm-sf-item">
+      <span class="cm-sf-icon">${fileTypeIcon(f)}</span>
+      <span class="cm-sf-name">${esc(f.name)}</span>
+      <span class="cm-sf-size">${(f.size/1024/1024).toFixed(2)} MB</span>
+      <button class="cm-sf-rm" onclick="removeSelectedFile(${i})">✕</button>
+    </div>`).join('');
+}
+
+window.removeSelectedFile = function(idx) {
+  selectedFiles.splice(idx,1);
+  renderSelectedFiles();
+};
+
+// ── UPLOAD ──
+window.uploadCurriculumFiles = async function() {
+  const course   = g('cm-course').value;
+  const subjectId= g('cm-subject').value;
+  const term     = g('cm-term').value;
+  const dispName = g('cm-dispname').value.trim();
+  const msg      = g('cm-msg');
+
+  if(!course){ msg.className='cm-msg cm-err'; msg.textContent='⚠ Please select a course.'; return; }
+  if(!subjectId){ msg.className='cm-msg cm-err'; msg.textContent='⚠ Please select a subject.'; return; }
+  if(!term){ msg.className='cm-msg cm-err'; msg.textContent='⚠ Please select a semester.'; return; }
+  if(!selectedFiles.length){ msg.className='cm-msg cm-err'; msg.textContent='⚠ Please select at least one file.'; return; }
+
+  const btn = g('btn-cm-upload');
+  btn.disabled = true;
+  const progWrap = g('cm-prog-wrap');
+  const progFill = g('cm-prog-fill');
+  const progLbl  = g('cm-prog-label');
+  progWrap.style.display = 'block';
+  msg.textContent = '';
+
+  let uploaded = 0;
+  const errors = [];
+
+  for(let i=0; i<selectedFiles.length; i++){
+    const file = selectedFiles[i];
+    progLbl.textContent = `Uploading ${i+1}/${selectedFiles.length}: ${file.name}`;
+    progFill.style.width = `${Math.round(((i)/selectedFiles.length)*100)}%`;
+
+    try {
+      // Upload to Firebase Storage via REST API (no SDK import needed)
+      const bucket  = 'cfp2526-database.firebasestorage.app';
+      const path    = encodeURIComponent(`curriculum/${course}/${subjectId}/${term}/${Date.now()}_${file.name}`);
+      const upUrl   = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o?uploadType=media&name=${path}`;
+
+      const upRes = await fetch(upUrl, {
+        method:'POST',
+        headers:{'Content-Type': file.type || 'application/octet-stream'},
+        body: file
+      });
+      if(!upRes.ok) throw new Error(`Storage upload failed: ${upRes.status}`);
+      const upData = await upRes.json();
+
+      // Build public download URL
+      const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${path}?alt=media`;
+
+      // Save metadata to Firestore
+      await setDoc(doc(db,'curriculum_files', `${subjectId}_${term}_${Date.now()}_${i}`), {
+        course,
+        subjectId,
+        term,
+        fileName:    file.name,
+        displayName: dispName || file.name.replace(/\.[^.]+$/,''),
+        fileType:    file.type || '',
+        fileSize:    file.size,
+        url:         downloadUrl,
+        storagePath: decodeURIComponent(path),
+        uploadedAt:  serverTimestamp(),
+        uploadedBy:  'ADMIN — DEBULGADO S.M.G',
+      });
+
+      uploaded++;
+    } catch(e) {
+      errors.push(`${file.name}: ${e.message}`);
+    }
+  }
+
+  progFill.style.width = '100%';
+  btn.disabled = false;
+
+  if(uploaded > 0){
+    msg.className = 'cm-msg cm-ok';
+    msg.textContent = `✅ ${uploaded} file(s) uploaded successfully!${errors.length?' ('+errors.length+' failed)':''}`;
+    selectedFiles = [];
+    renderSelectedFiles();
+    g('cm-dispname').value = '';
+    setTimeout(() => { progWrap.style.display='none'; progFill.style.width='0'; }, 1500);
+    loadExistingFiles();
+  } else {
+    msg.className = 'cm-msg cm-err';
+    msg.textContent = '❌ Upload failed: ' + errors.join('; ');
+    progWrap.style.display='none';
+  }
+};
+
+// ── LOAD EXISTING FILES ──
+let _cmFiles = [];
+
+window.loadExistingFiles = async function() {
+  const listEl = g('cm-file-list');
+  if(!listEl) return;
+  listEl.innerHTML = '<div class="cm-empty-files"><span class="spin">⟳</span> Loading…</div>';
+
+  try {
+    const filterCourse = g('cm-filter-course')?.value || '';
+    const filterTerm   = g('cm-filter-term')?.value   || '';
+
+    let q2 = collection(db,'curriculum_files');
+    const snaps = await getDocs(q2);
+    _cmFiles = [];
+    snaps.forEach(d => _cmFiles.push({id:d.id,...d.data()}));
+
+    // Filter
+    let rows = _cmFiles;
+    if(filterCourse) rows = rows.filter(f=>f.course===filterCourse);
+    if(filterTerm)   rows = rows.filter(f=>f.term===filterTerm);
+
+    // Sort newest first
+    rows.sort((a,b)=>(b.uploadedAt?.seconds||0)-(a.uploadedAt?.seconds||0));
+
+    if(!rows.length){
+      listEl.innerHTML = '<div class="cm-empty-files">No curriculum files uploaded yet.</div>';
+      return;
+    }
+
+    listEl.innerHTML = rows.map(f => {
+      const ext  = (f.fileName||'').split('.').pop().toLowerCase();
+      const type = f.fileType||'';
+      const dt   = f.uploadedAt ? new Date(f.uploadedAt.seconds*1000).toLocaleDateString('en-PH',
+        {year:'numeric',month:'short',day:'numeric'}) : '—';
+
+      let ico = '📎';
+      let thumbInner = '';
+      if(type.startsWith('image/')){
+        ico = '🖼️';
+        thumbInner = `<img src="${esc(f.url)}" alt="" style="width:40px;height:40px;border-radius:8px;object-fit:cover;">`;
+      } else if(type.startsWith('video/')){
+        ico = '🎬';
+      } else if(ext==='pdf'){ ico='📄'; }
+      else if(['doc','docx'].includes(ext)){ ico='📝'; }
+      else if(['ppt','pptx'].includes(ext)){ ico='📊'; }
+
+      const thumb = thumbInner
+        ? `<div class="cm-fl-thumb">${thumbInner}</div>`
+        : `<div class="cm-fl-thumb">${ico}</div>`;
+
+      const courseShort = {'BS IN ACCOUNTING INFORMATION SYSTEM':'BSAIS','BS IN CRIMINOLOGY':'BSCrim',
+        'BS IN HOSPITALITY MANAGEMENT':'BSHM','BS IN SOCIAL WORK':'BSSW',
+        'BS IN CIVIL ENGINEERING':'BSCE','BS IN SECONDARY EDUCATION':'BSEd',
+        'BACHELOR OF ELEMENTARY EDUCATION':'BEEd'}[f.course]||f.course||'—';
+
+      // Find subject name
+      const subjList = CM_SUBJECTS[f.course]||[];
+      const subjInfo = subjList.find(s=>s.id===f.subjectId);
+      const subjLabel = subjInfo ? `${subjInfo.code}` : (f.subjectId||'—');
+
+      return `<div class="cm-fl-item">
+        ${thumb}
+        <div class="cm-fl-info">
+          <div class="cm-fl-name" title="${esc(f.fileName)}">${esc(f.displayName||f.fileName)}</div>
+          <div class="cm-fl-meta">${esc(ext.toUpperCase())} · ${(f.fileSize/1024/1024).toFixed(2)} MB · ${dt}</div>
+          <div class="cm-fl-badges">
+            <span class="cm-fl-badge cb-course">${esc(courseShort)}</span>
+            <span class="cm-fl-badge cb-subj">${esc(subjLabel)}</span>
+            <span class="cm-fl-badge cb-term">${esc(f.term||'—')}</span>
+          </div>
+        </div>
+        <button class="btn-cm-del" onclick="deleteCurriculumFile('${esc(f.id)}','${esc(f.storagePath||'')}','${esc(f.fileName)}')">🗑 Delete</button>
+      </div>`;
+    }).join('');
+
+  } catch(e){
+    listEl.innerHTML = `<div class="cm-empty-files" style="color:var(--red)">❌ ${esc(e.message)}</div>`;
+  }
+};
+
+// ── DELETE FILE ──
+window.deleteCurriculumFile = async function(docId, storagePath, fileName) {
+  if(!confirm(`Delete "${fileName}"? This cannot be undone.`)) return;
+  try {
+    // Delete from Firestore
+    await deleteDoc(doc(db,'curriculum_files',docId));
+
+    // Delete from Storage if path available
+    if(storagePath){
+      const bucket = 'cfp2526-database.firebasestorage.app';
+      const encoded = encodeURIComponent(storagePath);
+      await fetch(`https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encoded}`,
+        {method:'DELETE'}).catch(()=>{});
+    }
+
+    // Toast
+    const t=document.createElement('div');
+    t.textContent='✅ File deleted.';
+    t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--s1);border:1px solid var(--green);color:var(--green);padding:10px 22px;border-radius:10px;font-size:0.82rem;font-weight:700;z-index:9999;';
+    document.body.appendChild(t); setTimeout(()=>t.remove(),2500);
+    loadExistingFiles();
+  } catch(e){
+    alert('Delete failed: '+e.message);
+  }
+};
+
 window.closeModalBg = e => { if(e.target===g('modal-ov')) closeModal(); };
 
 // ── EXPORT CSV ──
