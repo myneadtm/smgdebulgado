@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Transactions — SMGDecode</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060b14;--s1:#0b1120;--s2:#101828;--s3:#1a2436;
+  --border:#1e2d42;--border2:#273648;
+  --accent:#f9c33a;--green:#3af9c3;--red:#f93a7a;
+  --purple:#a855f7;--cyan:#22d3ee;--blue:#3b82f6;
+  --orange:#fb923c;--teal:#14b8a6;--rose:#f43f5e;
+  --text:#e2eeff;--muted:#5a7499;--dim:#344868;
+  --sw:230px;--font:'Outfit',sans-serif;--mono:'Fira Code',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{min-height:100dvh;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(59,130,246,0.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,0.022) 1px,transparent 1px);
+  background-size:48px 48px;}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;
+  background:rgba(6,11,20,0.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 20px;gap:14px;}
+.tb-ham{width:34px;height:34px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;cursor:pointer;
+  border-radius:8px;transition:background 0.2s;flex-shrink:0;}
+.tb-ham:hover{background:var(--s2);}
+.tb-ham span{display:block;width:18px;height:2px;background:var(--muted);border-radius:2px;}
+.tb-brand{display:flex;align-items:center;gap:8px;}
+.tb-brand-ic{width:30px;height:30px;border-radius:8px;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:0.64rem;font-weight:700;color:#fff;flex-shrink:0;}
+.tb-brand-name{font-weight:900;font-size:0.9rem;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tb-brand-sub{font-size:0.58rem;color:var(--muted);}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.tb-user{display:flex;align-items:center;gap:7px;background:var(--s2);
+  border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:0.74rem;}
+.tb-uname{color:var(--text);font-weight:700;max-width:120px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.btn-lo{background:transparent;color:var(--muted);border:1px solid var(--border);
+  border-radius:8px;padding:5px 12px;font-family:var(--font);font-weight:600;
+  font-size:0.72rem;cursor:pointer;transition:all 0.2s;}
+.btn-lo:hover{color:var(--red);border-color:rgba(249,58,122,0.4);}
+
+/* LAYOUT */
+.layout{display:flex;padding-top:58px;min-height:100dvh;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sw);flex-shrink:0;position:fixed;
+  top:58px;left:0;bottom:0;z-index:200;overflow-y:auto;
+  background:var(--s1);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  transition:transform 0.3s cubic-bezier(.4,0,.2,1);}
+.sidebar.hide{transform:translateX(calc(-1 * var(--sw)));}
+
+.sb-prof{padding:20px 18px 16px;border-bottom:1px solid var(--border);}
+.sb-av{width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;font-weight:800;color:#fff;
+  border:2px solid rgba(168,85,247,0.4);margin-bottom:10px;
+  position:relative;overflow:hidden;}
+.sb-av img{width:48px;height:48px;border-radius:50%;object-fit:cover;display:block;}
+.sb-dot{position:absolute;bottom:1px;right:1px;width:10px;height:10px;
+  border-radius:50%;background:var(--green);border:2px solid var(--s1);}
+.sb-nm{font-size:0.82rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-em{font-size:0.64rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-ctag{display:inline-block;margin-top:5px;font-size:0.6rem;font-weight:700;
+  background:rgba(168,85,247,0.1);color:var(--purple);
+  border:1px solid rgba(168,85,247,0.2);border-radius:8px;padding:2px 8px;}
+
+.sb-nav{flex:1;padding:10px;}
+.sb-sec{font-size:0.58rem;font-weight:800;color:var(--dim);
+  letter-spacing:2px;text-transform:uppercase;padding:6px 8px 3px;}
+.sb-it{display:flex;align-items:center;gap:10px;padding:9px 12px;
+  border-radius:10px;cursor:pointer;transition:all 0.18s;
+  color:var(--muted);font-size:0.82rem;font-weight:600;margin-bottom:2px;}
+.sb-it:hover{background:var(--s2);color:var(--text);}
+.sb-it.on{background:linear-gradient(135deg,rgba(168,85,247,0.15),rgba(59,130,246,0.1));
+  color:var(--text);border:1px solid rgba(168,85,247,0.25);}
+.sb-it.on .si{color:var(--purple);}
+.si{font-size:1rem;width:20px;text-align:center;flex-shrink:0;}
+.sb-div{height:1px;background:var(--border);margin:8px 10px;}
+.sb-ft{padding:10px;border-top:1px solid var(--border);}
+.sb-ver{font-size:0.6rem;color:var(--dim);text-align:center;}
+
+/* MAIN */
+.main{flex:1;margin-left:var(--sw);transition:margin-left 0.3s cubic-bezier(.4,0,.2,1);
+  min-height:calc(100dvh - 58px);position:relative;z-index:1;}
+.main.full{margin-left:0;}
+
+/* CONTENT PADDING */
+.cpad{padding:32px 28px 80px;}
+.ph{margin-bottom:26px;}
+.ph-tag{font-size:0.6rem;font-weight:800;color:var(--muted);
+  letter-spacing:3px;text-transform:uppercase;margin-bottom:7px;}
+.ph-title{font-size:1.5rem;font-weight:900;letter-spacing:-0.3px;}
+.ph-title span{background:linear-gradient(90deg,var(--purple),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ph-sub{font-size:0.8rem;color:var(--muted);margin-top:5px;line-height:1.6;}
+
+/* FILTER */
+.fb{background:var(--s1);border:1.5px solid var(--border2);border-radius:16px;
+  padding:20px 22px;margin-bottom:26px;display:flex;align-items:flex-end;
+  gap:14px;flex-wrap:wrap;position:relative;overflow:hidden;}
+.fb::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent));}
+.fg{display:flex;flex-direction:column;gap:5px;flex:1;min-width:150px;}
+.fl{font-size:0.6rem;font-weight:800;color:var(--purple);letter-spacing:2px;text-transform:uppercase;}
+.fs{background:var(--s2);border:1.5px solid var(--border2);border-radius:10px;
+  padding:10px 12px;color:var(--text);font-family:var(--font);font-size:0.84rem;
+  outline:none;cursor:pointer;transition:border-color 0.2s;width:100%;}
+.fs:focus{border-color:var(--purple);}
+.fs option{background:var(--s2);}
+.btn-vw{background:linear-gradient(135deg,var(--purple),var(--blue));color:#fff;
+  border:none;border-radius:10px;padding:10px 20px;font-family:var(--font);
+  font-weight:800;font-size:0.84rem;cursor:pointer;transition:all 0.2s;
+  white-space:nowrap;flex-shrink:0;align-self:flex-end;}
+.btn-vw:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(168,85,247,0.5);}
+
+/* SEC HEAD */
+.sh{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.sh-lbl{font-size:0.6rem;font-weight:800;color:var(--muted);letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
+.sh-bg{font-size:0.64rem;font-weight:700;padding:3px 10px;border-radius:20px;
+  background:rgba(168,85,247,0.1);color:var(--purple);border:1px solid rgba(168,85,247,0.2);}
+.sh-ln{flex:1;height:1px;background:var(--border);}
+
+/* HIGHLIGHT CARD */
+.hc{background:linear-gradient(135deg,rgba(249,195,58,0.06),rgba(168,85,247,0.04));
+  border:1.5px solid rgba(249,195,58,0.25);border-radius:14px;padding:18px 20px;
+  display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.22s;
+  position:relative;overflow:hidden;margin-bottom:24px;}
+.hc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--purple));}
+.hc:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(249,195,58,0.1);}
+.hc-ic{width:50px;height:50px;border-radius:12px;
+  background:rgba(249,195,58,0.12);display:flex;align-items:center;
+  justify-content:center;font-size:1.5rem;flex-shrink:0;}
+.hc-b{flex:1;min-width:0;}
+.hc-tg{font-size:0.58rem;font-weight:800;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;}
+.hc-ttl{font-size:0.98rem;font-weight:800;margin-bottom:3px;}
+.hc-sb{font-size:0.72rem;color:var(--muted);}
+.hc-arr{font-size:1.4rem;color:var(--accent);flex-shrink:0;transition:transform 0.2s;}
+.hc:hover .hc-arr{transform:translateX(4px);}
+
+/* SUBJECT GRID */
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px;}
+.sc{background:var(--s1);border:1.5px solid var(--border2);border-radius:12px;
+  padding:18px;cursor:pointer;transition:all 0.22s;position:relative;
+  overflow:hidden;display:flex;flex-direction:column;}
+.sc::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;}
+.sc:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,0.4);}
+.sc.lk{cursor:default;opacity:0.45;}.sc.lk:hover{transform:none;box-shadow:none;}
+.sc.cpp::before{background:linear-gradient(180deg,var(--accent),#f0a84b);}
+.sc.cpp{border-color:rgba(249,195,58,0.2);}.sc.cpp:hover{border-color:rgba(249,195,58,0.5);}
+.sc.bc::before{background:linear-gradient(180deg,var(--blue),var(--cyan));}
+.sc.bc:hover{border-color:rgba(59,130,246,0.4);}
+.sc.gc::before{background:linear-gradient(180deg,var(--green),var(--teal));}
+.sc.gc:hover{border-color:rgba(58,249,195,0.4);}
+.sc.pc::before{background:linear-gradient(180deg,var(--purple),var(--rose));}
+.sc.pc:hover{border-color:rgba(168,85,247,0.4);}
+.sc.oc::before{background:linear-gradient(180deg,var(--orange),var(--accent));}
+.sc.oc:hover{border-color:rgba(251,146,60,0.4);}
+.sc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+.sc-ic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.ic-y{background:rgba(249,195,58,0.12);}.ic-b{background:rgba(59,130,246,0.12);}
+.ic-g{background:rgba(58,249,195,0.12);}.ic-p{background:rgba(168,85,247,0.12);}
+.ic-o{background:rgba(251,146,60,0.12);}
+.ss{font-size:0.62rem;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.ss-on{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.25);}
+.ss-lk{background:rgba(90,116,153,0.1);color:var(--muted);border:1px solid var(--border);}
+.ss-ac{background:rgba(249,195,58,0.1);color:var(--accent);border:1px solid rgba(249,195,58,0.25);}
+.sc-code{font-family:var(--mono);font-size:0.64rem;color:var(--muted);margin-bottom:4px;}
+.sc-ttl{font-size:0.9rem;font-weight:800;line-height:1.3;margin-bottom:5px;}
+.sc-dsc{font-size:0.72rem;color:var(--muted);line-height:1.6;margin-bottom:10px;}
+.sc-meta{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;}
+.sm{font-size:0.61rem;color:var(--dim);background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:2px 7px;}
+.sc-ft{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:10px;border-top:1px solid var(--border);}
+.sc-inst{font-size:0.68rem;color:var(--muted);}
+.sc-inst strong{color:var(--text);}
+.ent{font-size:0.72rem;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:4px;transition:gap 0.2s;}
+.sc:hover .ent{gap:8px;}
+.ent-lk{font-size:0.7rem;color:var(--dim);}
+.nb{background:rgba(249,195,58,0.05);border:1px solid rgba(249,195,58,0.15);
+  border-radius:10px;padding:10px 14px;margin-bottom:20px;
+  font-size:0.74rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
+.nb strong{color:var(--accent);}
+.es{text-align:center;padding:50px 20px;color:var(--muted);}
+.es-ic{font-size:2.6rem;margin-bottom:10px;opacity:0.3;}
+.es-t{font-size:0.92rem;font-weight:700;margin-bottom:5px;}
+.es-s{font-size:0.78rem;color:var(--dim);}
+
+/* OVERLAY */
+.ov{display:none;position:fixed;inset:0;z-index:190;
+  background:rgba(0,0,0,0.5);backdrop-filter:blur(2px);}
+.ov.show{display:block;}
+
+/* MOBILE */
+@media(max-width:768px){
+  .sidebar{transform:translateX(calc(-1 * var(--sw)));}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0!important;}
+  .cpad{padding:20px 14px 60px;}
+  .fb{padding:14px;gap:10px;}
+  .fg{min-width:130px;}
+  .btn-vw{width:100%;}
+  .sg{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<!-- LOGIN GUARD -->
+<script>
+(function(){
+  try{var s=JSON.parse(localStorage.getItem('student_session')||'{}');
+    if(!s.loggedIn)window.location.replace('login.html');
+  }catch(e){window.location.replace('login.html');}
+})();
+</script>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-ham" onclick="toggleSB()">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="tb-brand">
+    <div class="tb-brand-ic">SMGD</div>
+    <div>
+      <div class="tb-brand-name">SMGDecode</div>
+      <div class="tb-brand-sub">Student Portal</div>
+    </div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-user">
+      <span>👤</span>
+      <span class="tb-uname" id="tb-nm">—</span>
+    </div>
+    <button class="btn-lo" onclick="doLogout()">⏻ Logout</button>
+  </div>
+</div>
+
+<div class="ov" id="ov" onclick="closeSB()"></div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sb">
+    <div class="sb-prof">
+      <div class="sb-av" id="sb-av">?<div class="sb-dot"></div></div>
+      <div class="sb-nm" id="sb-nm">—</div>
+      <div class="sb-em" id="sb-em">—</div>
+      <div class="sb-ctag" id="sb-ctag">—</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-sec">Main Menu</div>
+      <div class="sb-it" onclick="window.location.href='index1.html'">
+        <span class="si">🏠</span><span>Home</span>
+      </div>
+      <div class="sb-it on">
+        <span class="si">📚</span><span>Transactions</span>
+      </div>
+      <div class="sb-it" onclick="window.location.href='grades.html'">
+        <span class="si">📊</span><span>Grades</span>
+      </div>
+      <div class="sb-it" onclick="window.location.href='index1.html'">
+        <span class="si">📄</span><span>Curriculum</span>
+      </div>
+      <div class="sb-div"></div>
+      <div class="sb-sec">Account</div>
+      <div class="sb-it" onclick="doLogout()">
+        <span class="si">⏻</span><span style="color:var(--red)">Logout</span>
+      </div>
+    </div>
+    <div class="sb-ft">
+      <div class="sb-ver">SMGDecode Portal v1.0</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main" id="main">
+    <div class="cpad">
+      <div class="ph">
+        <div class="ph-tag">📚 Transactions</div>
+        <h1 class="ph-title">Select Your <span>Academic Term</span></h1>
+        <p class="ph-sub">Choose your Academic Year, Semester, and Course to see your enrolled subjects.</p>
+      </div>
+      <div class="fb">
+        <div class="fg">
+          <label class="fl">🗓 Academic Year</label>
+          <select class="fs" id="sy" onchange="chg()">
+            <option value="">— Academic Year —</option>
+            <option>2025-2026</option><option>2026-2027</option><option>2027-2028</option>
+            <option>2028-2029</option><option>2029-2030</option><option>2030-2031</option>
+            <option>2031-2032</option><option>2032-2033</option><option>2033-2034</option>
+            <option>2034-2035</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl">📋 Semester</label>
+          <select class="fs" id="st" onchange="chg()">
+            <option value="">— Semester —</option>
+            <option>1st Semester</option><option>2nd Semester</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl">🎓 Course</label>
+          <select class="fs" id="sc" onchange="chg()">
+            <option value="">— Select Course —</option>
+            <option>BS IN ACCOUNTING INFORMATION SYSTEM</option>
+            <option>BS IN CRIMINOLOGY</option>
+            <option>BS IN HOSPITALITY MANAGEMENT</option>
+            <option>BS IN SOCIAL WORK</option>
+            <option>BS IN CIVIL ENGINEERING</option>
+            <option>BS IN SECONDARY EDUCATION</option>
+            <option>BACHELOR OF ELEMENTARY EDUCATION</option>
+          </select>
+        </div>
+        <button class="btn-vw" onclick="loadS()">🔍 View Subjects</button>
+      </div>
+      <div id="sa">
+        <div class="es"><div class="es-ic">🎓</div>
+          <div class="es-t">Select Academic Year, Semester and Course</div>
+          <p class="es-s">Your subjects will appear here.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUBS=[
+  {id:'cfp',code:'BES 125',title:'Computer Fundamentals and Programming',
+   desc:'Introduction to C++ programming, pseudocode, flowcharts, control structures, functions, and arrays. With laboratory exercises.',
+   icon:'💻',ic:'ic-y',cc:'cpp',units:3,lec:2,lab:3,
+   inst:'DEBULGADO, S.M.G',dept:'BS Civil Engineering',
+   open:true,link:'bes125.html',
+   courses:['BS IN CIVIL ENGINEERING'],terms:['2nd Semester'],years:null},
+  {id:'nstp',code:'NSTP 101',title:'National Service Training Program',
+   desc:'Civic welfare training, community service, and national defense preparation for Filipino students.',
+   icon:'🇵🇭',ic:'ic-g',cc:'gc',units:3,lec:3,lab:0,
+   inst:'TBA',dept:'BS Accounting Information System',
+   open:false,link:null,
+   courses:['BS IN ACCOUNTING INFORMATION SYSTEM'],terms:null,years:null},
+  {id:'pe1',code:'PE 101',title:'Physical Education 1',
+   desc:'Physical fitness, wellness, and sport activities promoting lifelong health and physical well-being.',
+   icon:'🏃',ic:'ic-o',cc:'oc',units:2,lec:0,lab:2,
+   inst:'TBA',dept:'BS Accounting Information System',
+   open:false,link:null,
+   courses:['BS IN ACCOUNTING INFORMATION SYSTEM'],terms:null,years:null},
+  {id:'math1',code:'MATH 101',title:'Mathematics in the Modern World',
+   desc:'Nature of mathematics, mathematical language, sets, relations, functions, statistics, and data management.',
+   icon:'📐',ic:'ic-b',cc:'bc',units:3,lec:3,lab:0,
+   inst:'TBA',dept:'General Education',
+   open:false,link:null,courses:null,terms:null,years:null},
+  {id:'eng1',code:'ENGL 101',title:'Purposive Communication',
+   desc:'Communication skills in multicultural settings — writing, speaking, reading, and listening for academic and professional purposes.',
+   icon:'📝',ic:'ic-g',cc:'gc',units:3,lec:3,lab:0,
+   inst:'TBA',dept:'General Education',
+   open:false,link:null,courses:null,terms:null,years:null},
+  {id:'sci1',code:'SCI 101',title:'The Contemporary World',
+   desc:'Globalization, geopolitics, global economy, global culture, and global governance in the modern world.',
+   icon:'🌏',ic:'ic-p',cc:'pc',units:3,lec:3,lab:0,
+   inst:'TBA',dept:'General Education',
+   open:false,link:null,courses:null,terms:null,years:null},
+];
+
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+let sess={};
+try{sess=JSON.parse(localStorage.getItem('student_session')||'{}')}catch(e){}
+
+function g(id){return document.getElementById(id);}
+
+// Topbar + sidebar
+const dn=sess.firstName&&sess.surname?sess.surname+', '+sess.firstName:sess.name||sess.email||'Student';
+g('tb-nm').textContent=dn;
+g('sb-nm').textContent=dn;
+g('sb-em').textContent=sess.email||'';
+g('sb-ctag').textContent=shortC(sess.course)||'—';
+g('sb-av').firstChild.textContent=(sess.firstName||sess.name||'?')[0].toUpperCase();
+
+// Auto-fill
+if(sess.academicYear) g('sy').value=sess.academicYear;
+if(sess.term)         g('st').value=sess.term;
+if(sess.course)       g('sc').value=sess.course;
+if(sess.academicYear&&sess.term&&sess.course) loadS();
+
+function chg(){
+  if(g('sy').value&&g('st').value&&g('sc').value) loadS();
+}
+window.chg=chg;
+
+function loadS(){
+  const yr=g('sy').value,tm=g('st').value,cr=g('sc').value;
+  const ar=g('sa');
+  if(!yr||!tm||!cr){
+    ar.innerHTML=`<div class="nb">⚠ <strong>Please select</strong> all three filters.</div>`;return;
+  }
+  const filt=SUBS.filter(s=>{
+    const cOk=!s.courses||s.courses.includes(cr);
+    const tOk=!s.terms||s.terms.includes(tm);
+    const yOk=!s.years||s.years.includes(yr);
+    return cOk&&tOk&&yOk;
+  });
+  const feat=filt.find(s=>s.open&&s.link);
+  let html=`<div class="nb">📅 <strong>${esc(yr)}</strong> · <strong>${esc(tm)}</strong> · <strong>${esc(cr)}</strong> — <strong>${filt.length}</strong> subject${filt.length!==1?'s':''} found</div>`;
+
+  if(feat){
+    html+=`<div class="sh"><span class="sh-lbl">⭐ Active Subject</span><span class="sh-bg">Now Open</span><div class="sh-ln"></div></div>
+    <div class="hc" onclick="enterS('${feat.id}')">
+      <div class="hc-ic">${feat.icon}</div>
+      <div class="hc-b">
+        <div class="hc-tg">${esc(feat.code)} · ${esc(yr)} · ${esc(tm)}</div>
+        <div class="hc-ttl">${esc(feat.title)}</div>
+        <div class="hc-sb">Instructor: ${esc(feat.inst)} · ${feat.units} Units · Lec ${feat.lec}hrs / Lab ${feat.lab}hrs</div>
+      </div>
+      <div class="hc-arr">→</div>
+    </div>`;
+  }
+
+  if(!filt.length){
+    html+=`<div class="es"><div class="es-ic">📭</div>
+      <div class="es-t">No subjects found</div>
+      <p class="es-s">No subjects listed for ${esc(cr)} in ${esc(yr)} · ${esc(tm)}.</p></div>`;
+    ar.innerHTML=html;return;
+  }
+
+  html+=`<div class="sh"><span class="sh-lbl">📚 All Subjects This Term</span>
+    <span class="sh-bg">${filt.length} Subjects</span><div class="sh-ln"></div></div>
+    <div class="sg">`;
+
+  filt.forEach(s=>{
+    const cl=s.open?'ss-ac':'ss-lk';
+    const lb=s.open?'● Active':'🔒 Coming Soon';
+    const ca=s.open&&s.link?`onclick="enterS('${s.id}')"`:'';
+    html+=`<div class="sc ${s.cc}${!s.open?' lk':''}" ${ca}>
+      <div class="sc-top">
+        <div class="sc-ic ${s.ic}">${s.icon}</div>
+        <span class="ss ${cl}">${lb}</span>
+      </div>
+      <div class="sc-code">${esc(s.code)}</div>
+      <div class="sc-ttl">${esc(s.title)}</div>
+      <div class="sc-dsc">${esc(s.desc)}</div>
+      <div class="sc-meta">
+        <span class="sm">📖 ${s.units} Units</span>
+        ${s.lec?`<span class="sm">🏫 Lec: ${s.lec}hrs</span>`:''}
+        ${s.lab?`<span class="sm">🔬 Lab: ${s.lab}hrs</span>`:''}
+      </div>
+      <div class="sc-ft">
+        <div class="sc-inst"><strong>${esc(s.inst)}</strong><br><span style="font-size:0.64rem">${esc(s.dept)}</span></div>
+        ${s.open?`<div class="ent">Open Course →</div>`:`<div class="ent-lk">Not yet available</div>`}
+      </div>
+    </div>`;
+  });
+
+  html+='</div>';
+  ar.innerHTML=html;
+}
+window.loadS=loadS;
+
+function enterS(id){
+  const s=SUBS.find(x=>x.id===id);if(!s||!s.link)return;
+  try{
+    const sess=JSON.parse(localStorage.getItem('student_session')||'{}');
+    sess.activeYear=g('sy').value;sess.activeTerm=g('st').value;
+    sess.activeSubject=s.title;
+    localStorage.setItem('student_session',JSON.stringify(sess));
+  }catch(e){}
+  window.location.href=s.link;
+}
+window.enterS=enterS;
+
+function shortC(c){
+  return({
+    'BS IN ACCOUNTING INFORMATION SYSTEM':'BSAIS',
+    'BS IN CRIMINOLOGY':'BSCrim',
+    'BS IN HOSPITALITY MANAGEMENT':'BSHM',
+    'BS IN SOCIAL WORK':'BSSW',
+    'BS IN CIVIL ENGINEERING':'BSCE',
+    'BS IN SECONDARY EDUCATION':'BSEd',
+    'BACHELOR OF ELEMENTARY EDUCATION':'BEEd'
+  })[c]||c||'—';
+}
+window.shortC=shortC;
+
+function doLogout(){
+  localStorage.removeItem('student_session');
+  localStorage.removeItem('firebase_user');
+  window.location.href='login.html';
+}
+window.doLogout=doLogout;
+
+function toggleSB(){
+  const sb=document.getElementById('sb');
+  const ov=document.getElementById('ov');
+  const main=document.getElementById('main');
+  if(window.innerWidth<=768){
+    sb.classList.toggle('open');ov.classList.toggle('show');
+  } else {
+    sb.classList.toggle('hide');main.classList.toggle('full');
+  }
+}
+function closeSB(){
+  document.getElementById('sb').classList.remove('open');
+  document.getElementById('ov').classList.remove('show');
+}
+window.toggleSB=toggleSB;window.closeSB=closeSB;
+</script>
+</body>
+</html>
