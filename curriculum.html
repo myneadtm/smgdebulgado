@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Curriculum — SMGDecode</title>
+<title>Grades — SMGDecode</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -62,6 +63,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   display:flex;flex-direction:column;
   transition:transform 0.3s cubic-bezier(.4,0,.2,1);}
 .sidebar.hide{transform:translateX(calc(-1 * var(--sw)));}
+
 .sb-prof{padding:20px 18px 16px;border-bottom:1px solid var(--border);}
 .sb-av{width:48px;height:48px;border-radius:50%;
   background:linear-gradient(135deg,var(--purple),var(--blue));
@@ -77,6 +79,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .sb-ctag{display:inline-block;margin-top:5px;font-size:0.6rem;font-weight:700;
   background:rgba(168,85,247,0.1);color:var(--purple);
   border:1px solid rgba(168,85,247,0.2);border-radius:8px;padding:2px 8px;}
+
 .sb-nav{flex:1;padding:10px;}
 .sb-sec{font-size:0.58rem;font-weight:800;color:var(--dim);
   letter-spacing:2px;text-transform:uppercase;padding:6px 8px 3px;}
@@ -99,39 +102,156 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
 /* CONTENT PADDING */
 .cpad{padding:32px 28px 80px;}
-.ph{margin-bottom:26px;}
-.ph-tag{font-size:0.6rem;font-weight:800;color:var(--muted);
-  letter-spacing:3px;text-transform:uppercase;margin-bottom:7px;}
-.ph-title{font-size:1.5rem;font-weight:900;letter-spacing:-0.3px;}
-.ph-title span{background:linear-gradient(90deg,var(--purple),var(--cyan));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.ph-sub{font-size:0.8rem;color:var(--muted);margin-top:5px;line-height:1.6;}
 
-/* CURRICULUM */
-.cv-empty{background:var(--s1);border:1.5px dashed var(--border2);border-radius:14px;padding:44px 24px;text-align:center;}
-.cv-ic{font-size:2.8rem;margin-bottom:12px;opacity:0.3;}
-.cv-t{font-size:0.92rem;font-weight:700;color:var(--muted);margin-bottom:5px;}
-.cv-s{font-size:0.78rem;color:var(--dim);line-height:1.7;margin-bottom:18px;}
-.cv-note{display:inline-flex;align-items:center;gap:6px;
-  background:rgba(249,58,122,0.08);border:1px solid rgba(249,58,122,0.25);
-  color:var(--red);border-radius:10px;padding:8px 16px;
-  font-family:var(--font);font-weight:700;font-size:0.78rem;}
-.cv-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:12px;
-  padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:12px;
-  cursor:pointer;transition:all 0.2s;}
-.cv-card:hover{border-color:rgba(249,58,122,0.4);transform:translateY(-1px);}
-.cv-pdf{width:42px;height:42px;border-radius:10px;background:rgba(249,58,122,0.1);
-  display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
-.cv-b{flex:1;min-width:0;}
-.cv-nm{font-size:0.86rem;font-weight:700;margin-bottom:2px;}
-.cv-mt{font-size:0.7rem;color:var(--muted);}
-.cv-dl{font-size:0.74rem;color:var(--red);font-weight:700;flex-shrink:0;}
+/* GRADES */
+.g-empty{text-align:center;padding:60px 20px;}
+.ge-ic{font-size:3rem;margin-bottom:14px;opacity:0.3;}
+.ge-t{font-size:1rem;font-weight:700;color:var(--muted);margin-bottom:6px;}
+.ge-s{font-size:0.82rem;color:var(--dim);line-height:1.7;}
+.g-load{text-align:center;padding:40px;color:var(--muted);font-size:0.86rem;}
 
-/* Course badge */
-.cv-course-badge{display:inline-flex;align-items:center;gap:8px;
-  background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.25);
-  color:var(--purple);border-radius:10px;padding:7px 16px;
-  font-size:0.76rem;font-weight:700;margin-bottom:20px;}
+/* Grade subject selector */
+.sec-hd-g{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.sec-hd-lbl-g{font-size:0.6rem;font-weight:800;color:var(--muted);letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
+.sec-hd-ln-g{flex:1;height:1px;background:var(--border);}
+.grade-subj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
+.grade-subj-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;
+  padding:18px 16px;cursor:pointer;transition:all 0.22s;position:relative;overflow:hidden;}
+.grade-subj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));}
+.grade-subj-card:hover{transform:translateY(-3px);border-color:rgba(168,85,247,0.5);
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);}
+.gsj-icon{font-size:1.6rem;margin-bottom:8px;}
+.gsj-code{font-family:var(--mono);font-size:0.65rem;color:var(--muted);margin-bottom:4px;}
+.gsj-name{font-size:0.92rem;font-weight:800;margin-bottom:6px;line-height:1.3;}
+.gsj-meta{font-size:0.72rem;color:var(--dim);}
+.gsj-status{display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.gsj-dot{width:7px;height:7px;border-radius:50%;}
+.gsj-dot-ok{background:var(--green);}
+.gsj-dot-no{background:var(--dim);}
+.gsj-status-txt{font-size:0.7rem;font-weight:700;}
+.gsj-arrow{margin-left:auto;color:var(--accent);font-size:0.8rem;font-weight:700;transition:transform 0.2s;}
+.grade-subj-card:hover .gsj-arrow{transform:translateX(4px);}
+.btn-back-subj{background:var(--s2);border:1.5px solid var(--border2);border-radius:8px;
+  padding:7px 14px;color:var(--muted);font-family:var(--font);font-weight:700;
+  font-size:0.78rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.btn-back-subj:hover{color:var(--text);border-color:var(--border);}
+.btn-grade-pdf{background:linear-gradient(135deg,var(--purple),var(--blue));
+  color:#fff;border:none;border-radius:10px;padding:9px 18px;
+  font-family:var(--font);font-weight:800;font-size:0.8rem;cursor:pointer;
+  transition:all 0.2s;box-shadow:0 4px 14px rgba(168,85,247,0.3);}
+.btn-grade-pdf:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(168,85,247,0.5);}
+.btn-grade-pdf:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+
+/* GRADE TAB PROFILE CARD */
+.grade-profile-card{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--s1);border:1.5px solid var(--border2);border-radius:18px;
+  padding:18px 22px;margin-bottom:24px;position:relative;overflow:hidden;
+  box-shadow:0 4px 24px rgba(0,0,0,0.4);}
+.grade-profile-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#7c3aed,#00e5ff,#f59e0b,#a78bfa,#7c3aed);
+  background-size:300% 100%;animation:shimmer 3s linear infinite;}
+@keyframes shimmer{0%{background-position:0% center;}100%{background-position:300% center;}}
+.gpc-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0;}
+.gpc-avatar{width:52px;height:52px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;font-weight:800;color:#fff;overflow:hidden;
+  border:2px solid rgba(168,85,247,0.4);}
+.gpc-avatar img{width:52px;height:52px;border-radius:50%;object-fit:cover;display:block;}
+.gpc-info{flex:1;min-width:0;}
+.gpc-name{font-size:0.98rem;font-weight:800;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gpc-email{font-size:0.74rem;color:var(--muted);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gpc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.gpc-tag{font-size:0.62rem;font-weight:700;padding:3px 10px;border-radius:20px;
+  white-space:nowrap;}
+.gpc-tag-g{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.25);}
+.gpc-tag-w{background:rgba(59,130,246,0.1);color:var(--blue);border:1px solid rgba(59,130,246,0.25);}
+.gpc-tag-c{background:rgba(168,85,247,0.1);color:var(--purple);border:1px solid rgba(168,85,247,0.25);}
+.gpc-signout{background:transparent;color:var(--red);
+  border:1px solid rgba(249,58,122,0.35);border-radius:10px;
+  padding:8px 18px;font-family:var(--font);font-weight:700;font-size:0.78rem;
+  cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;margin-left:14px;}
+.gpc-signout:hover{background:rgba(249,58,122,0.08);}
+@media(max-width:520px){
+  .grade-profile-card{flex-wrap:wrap;gap:12px;}
+  .gpc-signout{margin-left:0;width:100%;}
+}
+
+.gp-strip{display:flex;align-items:center;gap:14px;
+  background:var(--s2);border:1.5px solid var(--border2);border-radius:14px;
+  padding:16px 20px;margin-bottom:22px;position:relative;overflow:hidden;}
+.gp-strip::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));}
+.gp-av{width:52px;height:52px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;font-weight:800;color:#fff;
+  border:2px solid rgba(168,85,247,0.4);}
+.gp-av img{width:52px;height:52px;border-radius:50%;object-fit:cover;}
+.gp-info{flex:1;min-width:0;}
+.gp-name{font-size:1rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gp-email{font-size:0.76rem;color:var(--muted);margin-top:2px;}
+.gp-meta{font-size:0.7rem;color:var(--dim);margin-top:3px;}
+.gp-badge{font-size:0.64rem;font-weight:800;padding:3px 10px;border-radius:20px;
+  background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.2);flex-shrink:0;}
+
+/* BIG GRADE CARDS */
+.grade-hero{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+.gcard{background:var(--s1);border:1.5px solid var(--border2);border-radius:16px;
+  padding:22px 16px;text-align:center;position:relative;overflow:hidden;
+  transition:transform 0.2s;}
+.gcard:hover{transform:translateY(-2px);}
+.gcard::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.gc-prelim::after{background:linear-gradient(90deg,var(--blue),var(--cyan));}
+.gc-mid::after{background:linear-gradient(90deg,var(--purple),var(--cyan));}
+.gc-finals::after{background:linear-gradient(90deg,var(--green),var(--blue));}
+.gc-sem::after{background:linear-gradient(90deg,var(--accent),#f0a84b);}
+.gc-sem{border-color:rgba(249,195,58,0.3);background:linear-gradient(135deg,rgba(249,195,58,0.05),rgba(168,85,247,0.03));}
+.gc-label{font-size:0.65rem;font-weight:800;color:var(--muted);letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:12px;}
+.gc-score{font-size:3rem;font-weight:900;font-family:var(--mono);line-height:1;
+  margin-bottom:6px;transition:color 0.3s;}
+.gc-score.hi{color:var(--green);}
+.gc-score.mid{color:var(--accent);}
+.gc-score.lo{color:var(--red);}
+.gc-score.na{color:var(--dim);}
+.gc-status{font-size:0.72rem;font-weight:700;padding:3px 12px;border-radius:20px;margin-top:4px;display:inline-block;}
+.gcs-p{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.25);}
+.gcs-f{background:rgba(249,58,122,0.1);color:var(--red);border:1px solid rgba(249,58,122,0.25);}
+.gcs-n{background:rgba(90,116,153,0.1);color:var(--muted);border:1px solid var(--border);}
+
+/* Assessment scores table */
+.assess-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;
+  overflow:hidden;margin-bottom:14px;}
+.assess-head{padding:14px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;}
+.assess-title{font-size:0.9rem;font-weight:800;}
+.assess-sub{font-size:0.68rem;color:var(--muted);margin-top:2px;}
+.assess-body{padding:6px 20px 14px;}
+.arow{display:flex;justify-content:space-between;align-items:center;
+  padding:9px 0;border-bottom:1px solid var(--border);}
+.arow:last-child{border-bottom:none;}
+.arow-l{font-size:0.82rem;color:var(--muted);}
+.arow-r{display:flex;align-items:center;gap:10px;}
+.arow-score{font-size:0.9rem;font-weight:800;font-family:var(--mono);}
+.ar-hi{color:var(--green);}.ar-mid{color:var(--accent);}.ar-lo{color:var(--red);}.ar-na{color:var(--dim);}
+.avg-row{background:rgba(255,255,255,0.02);padding:10px 12px;border-radius:10px;
+  margin-top:8px;display:flex;justify-content:space-between;align-items:center;}
+.avg-lbl{font-size:0.84rem;font-weight:700;color:var(--text);}
+.avg-val{font-size:1.3rem;font-weight:900;font-family:var(--mono);}
+
+/* Pending state */
+.grade-pending{background:var(--s2);border:1.5px dashed var(--border2);
+  border-radius:14px;padding:28px;text-align:center;margin-bottom:14px;}
+.gp-ic{font-size:2rem;margin-bottom:10px;opacity:0.4;}
+.gp-t{font-size:0.88rem;font-weight:700;color:var(--muted);margin-bottom:4px;}
+.gp-s{font-size:0.76rem;color:var(--dim);line-height:1.6;}
+.spin{display:inline-block;animation:sp 0.85s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
 
 /* OVERLAY */
 .ov{display:none;position:fixed;inset:0;z-index:190;
@@ -140,6 +260,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
 /* MOBILE */
 @media(max-width:768px){
+  .grade-hero{grid-template-columns:1fr 1fr;}
+  .gc-score{font-size:2.2rem;}
+  .gp-strip{flex-wrap:wrap;}
+  .gcard{padding:16px 10px;}
   .sidebar{transform:translateX(calc(-1 * var(--sw)));}
   .sidebar.open{transform:translateX(0);}
   .main{margin-left:0!important;}
@@ -197,10 +321,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="sb-it" onclick="window.location.href='transaction.html'">
         <span class="si">📚</span><span>Transactions</span>
       </div>
-      <div class="sb-it" onclick="window.location.href='grades.html'">
+      <div class="sb-it on">
         <span class="si">📊</span><span>Grades</span>
       </div>
-      <div class="sb-it on">
+      <div class="sb-it" onclick="window.location.href='curriculum.html'">
         <span class="si">📄</span><span>Curriculum</span>
       </div>
       <div class="sb-div"></div>
@@ -217,122 +341,720 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   <!-- MAIN -->
   <div class="main" id="main">
     <div class="cpad">
-      <div class="ph">
-        <div class="ph-tag">📄 Curriculum</div>
-        <h1 class="ph-title">Program <span>Curriculum</span></h1>
-        <p class="ph-sub">Your curriculum documents for your enrolled program.</p>
+
+      <!-- PROFILE CARD -->
+      <div class="grade-profile-card" id="grade-profile-card">
+        <div class="gpc-left">
+          <div class="gpc-avatar" id="gpc-avatar">?</div>
+          <div class="gpc-info">
+            <div class="gpc-name"  id="gpc-name">—</div>
+            <div class="gpc-email" id="gpc-email">—</div>
+            <div class="gpc-tags"  id="gpc-tags">
+              <span class="gpc-tag gpc-tag-g">✅ Verified Gmail</span>
+            </div>
+          </div>
+        </div>
+        <button class="gpc-signout" onclick="doLogout()">⏻ Sign Out</button>
       </div>
 
-      <!-- Course badge — filled from session -->
-      <div id="cv-course-badge" class="cv-course-badge" style="display:none;">
-        🎓 <span id="cv-course-text">—</span>
-      </div>
-
-      <!-- Curriculum content — filtered per course -->
-      <div id="cvc">
-        <div class="cv-empty">
-          <div class="cv-ic">📁</div>
-          <div class="cv-t">Curriculum Files Coming Soon</div>
-          <p class="cv-s">The instructor will upload your program curriculum files here.<br>
-          You will be able to download them once available.</p>
-          <div class="cv-note">📬 Check back later for uploaded documents</div>
+      <!-- Subject list for grades -->
+      <div id="grade-subject-list">
+        <div class="sec-hd-g">
+          <span class="sec-hd-lbl-g">📚 Enrolled Subjects</span>
+          <div class="sec-hd-ln-g"></div>
+        </div>
+        <div id="grade-subj-cards" class="grade-subj-grid">
+          <div class="g-load"><span class="spin">⟳</span> Loading subjects...</div>
         </div>
       </div>
+
+      <!-- Grades detail (shown after clicking a subject) -->
+      <div id="grade-detail" style="display:none;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+          <button class="btn-back-subj" onclick="backToSubjectList()">← Back</button>
+          <div style="flex:1;min-width:0;">
+            <div id="gd-subj-title" style="font-size:1rem;font-weight:800;"></div>
+            <div id="gd-subj-meta" style="font-size:0.72rem;color:var(--muted);margin-top:2px;"></div>
+          </div>
+          <button class="btn-grade-pdf" id="btn-grade-pdf" onclick="downloadGradesPDF()">⬇ Download Grades PDF</button>
+        </div>
+        <div id="gc"><div class="g-load"><span class="spin">⟳</span> Loading grades...</div></div>
+      </div>
+
     </div>
   </div>
 </div>
 
-<script>
-// ── CURRICULUM FILES — add per course as needed ──
-// Structure: { 'COURSE NAME': [ {name, meta, url}, ... ] }
-const CURRICULUM_FILES = {
-  'BS IN CIVIL ENGINEERING': [
-    // Example (add real URLs when available):
-    // {name:'BSCE Curriculum Checklist 2023', meta:'PDF · 1st Year to 5th Year', url:'files/bsce-curriculum.pdf'},
-  ],
-  'BS IN ACCOUNTING INFORMATION SYSTEM': [],
-  'BS IN CRIMINOLOGY': [],
-  'BS IN HOSPITALITY MANAGEMENT': [],
-  'BS IN SOCIAL WORK': [],
-  'BS IN SECONDARY EDUCATION': [],
-  'BACHELOR OF ELEMENTARY EDUCATION': [],
+<!-- GRADE PERIOD MODAL -->
+<div id="grade-period-modal" onclick="if(event.target===this)closeGradePeriodModal()"
+  style="display:none;position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--s1);border:1.5px solid var(--border2);border-radius:18px;
+    width:100%;max-width:440px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.7);">
+    <div style="height:3px;background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent))"></div>
+    <div style="padding:18px 22px 14px;border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div id="gpm-title" style="font-size:1rem;font-weight:800;"></div>
+        <div id="gpm-sub" style="font-size:0.72rem;color:var(--muted);margin-top:2px;"></div>
+      </div>
+      <div onclick="closeGradePeriodModal()" style="cursor:pointer;background:var(--s2);
+        border:1px solid var(--border);border-radius:8px;width:30px;height:30px;
+        display:flex;align-items:center;justify-content:center;color:var(--muted);
+        font-size:1rem;transition:all 0.2s;" onmouseover="this.style.color='var(--red)'"
+        onmouseout="this.style.color='var(--muted)'">✕</div>
+    </div>
+    <div style="padding:18px 22px 22px;">
+      <div style="font-size:0.62rem;font-weight:800;color:var(--purple);
+        letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;
+        display:flex;align-items:center;gap:8px;">
+        Assessments Taken
+        <div style="flex:1;height:1px;background:rgba(168,85,247,0.2)"></div>
+      </div>
+      <div id="gpm-list"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp }  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged }
+                          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, getDoc }
+                          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
+  authDomain: "cfp2526-database.firebaseapp.com",
+  projectId: "cfp2526-database",
+  storageBucket: "cfp2526-database.firebasestorage.app",
+  messagingSenderId: "111042690196",
+  appId: "1:111042690196:web:cd63203bd29b350cea8881",
+  measurementId: "G-Y7CMBZM1G1"
 };
 
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const g    = id => document.getElementById(id);
+const esc  = s  => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
 let sess = {};
-try{sess=JSON.parse(localStorage.getItem('student_session')||'{}')}catch(e){}
+try { sess = JSON.parse(localStorage.getItem('student_session')||'{}'); } catch(e){}
 
-function g(id){return document.getElementById(id);}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-// Populate topbar + sidebar
-const dn = sess.firstName&&sess.surname ? sess.surname+', '+sess.firstName : sess.name||sess.email||'Student';
+// Topbar + sidebar
+const dn = sess.firstName && sess.surname ? sess.surname+', '+sess.firstName : sess.name||sess.email||'Student';
 g('tb-nm').textContent = dn;
 g('sb-nm').textContent = dn;
 g('sb-em').textContent = sess.email||'';
 g('sb-ctag').textContent = shortC(sess.course)||'—';
 g('sb-av').firstChild.textContent = (sess.firstName||sess.name||'?')[0].toUpperCase();
 
-// Show course badge
-const course = sess.course || '';
-if(course){
-  g('cv-course-badge').style.display = 'inline-flex';
-  g('cv-course-text').textContent = course;
+onAuthStateChanged(auth, u => {
+  if(u) {
+    loadGrades(u.uid);
+    const av = g('sb-av');
+    if(av && u.photoURL) {
+      av.innerHTML = `<img src="${u.photoURL}" alt=""><div class="sb-dot"></div>`;
+    }
+    const displayName = u.displayName || sess.name || sess.email || 'Student';
+    const dn2 = sess.firstName && sess.surname
+      ? sess.surname+', '+sess.firstName
+      : displayName;
+    g('tb-nm').textContent = dn2;
+    g('sb-nm').textContent = dn2;
+    if(g('sb-em')) g('sb-em').textContent = u.email || sess.email || '';
+    try {
+      localStorage.setItem('firebase_user', JSON.stringify({
+        uid:   u.uid,
+        email: u.email,
+        name:  u.displayName || sess.name || '',
+        photo: u.photoURL || ''
+      }));
+    } catch(e){}
+  }
+});
+
+// ── ALL SUBJECTS BY COURSE — add more courses/subjects here as needed ──
+const ALL_GRADE_SUBJECTS = {
+  'BS IN CIVIL ENGINEERING': [
+    { id:'BES125', code:'BES 125', name:'Computer Fundamentals and Programming',
+      icon:'💻', instructor:'DEBULGADO, S.M.G', dept:'BS Civil Engineering',
+      color:'var(--accent)' },
+  ],
+  // Add subjects for other courses below when ready:
+  // 'BS IN ACCOUNTING INFORMATION SYSTEM': [ ... ],
+};
+
+// Only show subjects for the logged-in student's course
+const studentCourse = sess.course || '';
+const GRADE_SUBJECTS = ALL_GRADE_SUBJECTS[studentCourse] || [];
+
+let activeGradeSubject = null;
+
+window.backToSubjectList = function() {
+  activeGradeSubject = null;
+  document.getElementById('grade-subject-list').style.display = 'block';
+  document.getElementById('grade-detail').style.display = 'none';
+};
+
+function buildSubjectList(uid, gradesData) {
+  const grid = document.getElementById('grade-subj-cards');
+  if(!grid) return;
+
+  // No subjects listed for this course yet
+  if(!GRADE_SUBJECTS.length){
+    grid.innerHTML = `<div class="g-empty">
+      <div class="ge-ic">📭</div>
+      <div class="ge-t">No Subjects Available</div>
+      <p class="ge-s">No grade records are available for <strong>${esc(studentCourse||'your course')}</strong> yet.<br>
+      Check back once your instructor sets up your subjects.</p>
+    </div>`;
+    return;
+  }
+
+  const g2 = gradesData || {};
+  grid.innerHTML = GRADE_SUBJECTS.map(s => {
+    const sg = g2[s.id] || {};
+    const hasSem = !!sg.semestral;
+    const hasSome = sg.prelim||sg.midterm||sg.finals;
+    return `<div class="grade-subj-card" onclick="openSubjectGrades('${uid}','${s.id}')">
+      <div class="gsj-icon">${s.icon}</div>
+      <div class="gsj-code">${esc(s.code)}</div>
+      <div class="gsj-name">${esc(s.name)}</div>
+      <div class="gsj-meta">${esc(s.instructor)} · ${esc(s.dept)}</div>
+      <div class="gsj-status">
+        <div class="gsj-dot ${hasSome?'gsj-dot-ok':'gsj-dot-no'}"></div>
+        <span class="gsj-status-txt" style="color:${hasSome?'var(--green)':'var(--dim)'}">
+          ${hasSem?'✅ Grades Released':hasSome?'⏳ Partial Grades':'📭 Grades Not Yet Released'}
+        </span>
+        <span class="gsj-arrow">→</span>
+      </div>
+    </div>`;
+  }).join('');
 }
 
-// Load curriculum files for logged-in course
-function loadCurriculum(){
-  const cvc = g('cvc');
-  const files = CURRICULUM_FILES[course] || [];
-  if(!course){
-    cvc.innerHTML = `<div class="cv-empty">
-      <div class="cv-ic">⚠️</div>
-      <div class="cv-t">No Course Detected</div>
-      <p class="cv-s">Please log in again with a valid student session.</p>
-    </div>`;
-    return;
-  }
-  if(!files.length){
-    cvc.innerHTML = `<div class="cv-empty">
-      <div class="cv-ic">📁</div>
-      <div class="cv-t">Curriculum Files Coming Soon</div>
-      <p class="cv-s">No curriculum documents have been uploaded yet for <strong>${esc(course)}</strong>.<br>
-      Check back once your instructor uploads them.</p>
-      <div class="cv-note">📬 Check back later for uploaded documents</div>
-    </div>`;
-    return;
-  }
-  cvc.innerHTML = files.map(f=>`
-    <div class="cv-card" onclick="window.open('${esc(f.url)}','_blank')">
-      <div class="cv-pdf">📄</div>
-      <div class="cv-b">
-        <div class="cv-nm">${esc(f.name)}</div>
-        <div class="cv-mt">${esc(f.meta)}</div>
+window.openSubjectGrades = function(uid, subjId) {
+  const s = GRADE_SUBJECTS.find(x=>x.id===subjId);
+  if(!s) return;
+  activeGradeSubject = subjId;
+  document.getElementById('grade-subject-list').style.display = 'none';
+  document.getElementById('grade-detail').style.display = 'block';
+  document.getElementById('gd-subj-title').textContent = s.name;
+  document.getElementById('gd-subj-meta').textContent = s.code + ' · ' + s.instructor;
+  loadGrades(uid, subjId);
+};
+
+async function loadGrades(uid, subjId) {
+  const gc = document.getElementById('gc');
+  gc.innerHTML='<div class="g-load"><span class="spin">⟳</span> Loading grades...</div>';
+
+  try {
+    const [q1,q2,p1,p2,ag] = await Promise.all([
+      getDoc(doc(db,'quiz_submissions',uid)).catch(()=>null),
+      getDoc(doc(db,'quiz2_submissions',uid)).catch(()=>null),
+      getDoc(doc(db,'practical_submissions',uid)).catch(()=>null),
+      getDoc(doc(db,'practical2_submissions',uid)).catch(()=>null),
+      getDoc(doc(db,'student_grades',uid)).catch(()=>null),
+    ]);
+
+    const allGrades = ag?.exists() ? ag.data() : {};
+    const subjectGrades = allGrades[subjId] || allGrades;
+
+    const prelim   = subjectGrades.prelim    ? parseFloat(subjectGrades.prelim)    : null;
+    const midterm  = subjectGrades.midterm   ? parseFloat(subjectGrades.midterm)   : null;
+    const finals   = subjectGrades.finals    ? parseFloat(subjectGrades.finals)    : null;
+    const semestral= subjectGrades.semestral ? parseFloat(subjectGrades.semestral) : null;
+
+    const gradeCol = v => v===null?'na':v>=75?'hi':v>=60?'mid':'lo';
+    const gradeLbl = v => v===null?'—':v.toFixed(2);
+    const gradeStatus = v => {
+      if(v===null) return '<span class="gc-status gcs-n">Not yet released</span>';
+      return v>=75
+        ? '<span class="gc-status gcs-p">✅ Passed</span>'
+        : '<span class="gc-status gcs-f">❌ Failed</span>';
+    };
+
+    const items=[];
+    if(q1?.exists()) items.push({l:'Week 1 — Theory Quiz',  s:q1.data().score, p:q1.data().percent, t:q1.data().timestamp, type:'quiz'});
+    if(q2?.exists()) items.push({l:'Week 2 — Theory Quiz',  s:q2.data().score, p:q2.data().percent, t:q2.data().timestamp, type:'quiz'});
+    if(p1?.exists()) items.push({l:'Week 1 — Practical',    s:p1.data().score, p:p1.data().percent, t:p1.data().timestamp, type:'prac'});
+    if(p2?.exists()) items.push({l:'Week 2 — Practical',    s:p2.data().score, p:p2.data().percent, t:p2.data().timestamp, type:'prac'});
+
+    const userInit = sess.firstName ? sess.firstName[0].toUpperCase() : '?';
+    let html = `<div class="gp-strip">
+      <div class="gp-av" id="gp-av-inner">${userInit}</div>
+      <div class="gp-info">
+        <div class="gp-name" id="gp-name-txt">${esc(sess.name||'Student')}</div>
+        <div class="gp-email" id="gp-email-txt">${esc(sess.email||'')}</div>
+        <div class="gp-meta">🎓 ${esc(sess.course||'—')} · 🪪 ${esc(sess.studentId||'—')}</div>
       </div>
-      <span class="cv-dl">⬇ Download</span>
-    </div>`).join('');
+      <span class="gp-badge">✅ Verified Gmail</span>
+    </div>`;
+
+    html += `<div class="grade-hero">
+      <div class="gcard gc-prelim" onclick="openGradePeriod('prelim',[])">
+        <div class="gc-label">📘 Prelim</div>
+        <div class="gc-score ${gradeCol(prelim)}">${gradeLbl(prelim)}</div>
+        ${gradeStatus(prelim)}
+        <div style="font-size:0.62rem;color:var(--dim);margin-top:6px;">Click to view assessments</div>
+      </div>
+      <div class="gcard gc-mid" onclick="openGradePeriod('midterm',${JSON.stringify(items.map(i=>i.l+': '+i.s))})">
+        <div class="gc-label">📗 Midterm</div>
+        <div class="gc-score ${gradeCol(midterm)}">${gradeLbl(midterm)}</div>
+        ${gradeStatus(midterm)}
+        <div style="font-size:0.62rem;color:var(--dim);margin-top:6px;">Click to view assessments</div>
+      </div>
+      <div class="gcard gc-finals" onclick="openGradePeriod('finals',[])">
+        <div class="gc-label">📙 Finals</div>
+        <div class="gc-score ${gradeCol(finals)}">${gradeLbl(finals)}</div>
+        ${gradeStatus(finals)}
+        <div style="font-size:0.62rem;color:var(--dim);margin-top:6px;">Click to view assessments</div>
+      </div>
+      <div class="gcard gc-sem">
+        <div class="gc-label">🏆 Semestral</div>
+        <div class="gc-score ${gradeCol(semestral)}" style="font-size:2.6rem">${gradeLbl(semestral)}</div>
+        ${gradeStatus(semestral)}
+      </div>
+    </div>`;
+
+    if(items.length){
+      const avgs=items.map(i=>parseFloat((i.p||'0').replace('%',''))).filter(n=>n>0);
+      const avg=avgs.length?(avgs.reduce((a,b)=>a+b,0)/avgs.length).toFixed(1):0;
+      const ac=avg>=75?'ar-hi':avg>=60?'ar-mid':'ar-lo';
+      html+=`<div class="assess-card">
+        <div class="assess-head">
+          <div>
+            <div class="assess-title">📝 Assessment Scores</div>
+            <div class="assess-sub">BES 125 · ${esc(sess.academicYear||'')} · ${esc(sess.term||'')}</div>
+          </div>
+          <span class="gp-badge" style="${avg>=75?'':'background:rgba(249,58,122,0.1);color:var(--red);border-color:rgba(249,58,122,0.25);'}">
+            ${avg>=75?'✅ Passing':avg>0?'❌ Below Passing':'—'}
+          </span>
+        </div>
+        <div class="assess-body">
+          ${items.map(i=>{
+            const p=parseFloat((i.p||'0').replace('%',''));
+            const c=p>=75?'ar-hi':p>=60?'ar-mid':p>0?'ar-lo':'ar-na';
+            const icon=i.type==='quiz'?'📝':'💻';
+            return`<div class="arow">
+              <span class="arow-l">${icon} ${esc(i.l)}</span>
+              <div class="arow-r">
+                <span class="arow-score ${c}">${esc(i.s||'—')}</span>
+                <span class="arow-score ${c}" style="font-size:0.78rem">${esc(i.p||'—')}</span>
+              </div>
+            </div>`;}).join('')}
+          <div class="avg-row">
+            <span class="avg-lbl">Assessment Average</span>
+            <span class="avg-val ${ac}">${avg}%</span>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    if(!ag?.exists() || (!subjectGrades.prelim && !subjectGrades.midterm && !subjectGrades.finals)){
+      html+=`<div class="grade-pending">
+        <div class="gp-ic">⏳</div>
+        <div class="gp-t">Official Grades Not Yet Released</div>
+        <p class="gp-s">Your Prelim, Midterm, Final, and Semestral grades will appear once your instructor releases them.</p>
+      </div>`;
+    }
+
+    gc.innerHTML=html;
+
+    try{
+      const {getAuth}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+      const user=getAuth().currentUser;
+      if(user){
+        const avEl=document.getElementById('gp-av-inner');
+        if(avEl&&user.photoURL){avEl.innerHTML=`<img src="${user.photoURL}" alt="" style="width:52px;height:52px;border-radius:50%;object-fit:cover;">`;}
+        if(document.getElementById('gp-name-txt'))document.getElementById('gp-name-txt').textContent=user.displayName||sess.name||'—';
+        if(document.getElementById('gp-email-txt'))document.getElementById('gp-email-txt').textContent=user.email||'';
+      }
+    }catch(e){}
+
+    buildSubjectList(uid, ag?.exists()?{[subjId]:allGrades[subjId]||allGrades}:{});
+
+  } catch(e){
+    gc.innerHTML=`<div class="g-empty">
+      <div class="ge-ic">⚙️</div>
+      <div class="ge-t">Grades Unavailable</div>
+      <p class="ge-s">${e.message}</p>
+    </div>`;
+  }
 }
-loadCurriculum();
+
+window.openGradePeriod = function(period, assessments) {
+  const labels = {prelim:'📘 Prelim Period',midterm:'📗 Midterm Period',finals:'📙 Finals Period'};
+  const hints  = {
+    prelim: 'Assessments completed during the Prelim period.',
+    midterm:'Assessments completed during the Midterm period.',
+    finals: 'Assessments completed during the Finals period.'
+  };
+  const modal = document.getElementById('grade-period-modal');
+  document.getElementById('gpm-title').textContent = labels[period]||period;
+  document.getElementById('gpm-sub').textContent   = hints[period]||'';
+  const list = document.getElementById('gpm-list');
+  if(!assessments||!assessments.length){
+    list.innerHTML='<div style="color:var(--dim);font-size:0.82rem;padding:10px 0;">No assessments recorded for this period yet.</div>';
+  } else {
+    list.innerHTML = assessments.map(a=>`<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:0.84rem;color:var(--text);">
+      ${a.includes('Quiz')||a.includes('Theory')?'📝':'💻'} ${esc(a)}
+    </div>`).join('');
+  }
+  modal.style.display='flex';
+};
+window.closeGradePeriodModal = function(){
+  document.getElementById('grade-period-modal').style.display='none';
+};
+
+onAuthStateChanged(auth, async u => {
+  if(u) {
+    const ag = await getDoc(doc(db,'student_grades',u.uid)).catch(()=>null);
+    const allGrades = ag?.exists() ? ag.data() : {};
+    buildSubjectList(u.uid, allGrades);
+    populateGradeProfileCard(u);
+  }
+});
+
+function populateGradeProfileCard(user) {
+  const card = document.getElementById('grade-profile-card');
+  if(!card) return;
+  const av = document.getElementById('gpc-avatar');
+  if(av) {
+    if(user.photoURL) {
+      av.innerHTML = `<img src="${user.photoURL}" alt="">`;
+    } else {
+      av.textContent = (user.displayName||user.email||'?')[0].toUpperCase();
+    }
+  }
+  const nm = document.getElementById('gpc-name');
+  const em = document.getElementById('gpc-email');
+  if(nm) nm.textContent = user.displayName || sess.name || '—';
+  if(em) em.textContent = user.email || sess.email || '—';
+  const tags = document.getElementById('gpc-tags');
+  if(tags) {
+    const course = sess.course || '';
+    const shortCourse = {
+      'BS IN CIVIL ENGINEERING':'BSCE',
+      'BS IN ACCOUNTING INFORMATION SYSTEM':'BSAIS',
+      'BS IN CRIMINOLOGY':'BSCrim',
+      'BS IN HOSPITALITY MANAGEMENT':'BSHM',
+      'BS IN SOCIAL WORK':'BSSW',
+      'BS IN SECONDARY EDUCATION':'BSEd',
+      'BACHELOR OF ELEMENTARY EDUCATION':'BEEd'
+    }[course] || course.split(' ').slice(-1)[0] || '—';
+    tags.innerHTML =
+      `<span class="gpc-tag gpc-tag-g">✅ Verified Gmail</span>` +
+      (sess.academicYear ? `<span class="gpc-tag gpc-tag-w">📅 ${esc(sess.academicYear)}</span>` : '') +
+      (course ? `<span class="gpc-tag gpc-tag-c">${esc(shortCourse)}</span>` : '');
+  }
+}
+window._loadGrades=loadGrades;
 
 function shortC(c){
-  return({'BS IN ACCOUNTING INFORMATION SYSTEM':'BSAIS','BS IN CRIMINOLOGY':'BSCrim',
-    'BS IN HOSPITALITY MANAGEMENT':'BSHM','BS IN SOCIAL WORK':'BSSW',
-    'BS IN CIVIL ENGINEERING':'BSCE','BS IN SECONDARY EDUCATION':'BSEd',
-    'BACHELOR OF ELEMENTARY EDUCATION':'BEEd'})[c]||c||'—';
+  return({
+    'BS IN ACCOUNTING INFORMATION SYSTEM':'BSAIS',
+    'BS IN CRIMINOLOGY':'BSCrim',
+    'BS IN HOSPITALITY MANAGEMENT':'BSHM',
+    'BS IN SOCIAL WORK':'BSSW',
+    'BS IN CIVIL ENGINEERING':'BSCE',
+    'BS IN SECONDARY EDUCATION':'BSEd',
+    'BACHELOR OF ELEMENTARY EDUCATION':'BEEd'
+  })[c]||c||'—';
 }
+</script>
+
+<script>
+// PDF Download
+window.downloadGradesPDF = async function() {
+  const btn = document.getElementById('btn-grade-pdf');
+  if(btn){ btn.disabled=true; btn.textContent='Generating PDF...'; }
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+    const W=210, H=297, M=16, CW=W-M*2;
+    let y=0;
+
+    const C = {
+      bg:     [5, 10, 20],
+      card:   [11, 18, 32],
+      card2:  [16, 26, 46],
+      border: [26, 40, 64],
+      purple: [140, 70, 230],
+      cyan:   [34, 195, 220],
+      gold:   [245, 158, 11],
+      green:  [46, 213, 160],
+      red:    [230, 60, 100],
+      white:  [230, 235, 255],
+      muted:  [90, 116, 153],
+      dim:    [48, 66, 96],
+      black:  [0, 0, 0],
+    };
+
+    const fill = (r,g,b)        => pdf.setFillColor(r,g,b);
+    const stroke = (r,g,b,w=0.3)=> { pdf.setDrawColor(r,g,b); pdf.setLineWidth(w); };
+    const txt = (t,x,yy,sz,r,g,b,style='normal',align='left') => {
+      pdf.setFontSize(sz); pdf.setFont('helvetica',style);
+      pdf.setTextColor(r,g,b); pdf.text(t,x,yy,{align});
+    };
+    const rect = (x,yy,w,h,r2=0,mode='F') => pdf.roundedRect(x,yy,w,h,r2,r2,mode);
+    const gradeCol = v => {
+      if(!v||v==='—') return C.muted;
+      const n=parseFloat(v); return n>=75?C.green:n>=60?C.gold:C.red;
+    };
+    const gradeStatus = v => {
+      if(!v||v==='—') return 'NOT YET RELEASED';
+      return parseFloat(v)>=75?'PASSED':'FAILED';
+    };
+    const stripEmoji = s => s.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{FE00}-\u{FE0F}]|[\u{1F000}-\u{1FFFF}]|📝|💻|📘|📗|📙|🏆|✅|❌|⏱|📅|📧/gu,'').replace(/^\s+|\s+$/g,'');
+
+    let sess2 = {};
+    try { sess2 = JSON.parse(localStorage.getItem('student_session')||'{}'); } catch(e){}
+    const subjTitle = document.getElementById('gd-subj-title')?.textContent||'Computer Fundamentals and Programming';
+    const subjMeta  = document.getElementById('gd-subj-meta')?.textContent||'BES 125 · DEBULGADO, S.M.G';
+    const gcards    = document.querySelectorAll('.gc-score');
+    const gv        = i => gcards[i]?.textContent?.trim()||'—';
+    const PrelimV=gv(0), MidV=gv(1), FinV=gv(2), SemV=gv(3);
+
+    const toBase64 = url => new Promise(resolve => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const cv = document.createElement('canvas');
+        cv.width = img.naturalWidth; cv.height = img.naturalHeight;
+        cv.getContext('2d').drawImage(img,0,0);
+        resolve({ data: cv.toDataURL('image/jpeg',0.85), w: img.naturalWidth, h: img.naturalHeight });
+      };
+      img.onerror = () => resolve(null);
+      img.src = url;
+    });
+
+    const containFit = (srcW, srcH, bw, bh) => {
+      const scale = Math.min(bw / srcW, bh / srcH);
+      const fw = srcW * scale, fh = srcH * scale;
+      return { fw, fh, ox: (bw - fw) / 2, oy: (bh - fh) / 2 };
+    };
+
+    const fbUser = (() => { try { return JSON.parse(localStorage.getItem('firebase_user')||'{}'); } catch(e){ return {}; }})();
+    const [teacherImg, studentImg] = await Promise.all([
+      toBase64('teacher-d.png'),
+      fbUser.photo ? toBase64(fbUser.photo) : Promise.resolve(null),
+    ]);
+    const teacherB64 = teacherImg?.data || null;
+    const studentB64 = studentImg?.data || null;
+
+    fill(...C.bg); rect(0,0,W,H,0);
+    fill(...C.card); rect(0,0,W,52,0);
+    const stops=[[140,70,230],[100,120,240],[34,195,220],[46,213,160],[245,158,11],[34,195,220],[140,70,230]];
+    const bw2=W/stops.length;
+    stops.forEach((col,i)=>{ fill(...col); rect(i*bw2,0,bw2+1,3,0); });
+
+    fill(...C.card2); stroke(...C.purple,0.5); rect(M,8,34,36,4,'FD');
+    if(teacherB64 && teacherImg) {
+      try {
+        const BW=32, BH=34;
+        const {fw,fh,ox,oy} = containFit(teacherImg.w, teacherImg.h, BW, BH);
+        pdf.addImage(teacherB64,'JPEG', M+1+ox, 9+oy, fw, fh, undefined,'FAST');
+      } catch(e) {
+        txt('SMG',M+17,24,8,...C.cyan,'bold','center');
+        txt('Decode',M+17,30,5,...C.muted,'normal','center');
+      }
+    } else {
+      txt('SMG',M+17,22,8,...C.cyan,'bold','center');
+      txt('Decode',M+17,28,5,...C.muted,'normal','center');
+      txt('LMS',M+17,33,5,...C.gold,'normal','center');
+    }
+
+    txt('Official Grade Report',M+38,18,16,...C.white,'bold');
+    txt('SMGDecode Learning Management System',M+38,25,8,...C.muted,'normal');
+    txt('Academia de Tecnologia in Mindanao, Inc.',M+38,31,7,...C.dim,'normal');
+    txt('Instructor: DEBULGADO, S.M.G',M+38,37,7,...C.dim,'normal');
+
+    const dateStr = new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila',
+      year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    txt('Generated: '+dateStr, W-M, 48, 6.5, ...C.dim,'normal','right');
+
+    y = 62;
+
+    fill(...C.card); stroke(...C.border,0.3); rect(M,y,CW,46,3,'FD');
+    fill(...C.purple); rect(M,y,3,46,3);
+    const R=11, cx=M+19, cy=y+23;
+    fill(...C.card2); stroke(...C.purple,0.5);
+    pdf.circle(cx, cy, R, 'FD');
+    if(studentB64 && studentImg) {
+      try {
+        const D = R*2;
+        const {fw,fh,ox,oy} = containFit(studentImg.w, studentImg.h, D, D);
+        pdf.addImage(studentB64,'JPEG', cx-R+ox, cy-R+oy, fw, fh, undefined,'FAST');
+        fill(0,0,0,0); stroke(...C.purple,0.6); pdf.circle(cx, cy, R, 'D');
+      } catch(e) {
+        const ini = ((sess2.firstName||'')[0]||(sess2.name||'?')[0]||'?').toUpperCase();
+        txt(ini, cx, cy+3.5, 11, ...C.white,'bold','center');
+      }
+    } else {
+      const initials = ((sess2.firstName||'')[0]||(sess2.name||'?')[0]||'?').toUpperCase();
+      txt(initials, cx, cy+3.5, 11, ...C.white,'bold','center');
+    }
+    txt(sess2.name||'—',          M+34, y+14, 11, ...C.white,'bold');
+    txt(sess2.email||'—',         M+34, y+20, 7.5,...C.muted,'normal');
+    const tags=[
+      {t:'Verified Gmail', c:C.green},
+      {t:sess2.academicYear||'', c:C.cyan},
+      {t:sess2.term||'',         c:C.gold},
+    ].filter(x=>x.t);
+    let tx=M+34;
+    tags.forEach(tag=>{
+      const tw=pdf.getStringUnitWidth(tag.t)*7.5*0.352+8;
+      fill(...tag.c.map(v=>Math.min(v+180,255))); stroke(...tag.c,0.3);
+      rect(tx, y+24, tw, 7, 2,'FD');
+      txt(tag.t, tx+tw/2, y+29, 5.5,...tag.c,'bold','center');
+      tx+=tw+4;
+    });
+    txt('ID: '+(sess2.studentId||'—'), M+34, y+38, 7, ...C.dim,'normal');
+    txt(sess2.course||'—', M+34+30, y+38, 7, ...C.muted,'normal');
+
+    y += 56;
+
+    fill(...C.card); stroke(...C.border,0.3); rect(M,y,CW,22,3,'FD');
+    fill(...C.cyan); rect(M,y,3,22,3);
+    txt('SUBJECT',      M+9,  y+8, 6.5,...C.muted,'bold');
+    txt(stripEmoji(subjTitle), M+9, y+15, 8.5,...C.white,'bold');
+    txt(stripEmoji(subjMeta),  M+9, y+20, 6.5,...C.cyan,'normal');
+
+    y += 32;
+
+    txt('OFFICIAL GRADES', M, y, 7, ...C.purple,'bold');
+    stroke(...C.border, 0.3); pdf.line(M+38,y-1.5,W-M,y-1.5);
+    y += 7;
+
+    const grades=[
+      {label:'PRELIM',   value:PrelimV, col:C.cyan},
+      {label:'MIDTERM',  value:MidV,    col:C.purple},
+      {label:'FINALS',   value:FinV,    col:C.green},
+      {label:'SEMESTRAL',value:SemV,    col:C.gold},
+    ];
+    const gbw=(CW-9)/4, gbh=38;
+    grades.forEach((gb,i)=>{
+      const bx=M+i*(gbw+3), by=y;
+      const vc=gradeCol(gb.value);
+      fill(...C.card); stroke(...vc,0.6); rect(bx,by,gbw,gbh,3,'FD');
+      fill(...gb.col); rect(bx+0.3,by+0.3,gbw-0.6,2.5,2,'F');
+      txt(gb.label, bx+gbw/2, by+10, 6, ...C.muted,'bold','center');
+      txt(gb.value||'—', bx+gbw/2, by+24, gb.value&&gb.value!=='—'?16:12, ...vc,'bold','center');
+      txt(gradeStatus(gb.value), bx+gbw/2, by+33, 5, ...vc,'normal','center');
+    });
+    y += gbh+12;
+
+    txt('ASSESSMENT SCORES', M, y, 7, ...C.purple,'bold');
+    stroke(...C.border,0.3); pdf.line(M+43,y-1.5,W-M,y-1.5);
+    y += 8;
+
+    const arows = document.querySelectorAll('.arow');
+    const assData = [];
+    arows.forEach(row => {
+      const rawLbl  = row.querySelector('.arow-l')?.textContent?.trim()||'';
+      const scores  = row.querySelectorAll('.arow-score');
+      const sc  = scores[0]?.textContent?.trim()||'—';
+      const pct = scores[1]?.textContent?.trim()||'—';
+      const lbl = stripEmoji(rawLbl).replace(/\s+/,' ').trim();
+      if(lbl) assData.push({lbl,sc,pct});
+    });
+
+    if(!assData.length){
+      fill(...C.card); stroke(...C.border,0.2); rect(M,y,CW,14,3,'FD');
+      txt('No assessment data available.',M+CW/2,y+9,8,...C.dim,'normal','center');
+      y+=18;
+    } else {
+      fill(...C.card2); rect(M,y,CW,8,2,'F');
+      txt('Assessment',  M+4,   y+5.5, 6.5,...C.muted,'bold');
+      txt('Score',       M+110, y+5.5, 6.5,...C.muted,'bold');
+      txt('Percentage',  M+140, y+5.5, 6.5,...C.muted,'bold');
+      txt('Status',      M+165, y+5.5, 6.5,...C.muted,'bold');
+      y+=10;
+
+      assData.forEach((a,i)=>{
+        const pn=parseFloat(a.pct)||0;
+        const vc=pn>=75?C.green:pn>=50?C.gold:pn>0?C.red:C.dim;
+        const status=pn>=75?'PASSED':pn>0?'FAILED':'N/A';
+        if(i%2===0){ fill(...C.card2); rect(M,y-3.5,CW,9,0,'F'); }
+        txt(a.lbl,        M+4,   y+2, 7.5,...C.white,'normal');
+        txt(a.sc,         M+110, y+2, 7.5,...vc,'bold');
+        txt(a.pct,        M+140, y+2, 7.5,...vc,'bold');
+        txt(status,       M+165, y+2, 6,  ...vc,'normal');
+        y+=9;
+      });
+    }
+    y+=6;
+
+    if(y < 230){
+      y = 240;
+      stroke(...C.border,0.3);
+      pdf.line(M, y, M+70, y);
+      txt('INSTRUCTOR SIGNATURE', M, y+5, 6,...C.muted,'normal');
+      txt('DEBULGADO, S.M.G', M, y+10, 7,...C.white,'bold');
+      txt('Computer Fundamentals and Programming', M, y+15, 6,...C.dim,'normal');
+
+      pdf.line(W-M-70, y, W-M, y);
+      txt('DATE', W-M-70, y+5, 6,...C.muted,'normal');
+      txt(new Date().toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'}),
+          W-M-70, y+10, 7,...C.white,'bold');
+    }
+
+    fill(...C.card); rect(0,H-18,W,18,0);
+    fill(...C.purple); rect(0,H-18,W,2,0);
+    txt('This is an UNOFFICIAL copy generated from SMGDecode LMS for personal reference only.',
+        W/2, H-11, 6.5,...C.dim,'normal','center');
+    txt('For official transcript requests, contact the Registrar or Instructor: DEBULGADO, S.M.G',
+        W/2, H-6.5, 6,...C.dim,'normal','center');
+
+    const fname=(sess2.name||'Student').replace(/\s+/g,'_');
+    pdf.save('GradeReport_'+fname+'_'+new Date().toLocaleDateString('en-PH').replace(/\//g,'-')+'.pdf');
+    if(btn){ btn.disabled=false; btn.textContent='⬇ Download Grades PDF'; }
+  } catch(e){
+    console.error(e);
+    if(btn){ btn.disabled=false; btn.textContent='⬇ Download Grades PDF'; }
+    alert('PDF error: '+e.message);
+  }
+};
+
+// Sidebar controls
 function doLogout(){
   localStorage.removeItem('student_session');
   localStorage.removeItem('firebase_user');
   window.location.href='login.html';
 }
+window.doLogout=doLogout;
+
 function toggleSB(){
-  const sb=g('sb'),ov=g('ov'),main=g('main');
-  if(window.innerWidth<=768){sb.classList.toggle('open');ov.classList.toggle('show');}
-  else{sb.classList.toggle('hide');main.classList.toggle('full');}
+  const sb=document.getElementById('sb');
+  const ov=document.getElementById('ov');
+  const main=document.getElementById('main');
+  if(window.innerWidth<=768){
+    sb.classList.toggle('open');ov.classList.toggle('show');
+  } else {
+    sb.classList.toggle('hide');main.classList.toggle('full');
+  }
 }
 function closeSB(){
-  g('sb').classList.remove('open');
-  g('ov').classList.remove('show');
+  document.getElementById('sb').classList.remove('open');
+  document.getElementById('ov').classList.remove('show');
 }
+window.toggleSB=toggleSB;window.closeSB=closeSB;
+
+function shortC(c){
+  return({
+    'BS IN ACCOUNTING INFORMATION SYSTEM':'BSAIS',
+    'BS IN CRIMINOLOGY':'BSCrim',
+    'BS IN HOSPITALITY MANAGEMENT':'BSHM',
+    'BS IN SOCIAL WORK':'BSSW',
+    'BS IN CIVIL ENGINEERING':'BSCE',
+    'BS IN SECONDARY EDUCATION':'BSEd',
+    'BACHELOR OF ELEMENTARY EDUCATION':'BEEd'
+  })[c]||c||'—';
+}
+window.shortC=shortC;
 </script>
 </body>
 </html>
