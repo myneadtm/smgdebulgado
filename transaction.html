@@ -271,7 +271,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="sb-it" onclick="window.location.href='grades.html'">
         <span class="si">📊</span><span>Grades</span>
       </div>
-      <div class="sb-it" onclick="window.location.href='index1.html'">
+      <div class="sb-it" onclick="window.location.href='curriculum.html'">
         <span class="si">📄</span><span>Curriculum</span>
       </div>
       <div class="sb-div"></div>
@@ -293,6 +293,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
         <h1 class="ph-title">Select Your <span>Academic Term</span></h1>
         <p class="ph-sub">Choose your Academic Year, Semester, and Course to see your enrolled subjects.</p>
       </div>
+      <!-- Course is detected from login session — no course selector shown -->
       <div class="fb">
         <div class="fg">
           <label class="fl">🗓 Academic Year</label>
@@ -311,20 +312,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
             <option>1st Semester</option><option>2nd Semester</option>
           </select>
         </div>
-        <div class="fg">
-          <label class="fl">🎓 Course</label>
-          <select class="fs" id="sc" onchange="chg()">
-            <option value="">— Select Course —</option>
-            <option>BS IN ACCOUNTING INFORMATION SYSTEM</option>
-            <option>BS IN CRIMINOLOGY</option>
-            <option>BS IN HOSPITALITY MANAGEMENT</option>
-            <option>BS IN SOCIAL WORK</option>
-            <option>BS IN CIVIL ENGINEERING</option>
-            <option>BS IN SECONDARY EDUCATION</option>
-            <option>BACHELOR OF ELEMENTARY EDUCATION</option>
-          </select>
-        </div>
+        <!-- Hidden course input filled from session -->
+        <input type="hidden" id="sc">
         <button class="btn-vw" onclick="loadS()">🔍 View Subjects</button>
+      </div>
+      <!-- Course badge shown instead of dropdown -->
+      <div id="course-badge-row" style="display:none;margin:-10px 0 14px;">
+        <span style="font-size:0.64rem;font-weight:800;color:var(--purple);letter-spacing:2px;text-transform:uppercase;">🎓 Course: </span>
+        <span id="course-badge-label" style="font-size:0.74rem;font-weight:700;color:var(--text);background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.3);border-radius:8px;padding:3px 12px;margin-left:6px;"></span>
       </div>
       <div id="sa">
         <div class="es"><div class="es-ic">🎓</div>
@@ -388,10 +383,16 @@ g('sb-em').textContent=sess.email||'';
 g('sb-ctag').textContent=shortC(sess.course)||'—';
 g('sb-av').firstChild.textContent=(sess.firstName||sess.name||'?')[0].toUpperCase();
 
-// Auto-fill
+// Auto-fill — course locked to logged-in session
 if(sess.academicYear) g('sy').value=sess.academicYear;
 if(sess.term)         g('st').value=sess.term;
-if(sess.course)       g('sc').value=sess.course;
+if(sess.course){
+  g('sc').value=sess.course;
+  const badge=g('course-badge-row');
+  const lbl=g('course-badge-label');
+  if(badge){badge.style.display='block';}
+  if(lbl){lbl.textContent=sess.course;}
+}
 if(sess.academicYear&&sess.term&&sess.course) loadS();
 
 function chg(){
