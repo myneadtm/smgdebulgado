@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Computer Fundamentals and Programming — Week 2 Quiz — Control Structures</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07090f;--s1:#0e1218;--s2:#141a24;--s3:#1c2433;
+  --border:#232d3f;--accent:#f9c33a;--accent2:#3af9c3;
+  --accent3:#f93a7a;--blue:#4d9fff;--text:#dde6f0;--muted:#6b7f99;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
+
+.nav{position:sticky;top:0;z-index:200;background:rgba(7,9,15,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:66px;}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-logo-icon{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:600;color:#000;flex-shrink:0;}
+.nav-title{font-weight:700;font-size:0.82rem;color:var(--text);line-height:1.3;}
+.nav-sub{font-size:0.62rem;color:var(--muted);line-height:1.3;}
+.nav-instructor{font-size:0.62rem;color:var(--accent);font-weight:600;line-height:1.3;}
+.nav-links{display:flex;gap:4px;align-items:center;}
+.nav-link{padding:6px 14px;border-radius:7px;font-size:0.78rem;font-weight:600;color:var(--muted);text-decoration:none;cursor:pointer;border:1px solid var(--border);background:var(--s2);transition:all 0.2s;display:inline-flex;align-items:center;gap:5px;}
+.nav-link:hover{color:var(--text);border-color:var(--border2);}
+.nav-link.active{color:var(--text);border-color:var(--accent);background:rgba(249,195,58,0.08);}
+.nav-link.home-link{border-color:var(--border);}
+.nav-link.practical-link{border-color:rgba(0,255,247,0.3);color:#00fff7;}
+.nav-link.practical-link:hover{border-color:#00fff7;background:rgba(0,255,247,0.06);}
+.nav-divider{width:1px;height:18px;background:var(--border);margin:0 4px;}
+
+.wrap{max-width:780px;margin:0 auto;padding:32px 24px 100px;position:relative;z-index:1;}
+
+/* ── GATE SCREEN ── */
+#gate-screen{text-align:center;padding:60px 20px;}
+.gate-icon{font-size:3.5rem;margin-bottom:20px;}
+.gate-title{font-size:2rem;font-weight:800;margin-bottom:10px;letter-spacing:-0.5px;}
+.gate-title span{color:var(--accent);}
+.gate-desc{color:var(--muted);font-size:0.93rem;max-width:460px;margin:0 auto 32px;line-height:1.75;font-weight:300;}
+.gate-cards{display:flex;justify-content:center;gap:12px;margin-bottom:36px;flex-wrap:wrap;}
+.gate-card{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:16px 22px;min-width:100px;}
+.gc-val{font-family:'Fira Code',monospace;font-size:1.7rem;font-weight:700;color:var(--accent);line-height:1;margin-bottom:4px;}
+.gc-lbl{font-size:0.7rem;color:var(--muted);}
+
+.gate-form{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:28px;max-width:440px;margin:0 auto 28px;text-align:left;}
+.gate-form-title{font-weight:700;font-size:0.95rem;margin-bottom:18px;color:var(--accent);}
+.form-row{margin-bottom:14px;}
+.form-label{font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:6px;display:block;letter-spacing:0.5px;}
+.form-input{width:100%;background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:0.9rem;outline:none;transition:border-color 0.2s;}
+.form-input:focus{border-color:var(--accent);}
+.form-note{font-size:0.75rem;color:var(--muted);margin-top:6px;line-height:1.5;}
+
+.btn-start{background:var(--accent);color:#000;border:none;border-radius:10px;padding:14px 44px;font-family:'Outfit',sans-serif;font-weight:800;font-size:1rem;cursor:pointer;transition:all 0.2s;letter-spacing:0.3px;}
+.btn-start:hover{background:#ffda6e;transform:translateY(-2px);box-shadow:0 8px 24px rgba(249,195,58,0.2);}
+.btn-start:active{transform:scale(0.97);}
+
+/* ── QUIZ SCREEN ── */
+#quiz-screen{display:none;}
+.quiz-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+.q-info{font-family:'Fira Code',monospace;font-size:0.78rem;color:var(--muted);}
+.q-info strong{color:var(--accent);font-size:1rem;}
+.timer-box{display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:9px 16px;}
+.timer-icon{font-size:0.95rem;}
+#timer{font-family:'Fira Code',monospace;font-size:1.1rem;font-weight:700;color:var(--accent);min-width:46px;transition:color 0.3s;}
+#timer.warn{color:var(--accent);}
+#timer.danger{color:var(--accent3);}
+
+.prog-bar-outer{background:var(--s3);border-radius:4px;height:4px;margin-bottom:24px;overflow:hidden;}
+.prog-bar-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width 0.5s ease;}
+
+.q-card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:28px 28px 24px;margin-bottom:18px;position:relative;overflow:hidden;}
+.q-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--accent2));}
+.q-type-chip{display:inline-block;background:rgba(77,159,255,0.1);border:1px solid rgba(77,159,255,0.2);color:var(--blue);font-size:0.64rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:14px;}
+.q-text{font-family:'Outfit',sans-serif;font-size:1rem;font-weight:600;line-height:1.55;margin-bottom:20px;}
+.q-code{background:#040608;border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'Fira Code',monospace;font-size:0.8rem;line-height:1.65;margin:-6px 0 18px;color:#e2f0ff;white-space:pre;overflow-x:auto;}
+
+.choices{display:flex;flex-direction:column;gap:9px;}
+.choice{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-align:left;cursor:pointer;font-family:'Outfit',sans-serif;font-size:0.88rem;color:var(--text);transition:all 0.17s;display:flex;align-items:center;gap:12px;-webkit-appearance:none;}
+.choice:hover:not(:disabled){border-color:var(--blue);background:rgba(77,159,255,0.06);}
+.choice.selected{border-color:var(--blue);background:rgba(77,159,255,0.09);}
+.choice.correct{border-color:var(--accent2);background:rgba(58,249,195,0.09);color:var(--accent2);}
+.choice.wrong{border-color:var(--accent3);background:rgba(249,58,122,0.09);color:var(--accent3);}
+.choice-ltr{width:26px;height:26px;border-radius:7px;background:var(--border);display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:0.68rem;font-weight:700;flex-shrink:0;transition:all 0.17s;}
+.choice.selected .choice-ltr{background:var(--blue);color:#000;}
+.choice.correct .choice-ltr{background:var(--accent2);color:#000;}
+.choice.wrong .choice-ltr{background:var(--accent3);color:#fff;}
+
+.feedback{display:none;margin-top:14px;padding:13px 16px;border-radius:10px;font-size:0.86rem;line-height:1.65;}
+.feedback.show{display:block;}
+.feedback.ok{background:rgba(58,249,195,0.07);border:1px solid rgba(58,249,195,0.2);color:#7ee8c8;}
+.feedback.ng{background:rgba(249,58,122,0.07);border:1px solid rgba(249,58,122,0.2);color:#ffa8c0;}
+.feedback strong{display:block;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+
+.quiz-footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px;flex-wrap:wrap;gap:10px;}
+.q-flag{font-size:0.78rem;color:var(--muted);}
+.btn-next{background:var(--accent);color:#000;border:none;border-radius:9px;padding:12px 30px;font-family:'Outfit',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;transition:all 0.2s;display:none;}
+.btn-next.show{display:block;}
+.btn-next:active{transform:scale(0.97);}
+
+/* ── SCREENSHOT NOTICE ── */
+.screenshot-notice{
+  background:rgba(249,195,58,0.06);
+  border:1.5px solid rgba(249,195,58,0.3);
+  border-radius:14px;padding:16px 18px;
+  margin:16px 0;text-align:left;
+}
+.sn-title{
+  display:flex;align-items:center;gap:8px;
+  font-size:0.78rem;font-weight:700;
+  color:var(--accent);margin-bottom:12px;
+  letter-spacing:0.5px;text-transform:uppercase;
+}
+.sn-steps{display:flex;flex-direction:column;gap:8px;}
+.sn-step{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:0.82rem;color:#b0a080;line-height:1.6;
+}
+.sn-step-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+.sn-step strong{color:var(--text);}
+.btn-download-png{
+  width:100%;margin-top:14px;
+  background:linear-gradient(135deg,var(--accent),#f0a84b);
+  color:#000;border:none;border-radius:10px;
+  padding:12px 20px;
+  font-family:'Outfit',sans-serif;font-weight:800;font-size:0.88rem;
+  cursor:pointer;transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 4px 16px rgba(249,195,58,0.3);
+  letter-spacing:0.3px;
+}
+.btn-download-png:hover{
+  box-shadow:0 6px 24px rgba(249,195,58,0.5);
+  transform:translateY(-1px);
+}
+.btn-download-png:active{transform:scale(0.98);}
+
+/* ── ALREADY TAKEN SCREEN ── */
+#taken-screen{display:none;text-align:center;padding:40px 0;}
+.taken-card{
+  background:var(--s1);border:2px solid rgba(249,58,122,0.4);
+  border-radius:20px;padding:40px 28px 36px;
+  position:relative;overflow:hidden;
+}
+.taken-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#f93a7a,#a855f7,#3b82f6);}
+.taken-icon{font-size:3.5rem;margin-bottom:14px;display:block;}
+.taken-title{font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:800;
+  color:#f93a7a;margin-bottom:10px;}
+.taken-msg{font-size:0.9rem;color:var(--muted);line-height:1.8;
+  max-width:420px;margin:0 auto 22px;}
+.taken-msg strong{color:var(--text);}
+.taken-detail{
+  background:rgba(249,58,122,0.06);border:1px solid rgba(249,58,122,0.2);
+  border-radius:12px;padding:14px 18px;margin:0 auto 24px;
+  max-width:360px;font-size:0.84rem;color:#ffa8c0;line-height:1.8;text-align:left;
+}
+.taken-detail span{color:#f93a7a;font-weight:700;}
+.btn-taken-home{
+  background:linear-gradient(135deg,var(--blue-glow),var(--sky));
+  color:#fff;border:none;border-radius:10px;
+  padding:12px 32px;font-family:'Outfit',sans-serif;
+  font-weight:700;font-size:0.88rem;cursor:pointer;
+  box-shadow:0 4px 16px rgba(59,130,246,0.3);transition:all 0.2s;
+}
+.btn-taken-home:hover{box-shadow:0 6px 24px rgba(59,130,246,0.5);transform:translateY(-1px);}
+
+/* ── RESULT SCREEN ── */
+#result-screen{display:none;text-align:center;}
+.result-header{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:40px 32px;margin-bottom:24px;position:relative;overflow:hidden;}
+.result-header::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:300px;height:200px;background:radial-gradient(ellipse,rgba(249,195,58,0.08),transparent 70%);pointer-events:none;}
+.result-ring-wrap{width:150px;height:150px;margin:0 auto 20px;position:relative;}
+.result-ring-wrap svg{transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:var(--s3);stroke-width:12;}
+.ring-prog{fill:none;stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1);}
+.ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-score{font-family:'Outfit',sans-serif;font-size:2rem;font-weight:800;line-height:1;}
+.ring-denom{font-size:0.72rem;color:var(--muted);margin-top:3px;}
+.result-title{font-family:'Outfit',sans-serif;font-size:1.7rem;font-weight:800;margin-bottom:8px;}
+.result-msg{color:var(--muted);font-size:0.9rem;max-width:400px;margin:0 auto;line-height:1.7;font-weight:300;}
+
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0;}
+.rg-box{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.rg-val{font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:800;line-height:1;margin-bottom:4px;}
+.rg-lbl{font-size:0.7rem;color:var(--muted);}
+.rg-box.c .rg-val{color:var(--accent2);}
+.rg-box.w .rg-val{color:var(--accent3);}
+.rg-box.p .rg-val{color:var(--accent);}
+
+/* ── SUBMIT STATUS ── */
+.submit-status{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin:16px 0;display:flex;align-items:center;gap:14px;text-align:left;}
+.ss-icon{font-size:1.5rem;flex-shrink:0;}
+.ss-title{font-weight:700;font-size:0.92rem;margin-bottom:3px;}
+.ss-msg{font-size:0.8rem;color:var(--muted);line-height:1.5;}
+.submit-status.sending{border-color:rgba(249,195,58,0.3);}
+.submit-status.success{border-color:rgba(58,249,195,0.3);}
+.submit-status.error{border-color:rgba(249,58,122,0.3);}
+
+.result-btns{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap;}
+.btn-review{background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:11px 24px;font-family:'Outfit',sans-serif;font-weight:600;font-size:0.88rem;cursor:pointer;color:var(--text);transition:all 0.2s;}
+.btn-review:hover{border-color:var(--blue);}
+
+/* ── REVIEW ── */
+#review-wrap{display:none;margin-top:32px;text-align:left;}
+.review-title{font-size:1.1rem;font-weight:700;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.rv-item{background:var(--s1);border-radius:12px;padding:18px 20px;margin-bottom:10px;border-left:4px solid var(--border);}
+.rv-item.ok{border-left-color:var(--accent2);}
+.rv-item.ng{border-left-color:var(--accent3);}
+.rv-q{font-size:0.88rem;font-weight:600;margin-bottom:10px;line-height:1.5;}
+.rv-yours{font-size:0.82rem;margin-bottom:3px;}
+.rv-ok{color:var(--accent2);}
+.rv-ng{color:var(--accent3);}
+.rv-exp{font-size:0.8rem;color:var(--muted);margin-top:8px;line-height:1.6;font-style:italic;}
+
+/* ── FEEDBACK PANEL ── */
+#feedback-panel{display:none;margin-top:28px;text-align:left;}
+.fb-panel-header{background:linear-gradient(135deg,rgba(249,195,58,0.08),rgba(58,249,195,0.05));border:2px solid rgba(249,195,58,0.25);border-radius:16px;padding:22px 24px;margin-bottom:4px;}
+.fb-panel-title{font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:10px;color:var(--accent);}
+.fb-panel-sub{font-size:0.84rem;color:var(--muted);line-height:1.65;}
+.fb-form{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:18px;margin-top:14px;}
+.fb-row{display:flex;flex-direction:column;gap:8px;}
+.fb-label{font-size:0.75rem;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:6px;}
+.fb-label-note{font-size:0.7rem;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;}
+.fb-stars{display:flex;gap:8px;margin-top:2px;}
+.fb-star{font-size:1.9rem;cursor:pointer;opacity:0.2;transition:opacity 0.15s,transform 0.15s;user-select:none;line-height:1;}
+.fb-star.lit{opacity:1;}
+.fb-star:hover{transform:scale(1.2);}
+.fb-star-label{font-size:0.75rem;color:var(--muted);margin-top:4px;min-height:18px;transition:color 0.2s;}
+.fb-options{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px;}
+.fb-chip{background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:7px 15px;font-size:0.82rem;cursor:pointer;transition:all 0.18s;color:var(--muted);user-select:none;}
+.fb-chip:hover{border-color:var(--accent);color:var(--text);}
+.fb-chip.selected{background:rgba(249,195,58,0.12);border-color:var(--accent);color:var(--accent);font-weight:600;}
+.fb-divider{height:1px;background:var(--border);}
+.fb-textarea{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:13px 15px;color:var(--text);font-family:'Outfit',sans-serif;font-size:0.88rem;resize:vertical;min-height:100px;outline:none;transition:border-color 0.2s;width:100%;line-height:1.6;}
+.fb-textarea:focus{border-color:var(--accent);}
+.fb-textarea::placeholder{color:var(--muted);}
+.fb-submit{background:var(--accent);color:#000;border:none;border-radius:10px;padding:13px 32px;font-family:'Outfit',sans-serif;font-weight:800;font-size:0.92rem;cursor:pointer;transition:all 0.2s;align-self:flex-start;display:flex;align-items:center;gap:8px;}
+.fb-submit:hover{background:#ffda6e;transform:translateY(-1px);box-shadow:0 6px 20px rgba(249,195,58,0.2);}
+.fb-thanks{display:none;background:rgba(58,249,195,0.06);border:2px solid rgba(58,249,195,0.25);border-radius:14px;padding:28px 24px;text-align:center;margin-top:14px;}
+.fb-thanks-icon{font-size:2.5rem;margin-bottom:10px;}
+.fb-thanks-title{font-weight:800;font-size:1.1rem;color:var(--accent2);margin-bottom:6px;}
+.fb-thanks-msg{font-size:0.86rem;color:var(--muted);line-height:1.7;max-width:380px;margin:0 auto;}
+.setup-notice{background:rgba(249,195,58,0.05);border:1px solid rgba(249,195,58,0.2);border-radius:12px;padding:18px 20px;margin:16px 0;font-size:0.84rem;line-height:1.7;color:#c8a820;}
+.setup-notice strong{color:var(--accent);display:block;margin-bottom:6px;}
+.setup-notice code{background:rgba(249,195,58,0.1);padding:1px 6px;border-radius:4px;font-family:'Fira Code',monospace;font-size:0.82rem;}
+
+@media(max-width:600px){
+  /* ── NAV — 2-row mobile layout ── */
+  .nav{
+    height:auto;padding:10px 12px 0;
+    flex-direction:column;align-items:stretch;gap:0;
+  }
+  .nav-logo{gap:8px;padding-bottom:8px;}
+  .nav-logo-icon{width:28px;height:28px;font-size:0.65rem;flex-shrink:0;}
+  .nav-title{font-size:0.76rem;}
+  .nav-sub,.nav-instructor{font-size:0.58rem;}
+  .nav-links{
+    display:flex;flex-direction:row;gap:4px;
+    border-top:1px solid var(--border);
+    padding:8px 0 9px;overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .nav-links::-webkit-scrollbar{display:none;}
+  .nav-link{
+    padding:6px 10px;font-size:0.7rem;
+    white-space:nowrap;flex-shrink:0;
+  }
+  .nav-divider{display:none;}
+  #nav-user-badge{display:none !important;}
+
+  /* ── WRAP ── */
+  .wrap{padding:16px 12px 100px;}
+
+  /* ── GATE SCREEN ── */
+  #gate-screen{padding:28px 4px 20px;}
+  .gate-icon{font-size:2.8rem;margin-bottom:14px;}
+  .gate-title{font-size:1.55rem;margin-bottom:8px;}
+  .gate-desc{font-size:0.84rem;margin-bottom:24px;line-height:1.65;}
+  .gate-cards{gap:8px;margin-bottom:24px;}
+  .gate-card{padding:12px 14px;min-width:72px;border-radius:10px;}
+  .gc-val{font-size:1.3rem;}
+  .gc-lbl{font-size:0.62rem;}
+  .gate-form{padding:18px 16px;border-radius:12px;}
+  .gate-form-title{font-size:0.88rem;}
+  .form-input{font-size:0.88rem;padding:11px 12px;}
+  .form-label{font-size:0.72rem;}
+  .btn-start{
+    width:100%;padding:14px;font-size:0.95rem;
+    border-radius:12px;
+  }
+
+  /* ── ALREADY TAKEN ── */
+  .taken-card{padding:28px 16px 24px;border-radius:16px;}
+  .taken-icon{font-size:2.8rem;}
+  .taken-title{font-size:1.1rem;}
+  .taken-msg{font-size:0.82rem;}
+  .taken-detail{font-size:0.78rem;padding:12px 14px;}
+  .btn-taken-home{width:100%;padding:13px;font-size:0.85rem;}
+
+  /* ── QUIZ SCREEN ── */
+  .quiz-topbar{
+    flex-direction:column;align-items:flex-start;
+    gap:8px;margin-bottom:14px;
+  }
+  .q-info{font-size:0.72rem;}
+  .q-info strong{font-size:0.92rem;}
+  .timer-box{padding:8px 14px;border-radius:8px;width:100%;justify-content:space-between;}
+  #timer{font-size:1rem;}
+  .prog-bar-outer{margin-bottom:16px;}
+
+  /* Question card */
+  .q-card{padding:18px 14px 16px;border-radius:12px;margin-bottom:14px;}
+  .q-type-chip{font-size:0.58rem;padding:2px 8px;}
+  .q-text{font-size:0.92rem;margin-bottom:14px;line-height:1.5;}
+  .q-code{font-size:0.74rem;padding:10px 12px;border-radius:6px;}
+
+  /* Choices — bigger tap targets on mobile */
+  .choices{gap:8px;}
+  .choice{
+    padding:14px 12px;font-size:0.86rem;border-radius:10px;
+    min-height:52px;gap:10px;
+  }
+  .choice-ltr{width:28px;height:28px;font-size:0.7rem;border-radius:6px;flex-shrink:0;}
+
+  /* Feedback */
+  .feedback{font-size:0.82rem;padding:11px 13px;}
+
+  /* Footer */
+  .quiz-footer{
+    flex-direction:column-reverse;align-items:stretch;gap:8px;margin-top:14px;
+  }
+  .q-flag{text-align:center;font-size:0.74rem;}
+  .btn-next{
+    width:100%;padding:14px;font-size:0.92rem;
+    border-radius:10px;text-align:center;display:none;
+  }
+  .btn-next.show{display:block;}
+
+  /* ── RESULT SCREEN ── */
+  .result-header{padding:28px 16px 24px;border-radius:16px;}
+  .result-ring-wrap{width:130px;height:130px;margin-bottom:16px;}
+  .ring-score{font-size:1.7rem;}
+  .result-title{font-size:1.35rem;}
+  .result-msg{font-size:0.82rem;}
+  .result-grid{
+    grid-template-columns:1fr 1fr 1fr;gap:8px;margin:16px 0;
+  }
+  .rg-box{padding:12px 8px;border-radius:10px;}
+  .rg-val{font-size:1.25rem;}
+  .rg-lbl{font-size:0.62rem;}
+
+  /* Screenshot notice */
+  .screenshot-notice{padding:14px;border-radius:12px;}
+  .sn-title{font-size:0.7rem;}
+  .sn-step{font-size:0.78rem;}
+  .btn-download-png{font-size:0.84rem;padding:12px;}
+
+  /* Submit status */
+  .submit-status{padding:14px 14px;border-radius:10px;}
+  .ss-title{font-size:0.86rem;}
+  .ss-msg{font-size:0.74rem;}
+
+  /* Result buttons */
+  .result-btns{flex-direction:column;gap:8px;}
+  .btn-review{width:100%;padding:13px;font-size:0.86rem;border-radius:10px;}
+
+  /* Review */
+  .rv-item{padding:14px;border-radius:10px;}
+  .rv-q{font-size:0.84rem;}
+  .rv-yours,.rv-exp{font-size:0.78rem;}
+
+  /* Feedback panel */
+  .fb-panel-header{padding:16px;}
+  .fb-panel-title{font-size:1rem;}
+  .fb-panel-sub{font-size:0.78rem;}
+  .fb-form{padding:16px;gap:16px;}
+  .fb-star{font-size:1.65rem;}
+  .fb-chip{font-size:0.78rem;padding:6px 12px;}
+  .fb-textarea{font-size:0.84rem;min-height:88px;}
+  .fb-submit{width:100%;justify-content:center;padding:13px;}
+  .fb-thanks{padding:22px 16px;}
+}
+</style>
+<!-- Firebase Auth Guard + Firestore 1-Take -->
+<script type="module">
+import { initializeApp }   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut }
+                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp }
+                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
+  authDomain:        "YOUR_PROJECT.firebaseapp.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+window._quiz2DB = db;
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  window.firebaseUser  = user;
+  window.firebaseUID   = user.uid;
+  window.firebaseEmail = user.email;
+
+  const badge = document.getElementById('nav-user-badge');
+  if (badge) {
+    const photo = user.photoURL ? `<img src="${user.photoURL}" style="width:22px;height:22px;border-radius:50%;vertical-align:middle;margin-right:5px;border:1px solid rgba(58,249,195,0.4);">` : '👤 ';
+    badge.innerHTML = photo + (user.displayName || user.email);
+    badge.style.display = 'inline-flex';
+  }
+  const nameEl = document.getElementById('inp-name');
+  if (nameEl && !nameEl.value && user.displayName) nameEl.value = user.displayName;
+
+  try {
+    const snap = await getDoc(doc(db, 'quiz2_submissions', user.uid));
+    if (snap.exists()) {
+      const d = snap.data();
+      const detail = document.getElementById('taken-detail');
+      if (detail) detail.innerHTML =
+        `<span>Gmail:</span> ${d.gmail||user.email}<br>
+         <span>Name:</span> ${d.name||'—'}<br>
+         <span>Student No:</span> ${d.studentNo||'—'}<br>
+         <span>Score:</span> ${d.score||'—'}<br>
+         <span>Percentage:</span> ${d.percent||'—'}<br>
+         <span>Submitted:</span> ${d.timestamp||'—'}`;
+      document.getElementById('gate-screen').style.display  = 'none';
+      document.getElementById('taken-screen').style.display = 'block';
+      return;
+    }
+  } catch(e) {
+    const cached = localStorage.getItem('quiz2_done_uid_' + user.uid);
+    if (cached) {
+      try {
+        const d = JSON.parse(cached);
+        const detail = document.getElementById('taken-detail');
+        if (detail) detail.innerHTML =
+          `<span>Gmail:</span> ${d.gmail||user.email}<br>
+           <span>Name:</span> ${d.name||'—'}<br>
+           <span>Score:</span> ${d.score||'—'}<br>
+           <span>Percentage:</span> ${d.percent||'—'}<br>
+           <span>Submitted:</span> ${d.timestamp||'—'}`;
+        document.getElementById('gate-screen').style.display  = 'none';
+        document.getElementById('taken-screen').style.display = 'block';
+      } catch(e2) {}
+    }
+  }
+});
+
+window.saveQuiz2ToFirestore = async function(score, pct, wrong, stuName, stuNo) {
+  if (!window.firebaseUID) return;
+  const record = {
+    uid: window.firebaseUID, gmail: window.firebaseEmail,
+    name: stuName || window.firebaseUser?.displayName || '',
+    studentNo: stuNo || 'N/A',
+    score: pts + '/30', percent: pct + '%', wrong,
+    timestamp: new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'}),
+    submittedAt: serverTimestamp()
+  };
+  localStorage.setItem('quiz2_done_uid_' + window.firebaseUID, JSON.stringify(record));
+  try { await setDoc(doc(db,'quiz2_submissions',window.firebaseUID), record); }
+  catch(e) { console.warn('Firestore:', e); }
+};
+
+window.firebaseSignOut = async function() {
+  await signOut(auth);
+  localStorage.removeItem('firebase_user');
+  localStorage.removeItem('student_session');
+  window.location.href = 'login.html';
+};
+</script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-icon">C++</div>
+    <div>
+      <div class="nav-title">Computer Fundamentals and Programming</div>
+      <div class="nav-sub">BS Civil Engineering</div>
+      <div class="nav-instructor">Instructor: DEBULGADO, S.M.G</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link home-link">🏠 Home</a>
+    <div class="nav-divider"></div>
+    <a href="lesson.html" class="nav-link">📘 Lesson</a>
+    <a href="lesson2.html" class="nav-link">📗 W2 Lesson</a>
+    <a href="quiz2.html" class="nav-link active">📝 W2 Quiz</a>
+    <a href="practical2.html" class="nav-link practical-link">💻 W2 Practical</a>
+    
+    <a href="profile.html" class="nav-link" style="border-color:rgba(168,85,247,0.3);color:#a855f7;">👤 Profile</a>
+    <div class="nav-divider"></div>
+    <span id="nav-user-badge" onclick="window.firebaseSignOut&&window.firebaseSignOut()" title="Sign out"
+      style="display:none;align-items:center;gap:5px;font-size:0.72rem;color:var(--accent2);cursor:pointer;padding:4px 10px;border:1px solid rgba(58,249,195,0.25);border-radius:7px;background:rgba(58,249,195,0.05);">
+    </span>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ALREADY TAKEN SCREEN -->
+  <div id="taken-screen">
+    <div class="taken-card">
+      <span class="taken-icon">🔒</span>
+      <div class="taken-title">Quiz Already Submitted</div>
+      <p class="taken-msg">
+        This quiz allows only <strong>one submission per student</strong>.<br>
+        Your score has already been recorded in the gradebook.
+      </p>
+      <div class="taken-detail" id="taken-detail"><!-- filled by JS --></div>
+    </div>
+  </div>
+
+  <!-- GATE SCREEN -->
+  <div id="gate-screen">
+    <div class="gate-icon">📝</div>
+    <h1 class="gate-title">Week 2 <span>Assessment</span></h1>
+    <p class="gate-desc">Test your understanding of Pseudocode, Flowcharts, and Control Structures. 15 items × 2 pts each = 30 points. Review the 3-hour lecture before starting.</p>
+
+    <!-- NO RETRY WARNING -->
+    <div style="background:rgba(249,58,122,0.08);border:2px solid rgba(249,58,122,0.35);border-radius:14px;padding:18px 22px;max-width:500px;margin:0 auto 28px;text-align:left;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <span style="font-size:1.4rem;">⚠️</span>
+        <strong style="font-size:0.95rem;color:#f93a7a;">Important — Read Before You Start</strong>
+      </div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+        <li style="font-size:0.86rem;color:#ffa8c0;line-height:1.6;display:flex;gap:8px;"><span style="color:#f93a7a;font-weight:700;flex-shrink:0;">•</span><span>This quiz is <strong style="color:#fff;">first take only.</strong> Once you click "Begin Assessment", you <strong style="color:#fff;">cannot retake</strong> it. Your first and only submission will be recorded as your final score.</span></li>
+        <li style="font-size:0.86rem;color:#ffa8c0;line-height:1.6;display:flex;gap:8px;"><span style="color:#f93a7a;font-weight:700;flex-shrink:0;">•</span><span>Each question has a <strong style="color:#fff;">3-minute timer.</strong> When time runs out, the question is automatically marked and you move to the next one.</span></li>
+        <li style="font-size:0.86rem;color:#ffa8c0;line-height:1.6;display:flex;gap:8px;"><span style="color:#f93a7a;font-weight:700;flex-shrink:0;">•</span><span>Read each question <strong style="color:#fff;">carefully and completely</strong> before selecting your answer. You <strong style="color:#fff;">cannot go back</strong> to a previous question.</span></li>
+        <li style="font-size:0.86rem;color:#ffa8c0;line-height:1.6;display:flex;gap:8px;"><span style="color:#f93a7a;font-weight:700;flex-shrink:0;">•</span><span>Make sure you have finished reading the <strong style="color:#fff;">full lesson module</strong> before taking this quiz.</span></li>
+        <li style="font-size:0.86rem;color:#ffa8c0;line-height:1.6;display:flex;gap:8px;"><span style="color:#f93a7a;font-weight:700;flex-shrink:0;">•</span><span>Do <strong style="color:#fff;">not refresh</strong> or close the browser while the quiz is ongoing. Doing so may result in an incomplete submission.</span></li>
+      </ul>
+    </div>
+    <div class="gate-cards">
+      <div class="gate-card"><div class="gc-val">15</div><div class="gc-lbl">Questions</div></div>
+      <div class="gate-card"><div class="gc-val" style="color:var(--accent2)">2 pts</div><div class="gc-lbl">Per Item</div></div>
+      <div class="gate-card"><div class="gc-val" style="color:var(--accent)">30</div><div class="gc-lbl">Total Points</div></div>
+      <div class="gate-card"><div class="gc-val">1</div><div class="gc-lbl">Take Only</div></div>
+    </div>
+
+    <div class="gate-form">
+      <div class="gate-form-title">🎓 Student Information</div>
+      <div class="form-row">
+        <label class="form-label">FULL NAME *</label>
+        <input class="form-input" id="inp-name" type="text" placeholder="e.g. Juan dela Cruz" maxlength="80">
+      </div>
+      <div class="form-row">
+        <label class="form-label">STUDENT NUMBER *</label>
+        <input class="form-input" id="inp-studno" type="text" placeholder="e.g. 2024-00123 (required)" maxlength="20">
+      </div>
+      <div class="form-row">
+        <label class="form-label">SECTION *</label>
+        <input class="form-input" id="inp-section" type="text" placeholder="e.g. CE-1A" maxlength="20">
+      </div>
+
+    </div>
+
+    <button class="btn-start" onclick="startQuiz()">Begin Assessment →</button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quiz-screen">
+    <div class="quiz-topbar">
+      <div class="q-info">Question <strong id="q-num">1</strong> of 15</div>
+      <div class="timer-box"><span class="timer-icon">⏱</span><span id="timer">3:00</span></div>
+    </div>
+    <div class="prog-bar-outer"><div class="prog-bar-inner" id="prog-inner" style="width:5%"></div></div>
+    <div id="q-area"></div>
+    <div class="quiz-footer">
+      <span class="q-flag" id="q-flag"></span>
+      <button class="btn-next" id="btn-next" onclick="nextQ()">Next Question →</button>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="result-screen">
+    <div class="result-header">
+      <div class="result-ring-wrap">
+        <svg viewBox="0 0 130 130" width="150" height="150">
+          <circle class="ring-bg" cx="65" cy="65" r="54"/>
+          <circle class="ring-prog" id="ring-prog" cx="65" cy="65" r="54" stroke-dasharray="339" stroke-dashoffset="339"/>
+        </svg>
+        <div class="ring-label">
+          <div class="ring-score" id="ring-score">0/30 pts</div>
+          <div class="ring-denom">score</div>
+        </div>
+      </div>
+      <h2 class="result-title" id="res-title">Quiz Complete</h2>
+      <p class="result-msg" id="res-msg"></p>
+
+      <div class="result-grid">
+        <div class="rg-box c"><div class="rg-val" id="rb-c">0</div><div class="rg-lbl">Points Earned</div></div>
+        <div class="rg-box w"><div class="rg-val" id="rb-w">0</div><div class="rg-lbl">Wrong / Skipped</div></div>
+        <div class="rg-box p"><div class="rg-val" id="rb-p">0%</div><div class="rg-lbl">Score</div></div>
+      </div>
+    </div>
+
+    <!-- SUBMISSION STATUS -->
+    <div class="submit-status sending" id="submit-status">
+      <div class="ss-icon">📡</div>
+      <div><div class="ss-title">Recording your score...</div><div class="ss-msg">Submitting to Google Sheets gradebook. Please wait.</div></div>
+    </div>
+
+    <!-- SCREENSHOT / DOWNLOAD NOTICE -->
+    <div class="sn-steps">
+        <div class="sn-step">
+          <span class="sn-step-icon">📸</span>
+          <span><strong>Screenshot</strong> — Take a screenshot of this screen right now to keep a permanent record of your score.</span>
+        </div>
+        <div class="sn-step">
+          <span class="sn-step-icon">📄</span>
+          <span><strong>Download as Image</strong> — Click the button below to save your result card as a PNG file on your device.</span>
+        </div>
+        <div class="sn-step">
+          <span class="sn-step-icon">⚠️</span>
+          <span><strong>Do not close this page</strong> until you have saved your score. Once you leave, you cannot retrieve this result again.</span>
+        </div>
+      </div>
+      <button class="btn-download-png" onclick="downloadScorePNG()">
+        ⬇️ Download Score as PNG
+      </button>
+    </div>
+  </div><!-- end result-screen -->
+
+</div>
+
+<script>
+// ════════════════════════════════════════════
+// TEACHER: Replace this URL with your Google
+// Apps Script Web App URL after setup.
+// See SETUP_GUIDE.txt for instructions.
+// ════════════════════════════════════════════
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbw3TLiw_qNNb98xlad3Ayvd_quhHXp9DWS2s2Ht577TqQhWj0RNYUKuvW-laK65hLbG/exec';
+
+const QS=[
+  {q:'What is pseudocode?',ch:['A programming language that compiles to machine code','An informal plain-English description of an algorithm','A type of flowchart drawn with boxes and arrows','A syntax error message in C++'],a:1,ex:'Pseudocode is a structured but informal way to describe algorithm logic in plain language. It cannot be run — it is used to plan logic before coding in any programming language.'},
+  {q:'In pseudocode, which keyword assigns a value to a variable?',ch:['PRINT','INPUT','SET / LET','LOOP'],a:2,ex:'SET (or LET) is the pseudocode keyword for assignment. SET total = 0 means the variable total holds 0. In C++ this becomes: int total = 0;'},
+  {q:'Which flowchart shape represents a DECISION (Yes/No condition)?',ch:['Rectangle — process box','Oval/Pill — terminal','Parallelogram — input/output','Diamond — decision'],a:3,ex:'A diamond (◇) represents a decision point in a flowchart. It has exactly two exits — YES (true) and NO (false) — mapping directly to an if statement in C++.'},
+  {q:'Which flowchart shape is used for INPUT and OUTPUT operations?',ch:['Diamond','Oval / Pill','Rectangle','Parallelogram'],a:3,ex:'The parallelogram (slanted rectangle) represents INPUT or OUTPUT — like cin (input) or cout (output). The oval is START/END, the rectangle is for processes.'},
+  {q:'What is the correct professional order when designing a program?',ch:['Code → Test → Pseudocode','Code → Flowchart → Pseudocode','Pseudocode → Flowchart → Code','Flowchart → Pseudocode → Code'],a:2,ex:'The professional design process: (1) Pseudocode — plan logic in words. (2) Flowchart — visualize the flow diagram. (3) Code — implement in C++. This prevents logic errors before any code is written.'},
+  {q:'What is the output of this code?\nif (8 > 5) {\n    cout << \"Big\";\n} else {\n    cout << \"Small\";\n}',ch:['Small','Big','Error','Nothing is printed'],a:1,ex:'8 > 5 is true, so the if block executes and prints "Big". The else block is completely skipped whenever the if condition is true.'},
+  {q:'Which operator checks if two values are EQUAL in C++?',ch:['= (single equals)','!= (not equal)','== (double equals)','<= (less or equal)'],a:2,ex:'== is the equality comparison operator. A single = is assignment. Writing if (x = 5) sets x to 5 — it does NOT compare. Always use == inside conditions.'},
+  {q:'What is the output?\nint x = 15;\nif (x > 10 && x < 20) {\n    cout << \"In range\";\n} else {\n    cout << \"Out\";\n}',ch:['Out','Error','In range','Nothing'],a:2,ex:'x=15 satisfies both x>10 AND x<20. The && operator requires BOTH conditions to be true — they are, so "In range" is printed.'},
+  {q:'What happens if you forget the break keyword inside a switch case?',ch:['A compilation error occurs','The program crashes immediately','Execution falls through to the next case','The case is skipped entirely'],a:2,ex:'Without break, C++ continues executing the next case automatically (fall-through). Always include break after each case unless intentional fall-through is needed.'},
+  {q:'What is the output?\nfor (int i = 1; i <= 4; i++) {\n    cout << i << \" \";\n}',ch:['0 1 2 3','1 2 3 4 5','1 2 3 4','0 1 2 3 4'],a:2,ex:'Loop starts at i=1, runs while i≤4, increments after each step. Prints 1, 2, 3, 4 with spaces. At i=5 the condition fails and the loop exits.'},
+  {q:'How many times does this loop body execute?\nfor (int i = 0; i < 5; i++)',ch:['4','6','5','3'],a:2,ex:'i starts at 0 and runs while i<5. Values: 0,1,2,3,4 — exactly 5 iterations. At i=5 the condition i<5 is false and the loop stops.'},
+  {q:'When is the condition of a while loop checked?',ch:['After the body runs each time','Only once at the very start','Before the body runs each time','At both start and end'],a:2,ex:'The while loop checks its condition BEFORE each iteration. If the condition is false from the start, the body never executes even once — the key difference from do-while.'},
+  {q:'What makes a do-while loop different from a while loop?',ch:['do-while runs faster','do-while body always executes at least once','do-while needs no condition','do-while can only loop 10 times'],a:1,ex:'A do-while executes the body FIRST, then checks the condition. This guarantees the body runs at least once even if the condition is false from the start. Perfect for menus and input validation.'},
+  {q:'What is the output of this nested loop?\nfor (int i = 1; i <= 2; i++) {\n    for (int j = 1; j <= 2; j++) {\n        cout << i*j << \" \";\n    }\n}',ch:['1 2 2 4','1 2 3 4','1 1 2 2','2 4 2 4'],a:0,ex:'Outer i=1: inner prints 1×1=1 and 1×2=2. Outer i=2: inner prints 2×1=2 and 2×2=4. Full output: 1 2 2 4. Nested loops multiply their iteration counts.'},
+  {q:'What does the expression (9 % 4) return in C++?',ch:['2.25','2','1','4'],a:2,ex:'9 ÷ 4 = 2 with remainder 1. The % modulus operator returns the REMAINDER only, so 9 % 4 = 1. Commonly used to check if a number is even (n%2==0) or odd (n%2==1).'}
+];
+
+let cur=0,score=0,answered=false,tmr=null,timeLeft=180,ans=[];
+let stuName='',stuNo='',stuSection='',startTime=null;
+
+function startQuiz(){
+  stuName = document.getElementById('inp-name').value.trim();
+  stuNo   = document.getElementById('inp-studno').value.trim();
+  stuSection = document.getElementById('inp-section').value.trim();
+
+  if(!stuName)   { alert('Please enter your full name before starting.'); return; }
+  if(!stuNo)     { alert('Please enter your student number. This is required to enforce 1 submission per student.'); return; }
+  if(!stuSection){ alert('Please enter your section before starting.'); return; }
+
+  // ── DUPLICATE CHECK: by student number ──
+  const keyNo   = 'quiz2_done_no_'   + stuNo.toLowerCase().replace(/\s/g,'');
+  const keyName = 'quiz2_done_name_' + stuName.toLowerCase().replace(/\s/g,'');
+  const existingNo   = localStorage.getItem(keyNo);
+  const existingName = localStorage.getItem(keyName);
+  const existing = existingNo || existingName;
+
+  if(existing){
+    try{
+      const rec = JSON.parse(existing);
+      document.getElementById('taken-detail').innerHTML =
+        `<span>Name:</span> ${rec.name || stuName}<br>
+         <span>Student No:</span> ${rec.studentNo || stuNo}<br>
+         <span>Score:</span> ${rec.score || '—'}<br>
+         <span>Percentage:</span> ${rec.percent || '—'}<br>
+         <span>Submitted:</span> ${rec.timestamp || '—'}`;
+    } catch(e){
+      document.getElementById('taken-detail').innerHTML =
+        `<span>Name:</span> ${stuName}<br><span>Student No:</span> ${stuNo}<br><span>Status:</span> Already submitted.`;
+    }
+    document.getElementById('gate-screen').style.display = 'none';
+    document.getElementById('taken-screen').style.display = 'block';
+    return;
+  }
+
+  localStorage.setItem('stu_name', stuName);
+  localStorage.setItem('stu_section', stuSection);
+  startTime = new Date();
+  cur=0; score=0; answered=false; ans=[];
+  document.getElementById('gate-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQ();
+}
+
+function renderQ(){
+  answered=false;clearInterval(tmr);timeLeft=180;updateTimer();
+  const q=QS[cur];
+  document.getElementById('q-num').textContent=cur+1;
+  document.getElementById('prog-inner').style.width=((cur+1)/15*100)+'%';
+  document.getElementById('btn-next').classList.remove('show');
+  document.getElementById('q-flag').textContent='';
+
+  const L=['A','B','C','D'];
+  let top='';
+  if(q.q.includes('\n')){
+    const pts=q.q.split('\n');
+    top=`<div class="q-text">${pts[0]}</div><div class="q-code">${esc(pts.slice(1).join('\n'))}</div>`;
+  } else {
+    top=`<div class="q-text">${q.q}</div>`;
+  }
+  const chs=q.ch.map((c,i)=>`<button class="choice" onclick="pick(${i})" id="ch-${i}"><span class="choice-ltr">${L[i]}</span>${esc(c)}</button>`).join('');
+  document.getElementById('q-area').innerHTML=`<div class="q-card"><div class="q-type-chip">${q.type}</div>${top}<div class="choices">${chs}</div><div class="feedback" id="fb"></div></div>`;
+
+  tmr=setInterval(()=>{
+    timeLeft--;updateTimer();
+    if(timeLeft<=0){clearInterval(tmr);if(!answered)autoSkip();}
+  },1000);
+}
+
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function updateTimer(){
+  const m=Math.floor(timeLeft/60),s=timeLeft%60;
+  const el=document.getElementById('timer');
+  el.textContent=m+':'+(s<10?'0':'')+s;
+  el.className=timeLeft<=30?'danger':timeLeft<=60?'warn':'';
+}
+
+function pick(idx){
+  if(answered)return;
+  answered=true;clearInterval(tmr);
+  const q=QS[cur],ok=idx===q.a;
+  if(ok)score++;
+  ans[cur]={chosen:idx,correct:q.a,ok,q:q.q,yourAns:q.ch[idx],correctAns:q.ch[q.a]};
+  document.querySelectorAll('.choice').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.a)b.classList.add('correct');
+    else if(i===idx&&!ok)b.classList.add('wrong');
+  });
+  const fb=document.getElementById('fb');
+  fb.classList.add('show',ok?'ok':'ng');
+  fb.innerHTML=`<strong>${ok?'✓ Correct!':'✗ Incorrect'}</strong>${q.ex}`;
+  document.getElementById('btn-next').classList.add('show');
+  document.getElementById('q-flag').textContent=ok?'✅ Correct':'❌ Wrong — check the explanation';
+}
+
+function autoSkip(){
+  if(answered)return;
+  answered=true;
+  const q=QS[cur];
+  ans[cur]={chosen:-1,correct:q.a,ok:false,q:q.q,yourAns:'Not answered (time out)',correctAns:q.ch[q.a]};
+  document.querySelectorAll('.choice').forEach((b,i)=>{b.disabled=true;if(i===q.a)b.classList.add('correct');});
+  const fb=document.getElementById('fb');
+  fb.classList.add('show','ng');
+  fb.innerHTML=`<strong>⏱ Time's Up!</strong>${q.ex}`;
+  document.getElementById('btn-next').classList.add('show');
+  document.getElementById('q-flag').textContent='⏱ Time out — answer shown above';
+}
+
+function nextQ(){
+  cur++;
+  if(cur>=QS.length)showResults();
+  else renderQ();
+}
+
+function showResults(){
+  clearInterval(tmr);
+  document.getElementById('quiz-screen').style.display='none';
+  document.getElementById('result-screen').style.display='block';
+
+  const pts   = score * 2;          // 2pts per question
+  const wrong = 15 - score;
+  const pct   = Math.round(pts / 30 * 100);
+  document.getElementById('ring-score').textContent = pts + '/30 pts';
+  document.getElementById('rb-c').textContent = score + ' items';
+  document.getElementById('rb-w').textContent = wrong + ' items';
+  document.getElementById('rb-p').textContent = pct + '%';
+  const col = pct >= 90 ? '#3af9c3' : pct >= 75 ? '#f9c33a' : '#f93a7a';
+  const rp  = document.getElementById('ring-prog');
+  rp.style.stroke = col;
+  document.getElementById('ring-score').style.color = col;
+  setTimeout(() => { rp.style.strokeDashoffset = 339 - (339 * pts / 30); }, 120);
+
+  const levels=[[90,'🏆 Outstanding!','Excellent! You mastered Week 2 — '+pts+'/30 pts.'],[75,'👍 Great Work!','You scored '+pts+'/30. Solid — review any missed items.'],[50,'📖 Passed!','You scored '+pts+'/30. Revisit the lesson before the laboratory.'],[0,'🔄 Needs Review','You scored '+pts+'/30. Re-read the 3-hour lecture carefully.']];
+  const [,title,msg]=levels.find(([t])=>pct>=t);
+  document.getElementById('res-title').textContent=title;
+  document.getElementById('res-msg').textContent=msg;
+
+  submitToSheets(score, pct, wrong);
+
+  // ── SAVE to Firestore (Gmail UID) ──
+  if (typeof window.saveQuiz2ToFirestore === 'function') {
+    window.saveQuiz2ToFirestore(score*2, pct, wrong, stuName, stuNo);
+  }
+  // localStorage lock
+  const _record = JSON.stringify({ gmail: window.firebaseEmail||'N/A', name:stuName, studentNo:stuNo||'N/A', score: pts+'/30', percent:pct+'%', timestamp:new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'}) });
+  if(stuNo)   localStorage.setItem('quiz2_done_no_'+(stuNo||'').toLowerCase().replace(/\s/g,''), _record);
+  if(stuName) localStorage.setItem('quiz2_done_name_'+stuName.toLowerCase().replace(/\s/g,''), _record);
+
+  // ── LOCK: save record so this student can't retake ──
+  const record = JSON.stringify({
+    name:      stuName,
+    studentNo: stuNo || 'N/A',
+    section:   stuSection,
+    score:     pts + '/30',
+    percent:   pct + '%',
+    timestamp: new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'})
+  });
+  const keyNo   = 'quiz2_done_no_'   + (stuNo||'').toLowerCase().replace(/\s/g,'');
+  const keyName = 'quiz2_done_name_' + stuName.toLowerCase().replace(/\s/g,'');
+  if(stuNo)   localStorage.setItem(keyNo,   record);
+  if(stuName) localStorage.setItem(keyName, record);
+
+  // Auto-show feedback panel after a short delay
+  setTimeout(()=>{
+    document.getElementById('feedback-panel').style.display='block';
+  }, 1800);
+}
+
+function submitToSheets(score,pct,wrong){
+  const ss=document.getElementById('submit-status');
+  const endTime=new Date();
+  const duration=Math.round((endTime-startTime)/1000);
+  const mins=Math.floor(duration/60),secs=duration%60;
+  const timeStr=mins+'m '+secs+'s';
+
+  // Build detailed answer log
+  const details=ans.map((a,i)=>`Q${i+1}:${a.ok?'✓':'✗'}`).join(' | ');
+
+  const payload={
+    timestamp:endTime.toLocaleString('en-PH',{timeZone:'Asia/Manila'}),
+    name:stuName,
+    studentNo:stuNo||'N/A',
+    section:stuSection,
+    score:score,
+    outOf:15,
+    percent:pct+'%',
+    correct:score,
+    wrong:wrong,
+    timeTaken:timeStr,
+    details:details
+  };
+
+  if(SHEET_URL==='YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'){
+    ss.className='submit-status error';
+    ss.innerHTML=`<div class="ss-icon">⚙️</div><div><div class="ss-title">Google Sheets Not Yet Connected</div><div class="ss-msg">Score recorded locally. Teacher: follow SETUP_GUIDE.txt to connect Google Sheets. Student: screenshot this result for now.</div></div>`;
+    localStorage.setItem('last_result',JSON.stringify(payload));
+    return;
+  }
+
+  fetch(SHEET_URL,{
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  })
+  .then(()=>{
+    ss.className='submit-status success';
+    ss.innerHTML=`<div class="ss-icon">✅</div><div><div class="ss-title">Score Recorded Successfully!</div><div class="ss-msg">Your score has been saved to the class gradebook. <strong>${stuName} — ${score}/20 (${pct}%)</strong></div></div>`;
+  })
+  .catch(()=>{
+    ss.className='submit-status error';
+    ss.innerHTML=`<div class="ss-icon">⚠️</div><div><div class="ss-title">Could Not Submit Score</div><div class="ss-msg">Check your internet connection. Screenshot this result page and send to your teacher: <strong>${stuName} — ${score}/20 (${pct}%)</strong></div></div>`;
+  });
+}
+
+function showFeedback(){
+  document.getElementById('feedback-panel').style.display='block';
+  document.getElementById('feedback-panel').scrollIntoView({behavior:'smooth'});
+}
+
+function showFeedback(){
+  document.getElementById('feedback-panel').style.display='block';
+  document.getElementById('feedback-panel').scrollIntoView({behavior:'smooth'});
+}
+
+// ── DOWNLOAD SCORE AS PNG ──
+function downloadScorePNG(){
+  const btn = document.querySelector('.btn-download-png');
+  btn.textContent = '⏳ Generating...';
+  btn.disabled = true;
+
+  // Grab score info
+  const score   = document.getElementById('ring-score').textContent;
+  const title   = document.getElementById('res-title').textContent;
+  const correct = document.getElementById('rb-c').textContent;
+  const wrong   = document.getElementById('rb-w').textContent;
+  const pct     = document.getElementById('rb-p').textContent;
+  const name    = document.getElementById('inp-name')
+                    ? document.getElementById('inp-name').value || stuName || 'Student'
+                    : (stuName || 'Student');
+  const section = document.getElementById('inp-section')
+                    ? document.getElementById('inp-section').value || stuSection || ''
+                    : (stuSection || '');
+  const now     = new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'});
+
+  // Build canvas
+  const W = 640, H = 400;
+  const canvas = document.createElement('canvas');
+  canvas.width  = W * 2; // retina
+  canvas.height = H * 2;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(2, 2);
+
+  // Background
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#060d1f');
+  bg.addColorStop(1, '#0a1528');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Top accent bar
+  const bar = ctx.createLinearGradient(0, 0, W, 0);
+  bar.addColorStop(0, '#3b82f6');
+  bar.addColorStop(0.5, '#a78bfa');
+  bar.addColorStop(1, '#22d3ee');
+  ctx.fillStyle = bar;
+  ctx.fillRect(0, 0, W, 5);
+
+  // Card background
+  ctx.fillStyle = 'rgba(14,24,52,0.9)';
+  roundRect(ctx, 24, 24, W-48, H-48, 16);
+  ctx.fill();
+
+  // Subject label
+  ctx.fillStyle = '#3b82f6';
+  ctx.font = 'bold 11px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('COMPUTER FUNDAMENTALS & PROGRAMMING — BS CIVIL ENGINEERING', W/2, 55);
+
+  // Instructor
+  ctx.fillStyle = '#a78bfa';
+  ctx.font = '10px Arial';
+  ctx.fillText('INSTRUCTOR: DEBULGADO, S.M.G', W/2, 72);
+
+  // Divider
+  ctx.strokeStyle = 'rgba(59,130,246,0.25)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(48, 82); ctx.lineTo(W-48, 82); ctx.stroke();
+
+  // Score ring (arc)
+  const cx = W/2, cy = 175, r = 62;
+  // Track
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI*2);
+  ctx.strokeStyle = 'rgba(59,130,246,0.15)';
+  ctx.lineWidth = 10;
+  ctx.stroke();
+  // Progress
+  const pctNum = parseFloat(pct) / 100;
+  const grad = ctx.createLinearGradient(cx-r, cy, cx+r, cy);
+  grad.addColorStop(0, '#3b82f6');
+  grad.addColorStop(1, '#22d3ee');
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, -Math.PI/2, -Math.PI/2 + Math.PI*2*pctNum);
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = 10;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+
+  // Score text inside ring
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 28px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText((score*2)+'/30', cx, cy + 9);
+  ctx.fillStyle = '#6b7fa0';
+  ctx.font = '11px Arial';
+  ctx.fillText('pts', cx, cy + 26);
+
+  // Title
+  ctx.fillStyle = '#e2eeff';
+  ctx.font = 'bold 18px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(title, W/2, 265);
+
+  // Stats boxes
+  const stats = [
+    {label:'Correct', val:correct, color:'#22d3ee'},
+    {label:'Wrong / Skipped', val:wrong, color:'#f87171'},
+    {label:'Score %', val:pct, color:'#a78bfa'}
+  ];
+  stats.forEach((s, i) => {
+    const bx = 60 + i*180, by = 280, bw = 155, bh = 52;
+    ctx.fillStyle = 'rgba(59,130,246,0.08)';
+    roundRect(ctx, bx, by, bw, bh, 10);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(59,130,246,0.2)';
+    ctx.lineWidth = 1;
+    roundRect(ctx, bx, by, bw, bh, 10);
+    ctx.stroke();
+    ctx.fillStyle = s.color;
+    ctx.font = 'bold 20px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(s.val, bx + bw/2, by + 28);
+    ctx.fillStyle = '#4a6a9a';
+    ctx.font = '10px Arial';
+    ctx.fillText(s.label, bx + bw/2, by + 44);
+  });
+
+  // Name & section
+  ctx.fillStyle = '#e2eeff';
+  ctx.font = 'bold 13px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(name + (section ? '  |  ' + section : ''), W/2, 354);
+
+  // Timestamp
+  ctx.fillStyle = '#344868';
+  ctx.font = '10px Arial';
+  ctx.fillText(now, W/2, 370);
+
+  // Week 2 Quiz — Control Structures label
+  ctx.fillStyle = 'rgba(59,130,246,0.5)';
+  ctx.font = 'bold 10px Arial';
+  ctx.fillText('WEEK 2 — PSEUDOCODE, FLOWCHARTS & CONTROL STRUCTURES', W/2, 385);
+
+  // Download
+  setTimeout(() => {
+    const link = document.createElement('a');
+    link.download = 'Quiz_Score_' + (name.replace(/\s+/g,'_') || 'Student') + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    btn.textContent = '✅ Downloaded!';
+    btn.disabled = false;
+    setTimeout(() => { btn.textContent = '⬇️ Download Score as PNG'; }, 3000);
+  }, 300);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y); ctx.arcTo(x+w, y, x+w, y+r, r);
+  ctx.lineTo(x+w, y+h-r); ctx.arcTo(x+w, y+h, x+w-r, y+h, r);
+  ctx.lineTo(x+r, y+h); ctx.arcTo(x, y+h, x, y+h-r, r);
+  ctx.lineTo(x, y+r); ctx.arcTo(x, y, x+r, y, r);
+  ctx.closePath();
+}
+
+function showReview(){
+  const rv=document.getElementById('review-wrap');
+  rv.style.display='block';
+  const L=['A','B','C','D'];
+  let html='';
+  QS.forEach((q,i)=>{
+    const a=ans[i]||{chosen:-1,correct:q.a,ok:false};
+    const qText=q.q.includes('\n')?q.q.split('\n')[0]:q.q;
+    html+=`<div class="rv-item ${a.ok?'ok':'ng'}">
+      <div class="rv-q"><strong>Q${i+1}.</strong> ${esc(qText)}</div>
+      <div class="rv-yours ${a.ok?'rv-ok':'rv-ng'}">Your answer: ${a.chosen===-1?'Not answered (time out)':L[a.chosen]+'. '+esc(q.ch[a.chosen])}</div>
+      ${!a.ok?`<div class="rv-yours rv-ok">Correct: ${L[a.correct]}. ${esc(q.ch[a.correct])}</div>`:''}
+      <div class="rv-exp">💡 ${q.ex}</div>
+    </div>`;
+  });
+  document.getElementById('rv-list').innerHTML=html;
+  rv.scrollIntoView({behavior:'smooth'});
+}
+
+let starRating=0;
+const starLabels=['','😞 Poor','😐 Fair','🙂 Good','😊 Very Good','🌟 Excellent!'];
+function rateStar(n){
+  starRating=n;
+  document.querySelectorAll('.fb-star').forEach((s,i)=>s.classList.toggle('lit',i<n));
+  document.getElementById('star-label').textContent=starLabels[n];
+  document.getElementById('star-label').style.color='var(--accent)';
+}
+
+function selectChip(el,group){
+  document.querySelectorAll(`.fb-chip:not(.multi)`).forEach(c=>{
+    if(c.getAttribute('onclick')&&c.getAttribute('onclick').includes("'"+group+"'")) c.classList.remove('selected');
+  });
+  el.classList.add('selected');
+}
+
+function toggleChip(el){ el.classList.toggle('selected'); }
+
+function submitFeedback(){
+  const diff    = document.querySelector('.fb-chip.selected[onclick*="diff"]');
+  const pace    = document.querySelector('.fb-chip.selected[onclick*="pace"]');
+  const conf    = document.querySelector('.fb-chip.selected[onclick*="conf"]');
+  const ready   = document.querySelector('.fb-chip.selected[onclick*="ready"]');
+  const helpful = [...document.querySelectorAll('.fb-chip.multi.selected')].map(c=>c.textContent.trim());
+  const comment = document.getElementById('fb-comment').value.trim();
+
+  const fbData = {
+    type:           'FEEDBACK',
+    timestamp:      new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'}),
+    student:        stuName        || (window.firebaseUser?.displayName) || 'Anonymous',
+    gmail:          window.firebaseEmail || 'N/A',
+    section:        stuSection     || 'N/A',
+    studentNo:      stuNo          || 'N/A',
+    score:          pts + '/30',
+    starRating:     starRating ? starLabels[starRating] : 'Not rated',
+    difficulty:     diff  ? diff.textContent.trim()  : 'Not answered',
+    pace:           pace  ? pace.textContent.trim()  : 'Not answered',
+    helpful:        helpful.join(', ') || 'None selected',
+    confusingTopic: conf  ? conf.textContent.trim()  : 'Not answered',
+    readiness:      ready ? ready.textContent.trim() : 'Not answered',
+    comment:        comment || '(none)'
+  };
+
+  // Save locally
+  localStorage.setItem('last_feedback', JSON.stringify(fbData));
+
+  // ── SEND TO GOOGLE SHEETS → "stdfeedback_cfp" sheet ──
+  if (SHEET_URL && !SHEET_URL.includes('YOUR_GOOGLE')) {
+    fetch(SHEET_URL, {
+      method: 'POST',
+      mode:   'no-cors',
+      headers: {'Content-Type': 'application/json'},
+      body:    JSON.stringify(fbData)
+    }).catch(()=>{});
+  }
+
+  // ── SAVE TO FIRESTORE ──
+  if (window.firebaseUID && window._quiz2DB) {
+    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js')
+      .then(({ doc, setDoc, serverTimestamp }) => {
+        setDoc(
+          doc(window._quiz2DB, 'quiz_feedback', window.firebaseUID),
+          { ...fbData, submittedAt: serverTimestamp() }
+        ).catch(()=>{});
+      });
+  }
+
+  document.getElementById('fb-form').style.display = 'none';
+  document.getElementById('fb-thanks').style.display = 'block';
+  document.getElementById('fb-thanks').scrollIntoView({behavior:'smooth'});
+}
+
+window.addEventListener('load',()=>{
+  const n=localStorage.getItem('stu_name');
+  const s=localStorage.getItem('stu_section');
+  if(n)document.getElementById('inp-name').value=n;
+  if(s)document.getElementById('inp-section').value=s;
+});
+</script>
+</body>
+</html>
