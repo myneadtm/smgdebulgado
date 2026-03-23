@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Curriculum — SMGDecode</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060b14;--s1:#0b1120;--s2:#101828;--s3:#1a2436;
+  --border:#1e2d42;--border2:#273648;
+  --accent:#f9c33a;--green:#3af9c3;--red:#f93a7a;
+  --purple:#a855f7;--cyan:#22d3ee;--blue:#3b82f6;
+  --orange:#fb923c;--teal:#14b8a6;--rose:#f43f5e;
+  --text:#e2eeff;--muted:#5a7499;--dim:#344868;
+  --sw:230px;--font:'Outfit',sans-serif;--mono:'Fira Code',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{min-height:100dvh;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(59,130,246,0.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,0.022) 1px,transparent 1px);
+  background-size:48px 48px;}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;
+  background:rgba(6,11,20,0.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 20px;gap:14px;}
+.tb-ham{width:34px;height:34px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;cursor:pointer;
+  border-radius:8px;transition:background 0.2s;flex-shrink:0;}
+.tb-ham:hover{background:var(--s2);}
+.tb-ham span{display:block;width:18px;height:2px;background:var(--muted);border-radius:2px;}
+.tb-brand{display:flex;align-items:center;gap:8px;}
+.tb-brand-ic{width:30px;height:30px;border-radius:8px;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:0.64rem;font-weight:700;color:#fff;flex-shrink:0;}
+.tb-brand-name{font-weight:900;font-size:0.9rem;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tb-brand-sub{font-size:0.58rem;color:var(--muted);}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.tb-user{display:flex;align-items:center;gap:7px;background:var(--s2);
+  border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:0.74rem;}
+.tb-uname{color:var(--text);font-weight:700;max-width:120px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.btn-lo{background:transparent;color:var(--muted);border:1px solid var(--border);
+  border-radius:8px;padding:5px 12px;font-family:var(--font);font-weight:600;
+  font-size:0.72rem;cursor:pointer;transition:all 0.2s;}
+.btn-lo:hover{color:var(--red);border-color:rgba(249,58,122,0.4);}
+
+/* LAYOUT */
+.layout{display:flex;padding-top:58px;min-height:100dvh;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sw);flex-shrink:0;position:fixed;
+  top:58px;left:0;bottom:0;z-index:200;overflow-y:auto;
+  background:var(--s1);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  transition:transform 0.3s cubic-bezier(.4,0,.2,1);}
+.sidebar.hide{transform:translateX(calc(-1 * var(--sw)));}
+.sb-prof{padding:20px 18px 16px;border-bottom:1px solid var(--border);}
+.sb-av{width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;font-weight:800;color:#fff;
+  border:2px solid rgba(168,85,247,0.4);margin-bottom:10px;
+  position:relative;overflow:hidden;}
+.sb-av img{width:48px;height:48px;border-radius:50%;object-fit:cover;display:block;}
+.sb-dot{position:absolute;bottom:1px;right:1px;width:10px;height:10px;
+  border-radius:50%;background:var(--green);border:2px solid var(--s1);}
+.sb-nm{font-size:0.82rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-em{font-size:0.64rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-ctag{display:inline-block;margin-top:5px;font-size:0.6rem;font-weight:700;
+  background:rgba(168,85,247,0.1);color:var(--purple);
+  border:1px solid rgba(168,85,247,0.2);border-radius:8px;padding:2px 8px;}
+.sb-nav{flex:1;padding:10px;}
+.sb-sec{font-size:0.58rem;font-weight:800;color:var(--dim);
+  letter-spacing:2px;text-transform:uppercase;padding:6px 8px 3px;}
+.sb-it{display:flex;align-items:center;gap:10px;padding:9px 12px;
+  border-radius:10px;cursor:pointer;transition:all 0.18s;
+  color:var(--muted);font-size:0.82rem;font-weight:600;margin-bottom:2px;}
+.sb-it:hover{background:var(--s2);color:var(--text);}
+.sb-it.on{background:linear-gradient(135deg,rgba(168,85,247,0.15),rgba(59,130,246,0.1));
+  color:var(--text);border:1px solid rgba(168,85,247,0.25);}
+.sb-it.on .si{color:var(--purple);}
+.si{font-size:1rem;width:20px;text-align:center;flex-shrink:0;}
+.sb-div{height:1px;background:var(--border);margin:8px 10px;}
+.sb-ft{padding:10px;border-top:1px solid var(--border);}
+.sb-ver{font-size:0.6rem;color:var(--dim);text-align:center;}
+
+/* MAIN */
+.main{flex:1;margin-left:var(--sw);transition:margin-left 0.3s cubic-bezier(.4,0,.2,1);
+  min-height:calc(100dvh - 58px);position:relative;z-index:1;}
+.main.full{margin-left:0;}
+
+/* CONTENT PADDING */
+.cpad{padding:32px 28px 80px;}
+.ph{margin-bottom:26px;}
+.ph-tag{font-size:0.6rem;font-weight:800;color:var(--muted);
+  letter-spacing:3px;text-transform:uppercase;margin-bottom:7px;}
+.ph-title{font-size:1.5rem;font-weight:900;letter-spacing:-0.3px;}
+.ph-title span{background:linear-gradient(90deg,var(--purple),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ph-sub{font-size:0.8rem;color:var(--muted);margin-top:5px;line-height:1.6;}
+
+/* CURRICULUM */
+.cv-empty{background:var(--s1);border:1.5px dashed var(--border2);border-radius:14px;padding:44px 24px;text-align:center;}
+.cv-ic{font-size:2.8rem;margin-bottom:12px;opacity:0.3;}
+.cv-t{font-size:0.92rem;font-weight:700;color:var(--muted);margin-bottom:5px;}
+.cv-s{font-size:0.78rem;color:var(--dim);line-height:1.7;margin-bottom:18px;}
+.cv-note{display:inline-flex;align-items:center;gap:6px;
+  background:rgba(249,58,122,0.08);border:1px solid rgba(249,58,122,0.25);
+  color:var(--red);border-radius:10px;padding:8px 16px;
+  font-family:var(--font);font-weight:700;font-size:0.78rem;}
+.cv-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:12px;
+  padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:12px;
+  cursor:pointer;transition:all 0.2s;}
+.cv-card:hover{border-color:rgba(249,58,122,0.4);transform:translateY(-1px);}
+.cv-pdf{width:42px;height:42px;border-radius:10px;background:rgba(249,58,122,0.1);
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.cv-b{flex:1;min-width:0;}
+.cv-nm{font-size:0.86rem;font-weight:700;margin-bottom:2px;}
+.cv-mt{font-size:0.7rem;color:var(--muted);}
+.cv-dl{font-size:0.74rem;color:var(--red);font-weight:700;flex-shrink:0;}
+
+/* Course badge */
+.cv-course-badge{display:inline-flex;align-items:center;gap:8px;
+  background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.25);
+  color:var(--purple);border-radius:10px;padding:7px 16px;
+  font-size:0.76rem;font-weight:700;margin-bottom:20px;}
+
+/* OVERLAY */
+.ov{display:none;position:fixed;inset:0;z-index:190;
+  background:rgba(0,0,0,0.5);backdrop-filter:blur(2px);}
+.ov.show{display:block;}
+
+/* MOBILE */
+@media(max-width:768px){
+  .sidebar{transform:translateX(calc(-1 * var(--sw)));}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0!important;}
+  .cpad{padding:20px 14px 60px;}
+}
+</style>
+</head>
+<body>
+<!-- LOGIN GUARD -->
+<script>
+(function(){
+  try{var s=JSON.parse(localStorage.getItem('student_session')||'{}');
+    if(!s.loggedIn)window.location.replace('login.html');
+  }catch(e){window.location.replace('login.html');}
+})();
+</script>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-ham" onclick="toggleSB()">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="tb-brand">
+    <div class="tb-brand-ic">SMGD</div>
+    <div>
+      <div class="tb-brand-name">SMGDecode</div>
+      <div class="tb-brand-sub">Student Portal</div>
+    </div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-user">
+      <span>👤</span>
+      <span class="tb-uname" id="tb-nm">—</span>
+    </div>
+    <button class="btn-lo" onclick="doLogout()">⏻ Logout</button>
+  </div>
+</div>
+
+<div class="ov" id="ov" onclick="closeSB()"></div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sb">
+    <div class="sb-prof">
+      <div class="sb-av" id="sb-av">?<div class="sb-dot"></div></div>
+      <div class="sb-nm" id="sb-nm">—</div>
+      <div class="sb-em" id="sb-em">—</div>
+      <div class="sb-ctag" id="sb-ctag">—</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-sec">Main Menu</div>
+      <div class="sb-it" onclick="window.location.href='index.html'">
+        <span class="si">🏠</span><span>Home</span>
+      </div>
+      <div class="sb-it" onclick="window.location.href='transaction.html'">
+        <span class="si">📚</span><span>Transactions</span>
+      </div>
+      <div class="sb-it" onclick="window.location.href='grades.html'">
+        <span class="si">📊</span><span>Grades</span>
+      </div>
+      <div class="sb-it on">
+        <span class="si">📄</span><span>Curriculum</span>
+      </div>
+      <div class="sb-div"></div>
+      <div class="sb-sec">Account</div>
+      <div class="sb-it" onclick="doLogout()">
+        <span class="si">⏻</span><span style="color:var(--red)">Logout</span>
+      </div>
+    </div>
+    <div class="sb-ft">
+      <div class="sb-ver">SMGDecode Portal v1.0</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main" id="main">
+    <div class="cpad">
+      <div class="ph">
+        <div class="ph-tag">📄 Curriculum</div>
+        <h1 class="ph-title">Program <span>Curriculum</span></h1>
+        <p class="ph-sub">Your curriculum documents for your enrolled program.</p>
+      </div>
+
+      <!-- Course badge — filled from session -->
+      <div id="cv-course-badge" class="cv-course-badge" style="display:none;">
+        🎓 <span id="cv-course-text">—</span>
+      </div>
+
+      <!-- Curriculum content — filtered per course -->
+      <div id="cvc">
+        <div class="cv-empty">
+          <div class="cv-ic">📁</div>
+          <div class="cv-t">Curriculum Files Coming Soon</div>
+          <p class="cv-s">The instructor will upload your program curriculum files here.<br>
+          You will be able to download them once available.</p>
+          <div class="cv-note">📬 Check back later for uploaded documents</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CURRICULUM FILES — add per course as needed ──
+// Structure: { 'COURSE NAME': [ {name, meta, url}, ... ] }
+const CURRICULUM_FILES = {
+  'BS IN CIVIL ENGINEERING': [
+    // Example (add real URLs when available):
+    // {name:'BSCE Curriculum Checklist 2023', meta:'PDF · 1st Year to 5th Year', url:'files/bsce-curriculum.pdf'},
+  ],
+  'BS IN ACCOUNTING INFORMATION SYSTEM': [],
+  'BS IN CRIMINOLOGY': [],
+  'BS IN HOSPITALITY MANAGEMENT': [],
+  'BS IN SOCIAL WORK': [],
+  'BS IN SECONDARY EDUCATION': [],
+  'BACHELOR OF ELEMENTARY EDUCATION': [],
+};
+
+let sess = {};
+try{sess=JSON.parse(localStorage.getItem('student_session')||'{}')}catch(e){}
+
+function g(id){return document.getElementById(id);}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// Populate topbar + sidebar
+const dn = sess.firstName&&sess.surname ? sess.surname+', '+sess.firstName : sess.name||sess.email||'Student';
+g('tb-nm').textContent = dn;
+g('sb-nm').textContent = dn;
+g('sb-em').textContent = sess.email||'';
+g('sb-ctag').textContent = shortC(sess.course)||'—';
+g('sb-av').firstChild.textContent = (sess.firstName||sess.name||'?')[0].toUpperCase();
+
+// Show course badge
+const course = sess.course || '';
+if(course){
+  g('cv-course-badge').style.display = 'inline-flex';
+  g('cv-course-text').textContent = course;
+}
+
+// Load curriculum files for logged-in course
+function loadCurriculum(){
+  const cvc = g('cvc');
+  const files = CURRICULUM_FILES[course] || [];
+  if(!course){
+    cvc.innerHTML = `<div class="cv-empty">
+      <div class="cv-ic">⚠️</div>
+      <div class="cv-t">No Course Detected</div>
+      <p class="cv-s">Please log in again with a valid student session.</p>
+    </div>`;
+    return;
+  }
+  if(!files.length){
+    cvc.innerHTML = `<div class="cv-empty">
+      <div class="cv-ic">📁</div>
+      <div class="cv-t">Curriculum Files Coming Soon</div>
+      <p class="cv-s">No curriculum documents have been uploaded yet for <strong>${esc(course)}</strong>.<br>
+      Check back once your instructor uploads them.</p>
+      <div class="cv-note">📬 Check back later for uploaded documents</div>
+    </div>`;
+    return;
+  }
+  cvc.innerHTML = files.map(f=>`
+    <div class="cv-card" onclick="window.open('${esc(f.url)}','_blank')">
+      <div class="cv-pdf">📄</div>
+      <div class="cv-b">
+        <div class="cv-nm">${esc(f.name)}</div>
+        <div class="cv-mt">${esc(f.meta)}</div>
+      </div>
+      <span class="cv-dl">⬇ Download</span>
+    </div>`).join('');
+}
+loadCurriculum();
+
+function shortC(c){
+  return({'BS IN ACCOUNTING INFORMATION SYSTEM':'BSAIS','BS IN CRIMINOLOGY':'BSCrim',
+    'BS IN HOSPITALITY MANAGEMENT':'BSHM','BS IN SOCIAL WORK':'BSSW',
+    'BS IN CIVIL ENGINEERING':'BSCE','BS IN SECONDARY EDUCATION':'BSEd',
+    'BACHELOR OF ELEMENTARY EDUCATION':'BEEd'})[c]||c||'—';
+}
+function doLogout(){
+  localStorage.removeItem('student_session');
+  localStorage.removeItem('firebase_user');
+  window.location.href='login.html';
+}
+function toggleSB(){
+  const sb=g('sb'),ov=g('ov'),main=g('main');
+  if(window.innerWidth<=768){sb.classList.toggle('open');ov.classList.toggle('show');}
+  else{sb.classList.toggle('hide');main.classList.toggle('full');}
+}
+function closeSB(){
+  g('sb').classList.remove('open');
+  g('ov').classList.remove('show');
+}
+</script>
+</body>
+</html>
