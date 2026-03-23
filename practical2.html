@@ -414,7 +414,7 @@ window.savePractical2ToFirestore = async function(passed, pct, timeStr, name, st
     uid: window.firebaseUID, gmail: window.firebaseEmail,
     name: name || window.firebaseUser?.displayName || '',
     studentNo: stuNo || 'N/A',
-    score: passed + '/2', percent: pct + '%', timeTaken: timeStr,
+    score: passed + '/4', percent: pct + '%', timeTaken: timeStr,
     timestamp: new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'}),
     submittedAt: serverTimestamp()
   };
@@ -610,7 +610,7 @@ window.firebaseSignOut = async function() {
     <div class="result-hero">
       <div class="result-glow"></div>
       <div class="result-score-big" id="res-score">0/5</div>
-      <div class="result-label">Tasks Completed (out of 2)</div>
+      <div class="result-label">Tasks Completed (out of 4)</div>
       <h2 class="result-title" id="res-title">Session Complete</h2>
       <p class="result-msg" id="res-msg"></p>
       <div class="result-grid">
@@ -879,7 +879,7 @@ function runTask(id){
     } else {
       out.className='output-panel';
       out.textContent=result.output||'(no output)';
-      st.textContent='✅ Ran';
+      st.textContent='✅ Run';
       checkTaskPass(id, result.output||'');
     }
     btn.disabled=false; btn.textContent='▶ Run Code';
@@ -1129,9 +1129,9 @@ function simulateCpp(code){
   output=output.split('\n').map(l=>l.trimEnd()).join('\n').trim();
 
   if(!output&&!body.includes('cout')){
-    return{output:'(Program ran — no output. Add cout statements.)'};
+    return{output:'(Program run — no output. Add cout statements.)'};
   }
-  return{output:output||'(Program ran — no output)'};
+  return{output:output||'(Program run — no output)'};
 }
 
 // ── SHOW RESULTS ──
