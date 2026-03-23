@@ -363,7 +363,7 @@ window.onerror = function(msg, src, line, col, err) {
     <div class="tb-right">
       <span id="last-refresh" style="font-size:0.64rem;color:var(--dim)">Not refreshed</span>
       <button class="btn-sm btn-export" onclick="exportCSV()">⬇ Export CSV</button>
-      <button class="btn-sm" onclick="loadAll()">🔄 Refresh</button>
+      <button class="btn-sm" onclick="window.loadAll()">🔄 Refresh</button>
       <button class="btn-sm btn-logout" onclick="adminLogout()">⏻ Logout</button>
     </div>
   </div>
@@ -468,7 +468,7 @@ import { getFirestore, collection, getDocs, doc, getDoc, setDoc, deleteDoc, serv
                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
-   apiKey: "AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
+  apiKey: "AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
   authDomain: "cfp2526-database.firebaseapp.com",
   projectId: "cfp2526-database",
   storageBucket: "cfp2526-database.firebasestorage.app",
@@ -495,7 +495,7 @@ window.adminLogin = () => {
     sessionStorage.setItem('admin_ok','1');
     g('gate').style.display = 'none';
     g('admin-main').style.display = 'block';
-    loadAll();
+    window.loadAll();
   } else {
     g('lg-err').textContent = '❌ Incorrect password.';
     g('lg-pw').value = '';
@@ -508,11 +508,14 @@ window.adminLogout = () => {
   g('gate').style.display = 'flex';
   g('lg-pw').value = '';
 };
-if (sessionStorage.getItem('admin_ok') === '1') {
-  g('gate').style.display = 'none';
-  g('admin-main').style.display = 'block';
-  loadAll();
-}
+// ── SESSION CHECK ──
+setTimeout(() => {
+  if (sessionStorage.getItem('admin_ok') === '1') {
+    g('gate').style.display = 'none';
+    g('admin-main').style.display = 'block';
+    window.loadAll && window.loadAll();
+  }
+}, 0);
 
 // ── LOAD ALL DATA ──
 window.loadAll = async function() {
