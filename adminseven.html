@@ -1204,6 +1204,15 @@ window.openModal = function(uid) {
   g('modal-ov').classList.add('show');
 };
 
+
+  
+// ── CLOSE MODAL ──
+  window.closeModal = function() {
+  g('modal-ov').classList.remove('show');
+  _currentModalUid = null;
+  _currentSubjectId = null;
+};
+
 // ── STEP 2: Subject selected → show grade input popup ──
 window.selectSubjectForGrades = function(uid, subjId) {
   const r = allData[uid];
