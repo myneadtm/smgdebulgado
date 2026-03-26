@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Library — SMGDecode</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060b14;--s1:#0b1120;--s2:#101828;--s3:#1a2436;
+  --border:#1e2d42;--border2:#273648;
+  --accent:#f9c33a;--green:#3af9c3;--red:#f93a7a;
+  --purple:#a855f7;--cyan:#22d3ee;--blue:#3b82f6;
+  --orange:#fb923c;--teal:#14b8a6;--rose:#f43f5e;
+  --text:#e2eeff;--muted:#5a7499;--dim:#344868;
+  --sw:230px;--font:'Outfit',sans-serif;--mono:'Fira Code',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{min-height:100dvh;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(59,130,246,0.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,0.022) 1px,transparent 1px);
+  background-size:48px 48px;}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;
+  background:rgba(6,11,20,0.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 20px;gap:14px;}
+.tb-ham{width:34px;height:34px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;cursor:pointer;
+  border-radius:8px;transition:background 0.2s;flex-shrink:0;}
+.tb-ham:hover{background:var(--s2);}
+.tb-ham span{display:block;width:18px;height:2px;background:var(--muted);border-radius:2px;}
+.tb-brand{display:flex;align-items:center;gap:8px;}
+.tb-brand-ic{width:30px;height:30px;border-radius:8px;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:0.64rem;font-weight:700;color:#fff;flex-shrink:0;}
+.tb-brand-name{font-weight:900;font-size:0.9rem;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tb-brand-sub{font-size:0.58rem;color:var(--muted);}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.tb-user{display:flex;align-items:center;gap:7px;background:var(--s2);
+  border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:0.74rem;}
+.tb-uname{color:var(--text);font-weight:700;max-width:120px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.btn-lo{background:transparent;color:var(--muted);border:1px solid var(--border);
+  border-radius:8px;padding:5px 12px;font-family:var(--font);font-weight:600;
+  font-size:0.72rem;cursor:pointer;transition:all 0.2s;}
+.btn-lo:hover{color:var(--red);border-color:rgba(249,58,122,0.4);}
+
+/* LAYOUT */
+.layout{display:flex;padding-top:58px;min-height:100dvh;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sw);flex-shrink:0;position:fixed;
+  top:58px;left:0;bottom:0;z-index:200;overflow-y:auto;
+  background:var(--s1);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  transition:transform 0.3s cubic-bezier(.4,0,.2,1);}
+.sidebar.hide{transform:translateX(calc(-1 * var(--sw)));}
+.sb-prof{padding:20px 18px 16px;border-bottom:1px solid var(--border);}
+.sb-av{width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;font-weight:800;color:#fff;
+  border:2px solid rgba(168,85,247,0.4);margin-bottom:10px;
+  position:relative;overflow:hidden;}
+.sb-av img{width:48px;height:48px;border-radius:50%;object-fit:cover;display:block;}
+.sb-dot{position:absolute;bottom:1px;right:1px;width:10px;height:10px;
+  border-radius:50%;background:var(--green);border:2px solid var(--s1);}
+.sb-nm{font-size:0.82rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-em{font-size:0.64rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-ctag{display:inline-block;margin-top:5px;font-size:0.6rem;font-weight:700;
+  background:rgba(168,85,247,0.1);color:var(--purple);
+  border:1px solid rgba(168,85,247,0.2);border-radius:8px;padding:2px 8px;}
+.sb-nav{flex:1;padding:10px;}
+.sb-sec{font-size:0.58rem;font-weight:800;color:var(--dim);
+  letter-spacing:2px;text-transform:uppercase;padding:6px 8px 3px;}
+.sb-it{display:flex;align-items:center;gap:10px;padding:9px 12px;
+  border-radius:10px;cursor:pointer;transition:all 0.18s;
+  color:var(--muted);font-size:0.82rem;font-weight:600;margin-bottom:2px;}
+.sb-it:hover{background:var(--s2);color:var(--text);}
+.sb-it.on{background:linear-gradient(135deg,rgba(168,85,247,0.15),rgba(59,130,246,0.1));
+  color:var(--text);border:1px solid rgba(168,85,247,0.25);}
+.sb-it.on .si{color:var(--purple);}
+.si{font-size:1rem;width:20px;text-align:center;flex-shrink:0;}
+.sb-div{height:1px;background:var(--border);margin:8px 10px;}
+.sb-ft{padding:10px;border-top:1px solid var(--border);}
+.sb-ver{font-size:0.6rem;color:var(--dim);text-align:center;}
+
+/* MAIN */
+.main{flex:1;margin-left:var(--sw);transition:margin-left 0.3s cubic-bezier(.4,0,.2,1);
+  min-height:calc(100dvh - 58px);position:relative;z-index:1;}
+.main.full{margin-left:0;}
+.cpad{padding:32px 28px 80px;}
+
+/* OVERLAY */
+.ov{display:none;position:fixed;inset:0;z-index:190;
+  background:rgba(0,0,0,0.5);backdrop-filter:blur(2px);}
+.ov.show{display:block;}
+
+/* LIBRARY PAGE HEADER */
+.lib-header{display:flex;align-items:center;gap:16px;
+  background:var(--s1);border:1.5px solid var(--border2);border-radius:18px;
+  padding:20px 24px;margin-bottom:24px;position:relative;overflow:hidden;}
+.lib-header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#7c3aed,#22d3ee,#f59e0b,#a78bfa,#7c3aed);
+  background-size:300% 100%;animation:shimmer 3s linear infinite;}
+@keyframes shimmer{0%{background-position:0% center;}100%{background-position:300% center;}}
+.lib-header-icon{width:52px;height:52px;border-radius:14px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(34,211,238,0.15),rgba(168,85,247,0.15));
+  border:1.5px solid rgba(34,211,238,0.3);
+  display:flex;align-items:center;justify-content:center;font-size:1.6rem;}
+.lib-header-info{flex:1;min-width:0;}
+.lib-header-title{font-size:1.1rem;font-weight:900;color:var(--text);}
+.lib-header-sub{font-size:0.76rem;color:var(--muted);margin-top:3px;}
+.lib-stats{display:flex;gap:16px;flex-shrink:0;}
+.lib-stat{text-align:center;}
+.lib-stat-n{font-size:1.4rem;font-weight:900;font-family:var(--mono);color:var(--cyan);}
+.lib-stat-l{font-size:0.62rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+
+/* FILTER ROW */
+.lib-filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:22px;}
+.lib-search{flex:1;min-width:180px;background:var(--s1);border:1.5px solid var(--border2);
+  border-radius:10px;padding:9px 14px;color:var(--text);font-family:var(--font);
+  font-size:0.86rem;outline:none;transition:border-color 0.2s;}
+.lib-search:focus{border-color:var(--purple);}
+.lib-search::placeholder{color:var(--dim);}
+.lib-filter-btn{background:var(--s1);border:1.5px solid var(--border2);border-radius:10px;
+  padding:9px 16px;color:var(--muted);font-family:var(--font);font-weight:700;
+  font-size:0.8rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.lib-filter-btn:hover,.lib-filter-btn.act{
+  background:rgba(168,85,247,0.1);color:var(--purple);border-color:rgba(168,85,247,0.4);}
+.lib-filter-btn.act-cyan{background:rgba(34,211,238,0.08);color:var(--cyan);border-color:rgba(34,211,238,0.35);}
+.lib-filter-btn.act-green{background:rgba(58,249,195,0.08);color:var(--green);border-color:rgba(58,249,195,0.35);}
+.lib-filter-btn.act-accent{background:rgba(249,195,58,0.08);color:var(--accent);border-color:rgba(249,195,58,0.35);}
+.lib-filter-btn.act-orange{background:rgba(251,146,60,0.08);color:var(--orange);border-color:rgba(251,146,60,0.35);}
+
+/* SECTION HEADING */
+.sec-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.sec-hd-lbl{font-size:0.6rem;font-weight:800;color:var(--muted);letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
+.sec-hd-ln{flex:1;height:1px;background:var(--border);}
+
+/* LIBRARY GRID */
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:30px;}
+
+/* LIBRARY ITEM CARD */
+.lib-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:16px;
+  overflow:hidden;cursor:pointer;transition:all 0.22s;position:relative;}
+.lib-card:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,0.5);}
+.lib-card-top{height:4px;}
+.lc-quiz .lib-card-top{background:linear-gradient(90deg,var(--blue),var(--cyan));}
+.lc-practical .lib-card-top{background:linear-gradient(90deg,var(--green),var(--teal));}
+.lc-module .lib-card-top{background:linear-gradient(90deg,var(--purple),var(--blue));}
+.lc-resource .lib-card-top{background:linear-gradient(90deg,var(--accent),var(--orange));}
+.lib-card-body{padding:18px 18px 14px;}
+.lib-card-meta-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.lib-type-badge{font-size:0.6rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+  padding:3px 9px;border-radius:20px;}
+.lbt-quiz{background:rgba(59,130,246,0.1);color:var(--blue);border:1px solid rgba(59,130,246,0.3);}
+.lbt-practical{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.3);}
+.lbt-module{background:rgba(168,85,247,0.1);color:var(--purple);border:1px solid rgba(168,85,247,0.3);}
+.lbt-resource{background:rgba(249,195,58,0.1);color:var(--accent);border:1px solid rgba(249,195,58,0.3);}
+.lib-period-badge{font-size:0.6rem;font-weight:700;padding:3px 9px;border-radius:20px;
+  background:var(--s2);color:var(--muted);border:1px solid var(--border);}
+.lib-done-badge{font-size:0.6rem;font-weight:800;padding:3px 9px;border-radius:20px;
+  background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.3);
+  margin-left:auto;}
+.lib-card-icon{font-size:2rem;margin-bottom:10px;}
+.lib-card-title{font-size:0.96rem;font-weight:800;line-height:1.35;margin-bottom:6px;}
+.lib-card-desc{font-size:0.78rem;color:var(--muted);line-height:1.6;}
+.lib-card-foot{display:flex;align-items:center;gap:10px;
+  padding:12px 18px;border-top:1px solid var(--border);background:rgba(0,0,0,0.15);}
+.lib-foot-info{font-size:0.7rem;color:var(--dim);flex:1;}
+.lib-foot-info span{color:var(--muted);font-weight:700;}
+.lib-card-action{background:linear-gradient(135deg,var(--purple),var(--blue));
+  color:#fff;border:none;border-radius:8px;padding:6px 14px;
+  font-family:var(--font);font-weight:800;font-size:0.74rem;cursor:pointer;
+  transition:all 0.2s;white-space:nowrap;}
+.lib-card-action:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(168,85,247,0.4);}
+.lib-card-action.done{background:rgba(58,249,195,0.1);color:var(--green);
+  border:1.5px solid rgba(58,249,195,0.3);}
+.lib-card-action.locked{background:var(--s2);color:var(--dim);
+  border:1.5px solid var(--border);cursor:not-allowed;}
+
+/* ITEM MODAL */
+.lib-modal-wrap{display:none;position:fixed;inset:0;z-index:8000;
+  background:rgba(0,0,0,0.78);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;padding:20px;}
+.lib-modal-wrap.open{display:flex;}
+.lib-modal{background:var(--s1);border:1.5px solid var(--border2);border-radius:20px;
+  width:100%;max-width:520px;overflow:hidden;
+  box-shadow:0 28px 80px rgba(0,0,0,0.7);
+  animation:modalIn 0.25s cubic-bezier(.34,1.56,.64,1);}
+@keyframes modalIn{from{opacity:0;transform:scale(0.93) translateY(16px);}to{opacity:1;transform:none;}}
+.lib-modal-bar{height:3px;background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent));}
+.lib-modal-head{padding:20px 22px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.lib-modal-icon{font-size:2rem;flex-shrink:0;margin-top:2px;}
+.lib-modal-title-wrap{flex:1;min-width:0;}
+.lib-modal-title{font-size:1.05rem;font-weight:900;line-height:1.3;}
+.lib-modal-subtitle{font-size:0.72rem;color:var(--muted);margin-top:4px;}
+.lib-modal-close{width:30px;height:30px;border-radius:8px;
+  background:var(--s2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--muted);font-size:1rem;flex-shrink:0;
+  transition:all 0.2s;}
+.lib-modal-close:hover{color:var(--red);border-color:rgba(249,58,122,0.4);}
+.lib-modal-body{padding:20px 22px 22px;max-height:65vh;overflow-y:auto;}
+.lib-modal-section{margin-bottom:18px;}
+.lib-modal-sec-title{font-size:0.62rem;font-weight:800;color:var(--purple);
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;}
+.lib-modal-sec-title::after{content:'';flex:1;height:1px;background:rgba(168,85,247,0.2);}
+.lib-info-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid var(--border);}
+.lib-info-row:last-child{border-bottom:none;}
+.lib-info-label{font-size:0.76rem;color:var(--muted);}
+.lib-info-value{font-size:0.82rem;font-weight:700;color:var(--text);}
+.lib-modal-desc{font-size:0.84rem;color:var(--muted);line-height:1.7;
+  background:var(--s2);border-radius:10px;padding:14px 16px;
+  border:1px solid var(--border);}
+.lib-modal-foot{padding:16px 22px;border-top:1px solid var(--border);
+  display:flex;gap:10px;justify-content:flex-end;}
+.btn-modal-close{background:var(--s2);border:1.5px solid var(--border2);border-radius:10px;
+  padding:9px 20px;color:var(--muted);font-family:var(--font);font-weight:700;
+  font-size:0.82rem;cursor:pointer;transition:all 0.2s;}
+.btn-modal-close:hover{color:var(--text);border-color:var(--border);}
+.btn-modal-open{background:linear-gradient(135deg,var(--purple),var(--blue));
+  color:#fff;border:none;border-radius:10px;padding:9px 22px;
+  font-family:var(--font);font-weight:800;font-size:0.82rem;cursor:pointer;
+  transition:all 0.2s;box-shadow:0 4px 14px rgba(168,85,247,0.3);}
+.btn-modal-open:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(168,85,247,0.5);}
+
+/* PROGRESS SUMMARY */
+.lib-progress-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:16px;
+  padding:20px 22px;margin-bottom:24px;position:relative;overflow:hidden;}
+.lib-progress-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));}
+.lib-prog-title{font-size:0.62rem;font-weight:800;color:var(--purple);
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;}
+.lib-prog-row{display:flex;gap:12px;flex-wrap:wrap;}
+.lib-prog-item{flex:1;min-width:100px;background:var(--s2);border:1px solid var(--border);
+  border-radius:12px;padding:12px 14px;text-align:center;}
+.lib-prog-num{font-size:1.6rem;font-weight:900;font-family:var(--mono);}
+.lib-prog-lbl{font-size:0.64rem;color:var(--dim);font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;margin-top:2px;}
+.lib-prog-bar-wrap{height:5px;background:var(--border);border-radius:3px;margin-top:16px;overflow:hidden;}
+.lib-prog-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--purple),var(--cyan));
+  transition:width 0.8s cubic-bezier(.4,0,.2,1);}
+
+/* EMPTY STATE */
+.lib-empty{text-align:center;padding:60px 20px;}
+.le-ic{font-size:3rem;margin-bottom:14px;opacity:0.3;}
+.le-t{font-size:1rem;font-weight:700;color:var(--muted);margin-bottom:6px;}
+.le-s{font-size:0.82rem;color:var(--dim);line-height:1.7;}
+
+/* SPINNER */
+.spin{display:inline-block;animation:sp 0.85s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.lib-load{text-align:center;padding:40px;color:var(--muted);font-size:0.86rem;}
+
+/* MOBILE */
+@media(max-width:768px){
+  .lib-grid{grid-template-columns:1fr;}
+  .lib-stats{display:none;}
+  .lib-filter-row{gap:8px;}
+  .sidebar{transform:translateX(calc(-1 * var(--sw)));}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0!important;}
+  .cpad{padding:20px 14px 60px;}
+  .lib-modal{max-height:90vh;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN GUARD -->
+<script>
+(function(){
+  try{var s=JSON.parse(localStorage.getItem('student_session')||'{}');
+    if(!s.loggedIn)window.location.replace('login.html');
+  }catch(e){window.location.replace('login.html');}
+})();
+</script>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-ham" onclick="toggleSB()">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="tb-brand">
+    <div class="tb-brand-ic">SMGD</div>
+    <div>
+      <div class="tb-brand-name">SMGDecode</div>
+      <div class="tb-brand-sub">Student Portal</div>
+    </div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-user">
+      <span>👤</span>
+      <span class="tb-uname" id="tb-nm">—</span>
+    </div>
+    <button class="btn-lo" onclick="doLogout()">⏻ Logout</button>
+  </div>
+</div>
+
+<div class="ov" id="ov" onclick="closeSB()"></div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sb">
+    <div class="sb-prof">
+      <div class="sb-av" id="sb-av">?<div class="sb-dot"></div></div>
+      <div class="sb-nm" id="sb-nm">—</div>
+      <div class="sb-em" id="sb-em">—</div>
+      <div class="sb-ctag" id="sb-ctag">—</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-sec">Main Menu</div>
+      <div class="sb-it" onclick="window.location.href='index.html'">
+        <span class="si">🏠</span><span>Home</span>
+      </div>
+      <div class="sb-it" onclick="window.location.href='transaction.html'">
+        <span class="si">📚</span><span>Transactions</span>
+      </div>
+      <div class="sb-it" onclick="window.location.href='grades.html'">
+        <span class="si">📊</span><span>Grades</span>
+      </div>
+      <div class="sb-it on">
+        <span class="si">🗂️</span><span>Library</span>
+      </div>
+      <div class="sb-it" onclick="window.location.href='curriculum.html'">
+        <span class="si">📄</span><span>Curriculum</span>
+      </div>
+      <div class="sb-div"></div>
+      <div class="sb-sec">Account</div>
+      <div class="sb-it" onclick="doLogout()">
+        <span class="si">⏻</span><span style="color:var(--red)">Logout</span>
+      </div>
+    </div>
+    <div class="sb-ft">
+      <div class="sb-ver">SMGDecode Portal v1.0</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main" id="main">
+    <div class="cpad">
+
+      <!-- HEADER -->
+      <div class="lib-header">
+        <div class="lib-header-icon">🗂️</div>
+        <div class="lib-header-info">
+          <div class="lib-header-title">Learning Library</div>
+          <div class="lib-header-sub">All activities, quizzes, modules, and resources for your enrolled subjects</div>
+        </div>
+        <div class="lib-stats">
+          <div class="lib-stat">
+            <div class="lib-stat-n" id="stat-total">—</div>
+            <div class="lib-stat-l">Total Items</div>
+          </div>
+          <div class="lib-stat">
+            <div class="lib-stat-n" id="stat-done" style="color:var(--green)">—</div>
+            <div class="lib-stat-l">Completed</div>
+          </div>
+          <div class="lib-stat">
+            <div class="lib-stat-n" id="stat-pending" style="color:var(--accent)">—</div>
+            <div class="lib-stat-l">Pending</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROGRESS SUMMARY -->
+      <div class="lib-progress-card">
+        <div class="lib-prog-title">📈 Your Progress Overview</div>
+        <div class="lib-prog-row">
+          <div class="lib-prog-item">
+            <div class="lib-prog-num" id="prog-quiz" style="color:var(--cyan)">—</div>
+            <div class="lib-prog-lbl">Quizzes Done</div>
+          </div>
+          <div class="lib-prog-item">
+            <div class="lib-prog-num" id="prog-prac" style="color:var(--green)">—</div>
+            <div class="lib-prog-lbl">Practicals Done</div>
+          </div>
+          <div class="lib-prog-item">
+            <div class="lib-prog-num" id="prog-avg" style="color:var(--accent)">—</div>
+            <div class="lib-prog-lbl">Avg Score</div>
+          </div>
+          <div class="lib-prog-item">
+            <div class="lib-prog-num" id="prog-pct" style="color:var(--purple)">—%</div>
+            <div class="lib-prog-lbl">Completion</div>
+          </div>
+        </div>
+        <div class="lib-prog-bar-wrap">
+          <div class="lib-prog-bar" id="prog-bar" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- FILTER ROW -->
+      <div class="lib-filter-row">
+        <input class="lib-search" type="text" id="lib-search" placeholder="🔍  Search activities or modules…" oninput="filterItems()">
+        <button class="lib-filter-btn act" id="f-all"       onclick="setFilter('all')">All</button>
+        <button class="lib-filter-btn"     id="f-quiz"      onclick="setFilter('quiz')">📝 Quiz</button>
+        <button class="lib-filter-btn"     id="f-practical" onclick="setFilter('practical')">💻 Practical</button>
+        <button class="lib-filter-btn"     id="f-module"    onclick="setFilter('module')">📘 Module</button>
+        <button class="lib-filter-btn"     id="f-resource"  onclick="setFilter('resource')">📎 Resource</button>
+      </div>
+
+      <!-- ITEMS AREA -->
+      <div id="lib-area">
+        <div class="lib-load"><span class="spin">⟳</span> Loading library…</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ITEM DETAIL MODAL -->
+<div class="lib-modal-wrap" id="lib-modal" onclick="if(event.target===this)closeModal()">
+  <div class="lib-modal">
+    <div class="lib-modal-bar"></div>
+    <div class="lib-modal-head">
+      <div class="lib-modal-icon" id="modal-icon">📝</div>
+      <div class="lib-modal-title-wrap">
+        <div class="lib-modal-title" id="modal-title">—</div>
+        <div class="lib-modal-subtitle" id="modal-subtitle">—</div>
+      </div>
+      <div class="lib-modal-close" onclick="closeModal()">✕</div>
+    </div>
+    <div class="lib-modal-body">
+      <div class="lib-modal-section">
+        <div class="lib-modal-sec-title">Description</div>
+        <div class="lib-modal-desc" id="modal-desc">—</div>
+      </div>
+      <div class="lib-modal-section">
+        <div class="lib-modal-sec-title">Details</div>
+        <div id="modal-details"></div>
+      </div>
+      <div class="lib-modal-section" id="modal-score-section" style="display:none">
+        <div class="lib-modal-sec-title">Your Submission</div>
+        <div id="modal-score-content"></div>
+      </div>
+    </div>
+    <div class="lib-modal-foot">
+      <button class="btn-modal-close" onclick="closeModal()">Close</button>
+      <button class="btn-modal-open" id="modal-action-btn" onclick="handleModalAction()">Open Activity</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIREBASE + LOGIC -->
+<script type="module">
+import { initializeApp }  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged }
+                          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, getDoc, collection, getDocs, setDoc, serverTimestamp }
+                          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
+  authDomain: "cfp2526-database.firebaseapp.com",
+  projectId: "cfp2526-database",
+  storageBucket: "cfp2526-database.firebasestorage.app",
+  messagingSenderId: "111042690196",
+  appId: "1:111042690196:web:cd63203bd29b350cea8881",
+  measurementId: "G-Y7CMBZM1G1"
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const g    = id => document.getElementById(id);
+const esc  = s  => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+let sess = {};
+try { sess = JSON.parse(localStorage.getItem('student_session')||'{}'); } catch(e){}
+
+// ── Display name
+const dn = sess.firstName && sess.surname ? sess.surname+', '+sess.firstName : sess.name||sess.email||'Student';
+g('tb-nm').textContent = dn;
+g('sb-nm').textContent = dn;
+g('sb-em').textContent = sess.email||'';
+g('sb-ctag').textContent = shortC(sess.course)||'—';
+g('sb-av').firstChild.textContent = (sess.firstName||sess.name||'?')[0].toUpperCase();
+
+onAuthStateChanged(auth, u => {
+  if(u){
+    const av = g('sb-av');
+    if(av && u.photoURL) av.innerHTML = `<img src="${u.photoURL}" alt=""><div class="sb-dot"></div>`;
+    const dn2 = sess.firstName && sess.surname ? sess.surname+', '+sess.firstName : u.displayName||sess.name||u.email||'Student';
+    g('tb-nm').textContent = dn2;
+    g('sb-nm').textContent = dn2;
+    if(g('sb-em')) g('sb-em').textContent = u.email||sess.email||'';
+  }
+});
+
+// ── LIBRARY ITEMS (defined here; admin can add via Firestore 'library_items' collection)
+// These are the default/built-in items. They will be merged with any items from Firestore.
+const BUILT_IN_ITEMS = [
+  {
+    id:'quiz_week1',
+    type:'quiz',
+    icon:'📝',
+    title:'Week 1 — Theory Quiz',
+    subject:'BES 125',
+    period:'Midterm',
+    week:'Week 1',
+    instructor:'DEBULGADO, S.M.G',
+    description:'Covers the fundamentals of computer hardware, software types, and basic operating system concepts. Tests your understanding of the topics discussed during the first week of class.',
+    link:'',
+    firestoreKey:'quiz_submissions'
+  },
+  {
+    id:'quiz_week2',
+    type:'quiz',
+    icon:'📝',
+    title:'Week 2 — Theory Quiz',
+    subject:'BES 125',
+    period:'Midterm',
+    week:'Week 2',
+    instructor:'DEBULGADO, S.M.G',
+    description:'Focuses on programming concepts including variables, data types, operators, and control structures. Reviews material covered in Week 2 lectures and lab exercises.',
+    link:'',
+    firestoreKey:'quiz2_submissions'
+  },
+  {
+    id:'practical_week1',
+    type:'practical',
+    icon:'💻',
+    title:'Week 1 — Practical Activity',
+    subject:'BES 125',
+    period:'Midterm',
+    week:'Week 1',
+    instructor:'DEBULGADO, S.M.G',
+    description:'Hands-on programming exercise applying basic input/output operations and simple arithmetic in a programming language. Demonstrates understanding of Week 1 concepts through live coding.',
+    link:'',
+    firestoreKey:'practical_submissions'
+  },
+  {
+    id:'practical_week2',
+    type:'practical',
+    icon:'💻',
+    title:'Week 2 — Practical Activity',
+    subject:'BES 125',
+    period:'Midterm',
+    week:'Week 2',
+    instructor:'DEBULGADO, S.M.G',
+    description:'Advanced hands-on exercise involving conditional statements and loops. Students write programs that solve real-world problems using control flow structures covered in Week 2.',
+    link:'',
+    firestoreKey:'practical2_submissions'
+  },
+  {
+    id:'module_intro',
+    type:'module',
+    icon:'📘',
+    title:'Module 1 — Introduction to Computing',
+    subject:'BES 125',
+    period:'Prelim',
+    week:'All Weeks',
+    instructor:'DEBULGADO, S.M.G',
+    description:'A comprehensive module covering the history of computing, types of computers, hardware components, and an introduction to programming paradigms. Essential reading for the entire semester.',
+    link:'',
+    firestoreKey:null
+  },
+  {
+    id:'module_prog',
+    type:'module',
+    icon:'📗',
+    title:'Module 2 — Programming Fundamentals',
+    subject:'BES 125',
+    period:'Midterm',
+    week:'All Weeks',
+    instructor:'DEBULGADO, S.M.G',
+    description:'Covers variables, data types, expressions, control structures (if-else, loops), and functions. Includes worked examples, exercises, and self-assessment quizzes.',
+    link:'',
+    firestoreKey:null
+  },
+  {
+    id:'res_syllabus',
+    type:'resource',
+    icon:'📄',
+    title:'Course Syllabus — BES 125',
+    subject:'BES 125',
+    period:'All Periods',
+    week:'—',
+    instructor:'DEBULGADO, S.M.G',
+    description:'Official course syllabus including grading policies, schedule of topics, required materials, and class rules. Review this document at the start of the semester.',
+    link:'',
+    firestoreKey:null
+  },
+  {
+    id:'res_ref',
+    type:'resource',
+    icon:'📎',
+    title:'Reference Materials & Cheat Sheet',
+    subject:'BES 125',
+    period:'All Periods',
+    week:'—',
+    instructor:'DEBULGADO, S.M.G',
+    description:'A quick-reference sheet covering common programming syntax, operators, and built-in functions. Useful as a study companion during exercises and review sessions.',
+    link:'',
+    firestoreKey:null
+  },
+];
+
+// Map firestore keys to student submission data
+let submissionMap = {};
+
+// All items (built-in + Firestore)
+let allItems = [...BUILT_IN_ITEMS];
+let currentFilter = 'all';
+let activeModalItem = null;
+
+// ── LOAD
+async function loadLibrary(uid) {
+  try {
+    // 1. Load student submissions
+    const [q1,q2,p1,p2] = await Promise.all([
+      getDoc(doc(db,'quiz_submissions',uid)).catch(()=>null),
+      getDoc(doc(db,'quiz2_submissions',uid)).catch(()=>null),
+      getDoc(doc(db,'practical_submissions',uid)).catch(()=>null),
+      getDoc(doc(db,'practical2_submissions',uid)).catch(()=>null),
+    ]);
+    submissionMap = {
+      quiz_submissions:      q1?.exists() ? q1.data()  : null,
+      quiz2_submissions:     q2?.exists() ? q2.data()  : null,
+      practical_submissions: p1?.exists() ? p1.data()  : null,
+      practical2_submissions:p2?.exists() ? p2.data()  : null,
+    };
+
+    // 2. Try to load extra items from Firestore 'library_items' collection
+    const libSnap = await getDocs(collection(db,'library_items')).catch(()=>null);
+    if(libSnap && !libSnap.empty){
+      const extra = [];
+      libSnap.forEach(d => {
+        const data = d.data();
+        // Avoid duplicates with built-in items
+        if(!BUILT_IN_ITEMS.find(x=>x.id===d.id)){
+          extra.push({ id:d.id, ...data });
+        } else {
+          // Merge Firestore overrides into built-in item (e.g. updated link)
+          const bi = allItems.find(x=>x.id===d.id);
+          if(bi) Object.assign(bi, data);
+        }
+      });
+      allItems = [...BUILT_IN_ITEMS, ...extra];
+    }
+
+    // 3. Update progress
+    updateProgress();
+
+    // 4. Render
+    filterItems();
+
+  } catch(e) {
+    g('lib-area').innerHTML = `<div class="lib-empty">
+      <div class="le-ic">⚙️</div>
+      <div class="le-t">Could not load library</div>
+      <p class="le-s">${esc(e.message)}</p>
+    </div>`;
+  }
+}
+
+function getSubmission(item){
+  if(!item.firestoreKey) return null;
+  return submissionMap[item.firestoreKey] || null;
+}
+
+function updateProgress(){
+  const assessable = allItems.filter(x=>x.firestoreKey);
+  const done = assessable.filter(x=>getSubmission(x));
+  const quizDone = allItems.filter(x=>x.type==='quiz'&&getSubmission(x)).length;
+  const pracDone = allItems.filter(x=>x.type==='practical'&&getSubmission(x)).length;
+
+  // Avg score from all submissions
+  const scores = Object.values(submissionMap)
+    .filter(Boolean)
+    .map(s=>parseFloat((s.percent||'0').replace('%','')))
+    .filter(n=>n>0);
+  const avg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '—';
+  const pct = assessable.length ? Math.round((done.length/assessable.length)*100) : 0;
+
+  g('stat-total').textContent  = allItems.length;
+  g('stat-done').textContent   = done.length;
+  g('stat-pending').textContent= assessable.length - done.length;
+  g('prog-quiz').textContent   = quizDone+'/'+allItems.filter(x=>x.type==='quiz').length;
+  g('prog-prac').textContent   = pracDone+'/'+allItems.filter(x=>x.type==='practical').length;
+  g('prog-avg').textContent    = avg==='—'?'—':avg+'%';
+  g('prog-pct').textContent    = pct+'%';
+  setTimeout(()=>{ if(g('prog-bar')) g('prog-bar').style.width = pct+'%'; }, 100);
+}
+
+window.filterItems = function(){
+  const q = (g('lib-search')?.value||'').toLowerCase();
+  const f = currentFilter;
+
+  const shown = allItems.filter(item=>{
+    if(f!=='all' && item.type!==f) return false;
+    if(q){
+      const txt=(item.title+' '+item.description+' '+item.subject+' '+item.week+' '+item.period).toLowerCase();
+      if(!txt.includes(q)) return false;
+    }
+    return true;
+  });
+
+  renderItems(shown);
+};
+
+window.setFilter = function(f){
+  currentFilter = f;
+  ['all','quiz','practical','module','resource'].forEach(k=>{
+    const btn = g('f-'+k);
+    if(!btn) return;
+    btn.className = 'lib-filter-btn';
+    if(k===f){
+      const map={all:'act',quiz:'act-cyan',practical:'act-green',module:'act',resource:'act-accent'};
+      btn.classList.add(map[f]||'act');
+    }
+  });
+  filterItems();
+};
+
+function typeLabel(t){
+  return {quiz:'Quiz',practical:'Practical',module:'Module',resource:'Resource'}[t]||t;
+}
+function typeBadgeClass(t){
+  return {quiz:'lbt-quiz',practical:'lbt-practical',module:'lbt-module',resource:'lbt-resource'}[t]||'';
+}
+function cardClass(t){
+  return {quiz:'lc-quiz',practical:'lc-practical',module:'lc-module',resource:'lc-resource'}[t]||'';
+}
+
+function renderItems(items){
+  if(!items.length){
+    g('lib-area').innerHTML=`<div class="lib-empty">
+      <div class="le-ic">📭</div>
+      <div class="le-t">No items found</div>
+      <p class="le-s">Try changing your filter or search term.</p>
+    </div>`;
+    return;
+  }
+
+  // Group by type
+  const groups = [
+    {key:'quiz',      label:'📝 Quizzes & Assessments'},
+    {key:'practical', label:'💻 Practical Activities'},
+    {key:'module',    label:'📘 Learning Modules'},
+    {key:'resource',  label:'📎 Resources & References'},
+  ];
+
+  let html = '';
+  groups.forEach(grp=>{
+    const grpItems = items.filter(x=>x.type===grp.key);
+    if(!grpItems.length) return;
+
+    html+=`<div class="sec-hd"><span class="sec-hd-lbl">${grp.label}</span><div class="sec-hd-ln"></div></div>`;
+    html+=`<div class="lib-grid">`;
+    grpItems.forEach(item=>{
+      const sub = getSubmission(item);
+      const isDone = !!sub;
+      const score = sub ? sub.score||'—' : null;
+      const pct   = sub ? sub.percent||'—' : null;
+      const pctN  = sub ? parseFloat((sub.percent||'0').replace('%','')) : 0;
+      const hasSub= !!item.firestoreKey;
+
+      let actionClass='', actionTxt='';
+      if(item.type==='module'||item.type==='resource'){
+        actionClass=''; actionTxt='View';
+      } else if(isDone){
+        actionClass='done'; actionTxt='✅ Submitted';
+      } else {
+        actionClass=''; actionTxt='Start Activity';
+      }
+
+      html+=`<div class="lib-card ${cardClass(item.type)}" onclick="openModal('${esc(item.id)}')">
+        <div class="lib-card-top"></div>
+        <div class="lib-card-body">
+          <div class="lib-card-meta-row">
+            <span class="lib-type-badge ${typeBadgeClass(item.type)}">${typeLabel(item.type)}</span>
+            <span class="lib-period-badge">${esc(item.period||'—')}</span>
+            ${isDone?'<span class="lib-done-badge">✅ Done</span>':''}
+          </div>
+          <div class="lib-card-icon">${item.icon||'📄'}</div>
+          <div class="lib-card-title">${esc(item.title)}</div>
+          <div class="lib-card-desc">${esc((item.description||'').slice(0,90))}${(item.description||'').length>90?'…':''}</div>
+        </div>
+        <div class="lib-card-foot">
+          <div class="lib-foot-info">
+            <span>${esc(item.subject||'—')}</span> · ${esc(item.week||'—')}
+            ${isDone ? ` · <span style="color:var(--green)">Score: ${esc(score)} (${esc(pct)})</span>` : ''}
+          </div>
+          <button class="lib-card-action ${actionClass}" onclick="event.stopPropagation();openModal('${esc(item.id)}')">${actionTxt}</button>
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+
+  g('lib-area').innerHTML = html;
+}
+
+// ── MODAL
+window.openModal = function(id){
+  const item = allItems.find(x=>x.id===id);
+  if(!item) return;
+  activeModalItem = item;
+
+  const sub  = getSubmission(item);
+  const isDone = !!sub;
+
+  g('modal-icon').textContent    = item.icon||'📄';
+  g('modal-title').textContent   = item.title||'—';
+  g('modal-subtitle').textContent= item.subject+' · '+item.period+(item.week&&item.week!=='—'?' · '+item.week:'');
+  g('modal-desc').textContent    = item.description||'No description available.';
+
+  // Details
+  g('modal-details').innerHTML = [
+    ['Type',       typeLabel(item.type)],
+    ['Subject',    item.subject||'—'],
+    ['Period',     item.period||'—'],
+    ['Week',       item.week||'—'],
+    ['Instructor', item.instructor||'—'],
+    ['Status',     item.firestoreKey ? (isDone?'✅ Submitted':'⏳ Not yet submitted') : '📌 Reference Material'],
+  ].map(([l,v])=>`<div class="lib-info-row">
+    <span class="lib-info-label">${esc(l)}</span>
+    <span class="lib-info-value">${esc(String(v))}</span>
+  </div>`).join('');
+
+  // Score section
+  if(sub){
+    g('modal-score-section').style.display='block';
+    const pctN = parseFloat((sub.percent||'0').replace('%',''));
+    const col = pctN>=75?'var(--green)':pctN>=50?'var(--accent)':'var(--red)';
+    g('modal-score-content').innerHTML=`
+      <div class="lib-info-row">
+        <span class="lib-info-label">Score</span>
+        <span class="lib-info-value" style="color:${col};font-family:var(--mono)">${esc(sub.score||'—')}</span>
+      </div>
+      <div class="lib-info-row">
+        <span class="lib-info-label">Percentage</span>
+        <span class="lib-info-value" style="color:${col};font-family:var(--mono)">${esc(sub.percent||'—')}</span>
+      </div>
+      ${sub.timeTaken?`<div class="lib-info-row">
+        <span class="lib-info-label">Time Taken</span>
+        <span class="lib-info-value">${esc(sub.timeTaken)}</span>
+      </div>`:''}
+      <div class="lib-info-row">
+        <span class="lib-info-label">Submitted</span>
+        <span class="lib-info-value" style="font-size:0.76rem">${esc(sub.timestamp||'—')}</span>
+      </div>
+    `;
+  } else {
+    g('modal-score-section').style.display='none';
+  }
+
+  // Action button
+  const btn = g('modal-action-btn');
+  if(item.type==='module'||item.type==='resource'){
+    btn.textContent='📄 View Resource';
+    btn.className='btn-modal-open';
+    btn.style.display = item.link ? 'inline-block' : 'none';
+  } else if(isDone){
+    btn.textContent='✅ Already Submitted';
+    btn.className='btn-modal-open';
+    btn.style.cssText='background:rgba(58,249,195,0.1);color:var(--green);border:1.5px solid rgba(58,249,195,0.3);cursor:default;';
+  } else if(item.link){
+    btn.textContent='🚀 Open Activity';
+    btn.className='btn-modal-open';
+    btn.style.cssText='';
+  } else {
+    btn.textContent='🔒 Link Not Available';
+    btn.className='btn-modal-open';
+    btn.style.cssText='background:var(--s2);color:var(--dim);border:1.5px solid var(--border);cursor:not-allowed;';
+  }
+
+  g('lib-modal').classList.add('open');
+};
+
+window.handleModalAction = function(){
+  if(!activeModalItem) return;
+  if(activeModalItem.link){
+    window.open(activeModalItem.link,'_blank');
+  }
+};
+
+window.closeModal = function(){
+  g('lib-modal').classList.remove('open');
+  activeModalItem = null;
+};
+
+// ── AUTH → LOAD
+onAuthStateChanged(auth, u=>{
+  if(u){ loadLibrary(u.uid); }
+  else {
+    // Fall back to localStorage uid if no auth
+    const lsUser = localStorage.getItem('firebase_user');
+    if(lsUser){
+      try{ const fu=JSON.parse(lsUser); if(fu.uid){ loadLibrary(fu.uid); return; } }catch(e){}
+    }
+    g('lib-area').innerHTML=`<div class="lib-load">⏳ Waiting for authentication…</div>`;
+  }
+});
+
+</script>
+
+<!-- SHARED UTILS -->
+<script>
+function doLogout(){
+  localStorage.removeItem('student_session');
+  localStorage.removeItem('firebase_user');
+  window.location.href='login.html';
+}
+window.doLogout = doLogout;
+
+function toggleSB(){
+  const sb=document.getElementById('sb');
+  const ov=document.getElementById('ov');
+  const main=document.getElementById('main');
+  if(window.innerWidth<=768){
+    sb.classList.toggle('open');ov.classList.toggle('show');
+  } else {
+    sb.classList.toggle('hide');main.classList.toggle('full');
+  }
+}
+function closeSB(){
+  document.getElementById('sb').classList.remove('open');
+  document.getElementById('ov').classList.remove('show');
+}
+window.toggleSB=toggleSB;
+window.closeSB=closeSB;
+
+function shortC(c){
+  return({
+    'BS IN ACCOUNTING INFORMATION SYSTEM':'BSAIS',
+    'BS IN CRIMINOLOGY':'BSCrim',
+    'BS IN HOSPITALITY MANAGEMENT':'BSHM',
+    'BS IN SOCIAL WORK':'BSSW',
+    'BS IN CIVIL ENGINEERING':'BSCE',
+    'BS IN SECONDARY EDUCATION':'BSEd',
+    'BACHELOR OF ELEMENTARY EDUCATION':'BEEd'
+  })[c]||c||'—';
+}
+window.shortC=shortC;
+
+// Close modal on Escape
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape') window.closeModal && window.closeModal();
+});
+</script>
+</body>
+</html>
