@@ -333,6 +333,103 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   .gate-stats{display:grid;grid-template-columns:1fr 1fr;}
 }
 </style>
+
+<!-- Firebase Auth Guard + Firestore 1-Take -->
+<script type="module">
+import { initializeApp }   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut }
+                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp }
+                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
+  authDomain: "cfp2526-database.firebaseapp.com",
+  projectId: "cfp2526-database",
+  storageBucket: "cfp2526-database.firebasestorage.app",
+  messagingSenderId: "111042690196",
+  appId: "1:111042690196:web:cd63203bd29b350cea8881",
+  measurementId: "G-Y7CMBZM1G1"
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+window._pracDB = db;
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  window.firebaseUser  = user;
+  window.firebaseUID   = user.uid;
+  window.firebaseEmail = user.email;
+
+  const badge = document.getElementById('nav-user-badge');
+  if (badge) {
+    const photo = user.photoURL ? `<img src="${user.photoURL}" style="width:22px;height:22px;border-radius:50%;vertical-align:middle;margin-right:5px;border:1px solid rgba(0,255,247,0.4);">` : '👤 ';
+    badge.innerHTML = photo + (user.displayName || user.email);
+    badge.style.display = 'inline-flex';
+  }
+  const nameEl = document.getElementById('inp-name');
+  if (nameEl && !nameEl.value && user.displayName) nameEl.value = user.displayName;
+
+  // 1-TAKE CHECK via Firestore
+  try {
+    const snap = await getDoc(doc(db, 'practical_submissions', user.uid));
+    if (snap.exists()) {
+      const d = snap.data();
+      const detail = document.getElementById('taken-detail');
+      if (detail) detail.innerHTML =
+        `<span>Gmail:</span> ${d.gmail||user.email}<br>
+         <span>Name:</span> ${d.name||'—'}<br>
+         <span>Student No:</span> ${d.studentNo||'—'}<br>
+         <span>Score:</span> ${d.percent||'—'}<br>
+         <span>Time Taken:</span> ${d.timeTaken||'—'}<br>
+         <span>Submitted:</span> ${d.timestamp||'—'}`;
+      document.getElementById('gate-screen').style.display  = 'none';
+      document.getElementById('taken-screen').style.display = 'block';
+      return;
+    }
+  } catch(e) {
+    const cached = localStorage.getItem('practical_done_uid_' + user.uid);
+    if (cached) {
+      try {
+        const d = JSON.parse(cached);
+        const detail = document.getElementById('taken-detail');
+        if (detail) detail.innerHTML =
+          `<span>Gmail:</span> ${d.gmail||user.email}<br>
+           <span>Name:</span> ${d.name||'—'}<br>
+           <span>Score:</span> ${d.percent||'—'}<br>
+           <span>Time Taken:</span> ${d.timeTaken||'—'}<br>
+           <span>Submitted:</span> ${d.timestamp||'—'}`;
+        document.getElementById('gate-screen').style.display  = 'none';
+        document.getElementById('taken-screen').style.display = 'block';
+      } catch(e2) {}
+    }
+  }
+});
+
+window.savePracticalToFirestore = async function(passed, pct, timeStr, name, stuNo) {
+  if (!window.firebaseUID) return;
+  const record = {
+    uid: window.firebaseUID, gmail: window.firebaseEmail,
+    name: name || window.firebaseUser?.displayName || '',
+    studentNo: stuNo || 'N/A',
+    score: passed + '/2', percent: pct + '%', timeTaken: timeStr,
+    timestamp: new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'}),
+    submittedAt: serverTimestamp()
+  };
+  localStorage.setItem('practical_done_uid_' + window.firebaseUID, JSON.stringify(record));
+  try { await setDoc(doc(db,'practical_submissions',window.firebaseUID), record); }
+  catch(e) { console.warn('Firestore:', e); }
+};
+
+window.firebaseSignOut = async function() {
+  await signOut(auth);
+  localStorage.removeItem('firebase_user');
+  localStorage.removeItem('student_session');
+  window.location.href = 'login.html';
+};
+</script>
 </head>
 <body>
 
@@ -362,6 +459,11 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
     <a href="lesson.html" class="nav-link">📘 Lesson</a>
     <a href="quiz.html" class="nav-link">📝 Quiz 1</a>
     <a href="practical.html" class="nav-link active">💻 Practical</a>
+    <a href="profile.html" class="nav-link" style="border-color:rgba(168,85,247,0.3);color:#a855f7;">👤 Profile</a>
+    <div class="nav-divider"></div>
+    <span id="nav-user-badge" onclick="window.firebaseSignOut&&window.firebaseSignOut()" title="Sign out"
+      style="display:none;align-items:center;gap:5px;font-size:0.72rem;color:var(--accent2);cursor:pointer;padding:4px 10px;border:1px solid rgba(58,249,195,0.25);border-radius:7px;background:rgba(58,249,195,0.05);">
+    </span>
   </div>
 </nav>
 
@@ -506,7 +608,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
     <div class="result-hero">
       <div class="result-glow"></div>
-      <div class="result-score-big" id="res-score">0/5</div>
+      <div class="result-score-big" id="res-score">0/2</div>
       <div class="result-label">Tasks Completed (out of 2)</div>
       <h2 class="result-title" id="res-title">Session Complete</h2>
       <p class="result-msg" id="res-msg"></p>
@@ -723,8 +825,163 @@ function updateTimerDisplay(){
 }
 
 // ── RUN TASK ──
-function runTask(id){
-  const code=document.getElementById('code-'+id).value;
+function runTask(taskId) {
+  const textarea = document.getElementById(`code-${taskId}`);
+  const outputPanel = document.getElementById(`output-${taskId}`);
+  const status = document.getElementById(`status-${taskId}`);
+
+  const code = textarea.value;
+
+  outputPanel.classList.remove("error");
+  outputPanel.classList.remove("idle");
+
+  try {
+    // Basic validation
+    if (!code.includes("#include")) {
+      throw "Missing #include <iostream>";
+    }
+    if (!code.includes("main")) {
+      throw "Missing main() function";
+    }
+
+    let output = "";
+
+    // Simulated execution logic
+    if (taskId === 1) {
+      const matches = code.match(/cout\s*<<\s*"([^"]+)"/g);
+
+      if (!matches || matches.length < 2) {
+        throw "You must print at least 2 lines using cout.";
+      }
+
+      output = matches
+        .map(line => line.match(/"([^"]+)"/)[1])
+        .join("\n");
+    }
+
+    if (taskId === 2) {
+      if (!code.includes("a + b") || !code.includes("a * b")) {
+        throw "Missing correct operations (a + b or a * b)";
+      }
+
+      output = "Sum: 15\nProduct: 50";
+    }
+
+    outputPanel.textContent = output;
+
+    const pass = checkTask(taskId, output);
+    const task = TASKS.find(t => t.id === taskId);
+
+    // Store result in the format expected by showResults / buildAnswerLog
+    taskResults[taskId] = {
+      code: document.getElementById('code-' + taskId).value,
+      output: output,
+      pass: pass,
+      points: pass ? task.points : 0
+    };
+
+    updateProgress();
+
+    if (pass) {
+      showStatus(taskId, true,
+        task.flexible
+          ? `Task ${taskId} passed! +${task.points} points — your name and course were printed successfully!`
+          : `Task ${taskId} passed! +${task.points} points — output matches perfectly!`
+      );
+      document.getElementById('task-card-' + taskId).style.borderColor = 'rgba(0,255,136,0.5)';
+      document.getElementById('task-card-' + taskId).style.boxShadow = '0 0 20px rgba(0,255,136,0.1)';
+    } else {
+      showStatus(taskId, false,
+        task.flexible
+          ? `⚠️ Make sure you print at least 2 lines using cout << "..." << endl;`
+          : `⚠️ Output doesn't match. Expected:\n${task.expected.replace(/\\n/g, '\n')}`
+      );
+    }
+
+  } catch (err) {
+    outputPanel.textContent = "Error: " + err;
+    outputPanel.classList.add("error");
+    showStatus(taskId, false, "❌ Compilation Error");
+  }
+}
+
+  //  STATUS DISPLAY FUNCTION ---
+function showStatus(taskId, success, message) {
+  const el = document.getElementById(`task-status-${taskId}`);
+  const icon = el.querySelector(".ts-icon");
+  const msg = el.querySelector(".ts-msg");
+
+  el.classList.add("show");
+  el.classList.remove("pass", "try-again");
+
+  if (success) {
+    el.classList.add("pass");
+    icon.textContent = "✅";
+  } else {
+    el.classList.add("try-again");
+    icon.textContent = "⚠️";
+  }
+
+  msg.textContent = message;
+}
+
+  // FINAK SCORING ---
+  function calculateScore() {
+  const passed = taskResults.filter(t => t.passed).length;
+  const total = TASKS.length;
+  const percent = Math.round((passed / total) * 100);
+
+  return { passed, total, percent };
+}
+
+  // PROGRESS BAR UPDATE
+
+  function updateProgress() {
+  const total = TASKS.length;
+  const passed = Object.values(taskResults).filter(r => r && r.pass).length;
+  const percent = (passed / total) * 100;
+
+  document.getElementById('prog-inner').style.width = percent + '%';
+}
+
+  // CURRENT CHECKING LOGIC ---
+  function normalizeOutput(output) {
+  return output
+    .replace(/\r/g, '')        // remove Windows line endings
+    .trim()                    // remove outer spaces
+    .split('\n')
+    .map(line => line.trim()); // trim each line
+}
+
+function checkTask(taskId, output) {
+  const task = TASKS.find(t => t.id === taskId);
+  const lines = normalizeOutput(output);
+
+  if (task.flexible) {
+    // Task 1: must have at least 2 non-empty lines
+    const validLines = lines.filter(l => l.length > 0);
+    return validLines.length >= 2;
+  }
+
+  // Task 2: smarter checking
+  const hasSum = lines.some(l => l.includes("Sum: 15"));
+  const hasProduct = lines.some(l => l.includes("Product: 50"));
+
+  return hasSum && hasProduct;
+}
+
+function clearOutput(id){
+  const out = document.getElementById('output-' + id);
+  out.className = 'output-panel idle';
+  out.textContent = '// Output will appear here after you click ▶ Run Code';
+  const ts = document.getElementById('task-status-' + id);
+  ts.classList.remove('show','pass','try-again');
+  const status = document.getElementById('status-' + id);
+  if(status) status.textContent = '';
+}
+  
+/* function runTask(id){
+  const code=document.getElementById('code-'+id).value; 
   const out=document.getElementById('output-'+id);
   const st=document.getElementById('status-'+id);
   const btn=document.getElementById('task-card-'+id).querySelector('.btn-run');
@@ -739,7 +996,7 @@ function runTask(id){
     } else {
       out.className='output-panel';
       out.textContent=result.output||'(no output)';
-      st.textContent='✅ Ran';
+      st.textContent='✅ Run';
       checkTaskPass(id, result.output||'');
     }
     btn.disabled=false; btn.textContent='▶ Run Code';
@@ -773,7 +1030,8 @@ function checkTaskPass(id, output){
   } else {
     // Task 2: exact match
     const expected=task.expected.replace(/\\n/g,'\n').trim();
-    pass = actual===expected || actual.replace(/\s+/g,' ')===expected.replace(/\s+/g,' ');
+   // pass = actual===expected || actual.replace(/\s+/g,' ')===expected.replace(/\s+/g,' ');
+  pass = actual.includes("15") && actual.includes("50");
   }
 
   taskResults[id]={code:document.getElementById('code-'+id).value, output:actual, pass, points:pass?task.points:0};
@@ -800,6 +1058,10 @@ function updateProgress(){
   const passed=Object.values(taskResults).filter(r=>r&&r.pass).length;
   document.getElementById('prog-inner').style.width=(passed/2*100)+'%';
 }
+
+*/
+
+  
 
 // ── SIMULATE C++ ──
 function simulateCpp(code){
@@ -891,13 +1153,19 @@ function showResults(isAuto){
 
   submitToSheets(passed, pct, timeStr, isAuto || false);
 
-  // ── LOCK: save record so this student can't retake ──
+  // ── SAVE to Firestore (Gmail UID — 1-take + dashboard) ──
+  if (typeof window.savePracticalToFirestore === 'function') {
+    window.savePracticalToFirestore(passed, pct, timeStr, stuName, stuNo);
+  }
+
+  // ── LOCK: localStorage fallback ──
   const key = 'practical_done_' + (stuNo||'unknown').toLowerCase().replace(/\s/g,'');
   const record = {
     studentNo: stuNo || 'N/A',
-    name: stuName,
-    section: stuSection,
-    percent: pct + '%',
+    gmail:     window.firebaseEmail || 'N/A',
+    name:      stuName,
+    section:   stuSection,
+    percent:   pct + '%',
     timeTaken: timeStr,
     timestamp: new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'})
   };
@@ -989,7 +1257,7 @@ function sendEmail(){
   // Since we can't actually send email from client-side, open mailto
   const passed=Object.values(taskResults).filter(r=>r&&r.pass).length;
   const pct=Object.values(taskResults).filter(r=>r&&r.pass).reduce((s,r)=>s+r.points,0);
-  const body=`Week 1 Practical Assessment Results\n\nName: ${stuName}\nSection: ${stuSection}\nScore: ${passed}/5 (${pct}%)\n\nTask Results:\n${TASKS.map(t=>{const r=taskResults[t.id];return `Task ${t.id}: ${r&&r.pass?'PASSED':'—'}`;}).join('\n')}\n\nInstructor: DEBULGADO, S.M.G\nComputer Fundamentals and Programming`;
+  const body=`Week 1 Practical Assessment Results\n\nName: ${stuName}\nSection: ${stuSection}\nScore: ${passed}/2 (${pct}%)\n\nTask Results:\n${TASKS.map(t=>{const r=taskResults[t.id];return `Task ${t.id}: ${r&&r.pass?'PASSED':'—'}`;}).join('\n')}\n\nInstructor: DEBULGADO, S.M.G\nComputer Fundamentals and Programming`;
   window.location.href=`mailto:${email}?subject=Week 1 Practical Results — ${stuName}&body=${encodeURIComponent(body)}`;
   document.getElementById('email-status').classList.add('show');
 }
@@ -998,7 +1266,7 @@ function sendEmail(){
 function downloadPDF(){
   const passed=Object.values(taskResults).filter(r=>r&&r.pass).length;
   const pct=Object.values(taskResults).filter(r=>r&&r.pass).reduce((s,r)=>s+r.points,0);
-  const content=`WEEK 1 PRACTICAL ASSESSMENT\nComputer Fundamentals and Programming\nInstructor: DEBULGADO, S.M.G\n${'='.repeat(50)}\nStudent: ${stuName}\nSection: ${stuSection}\nDate: ${new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'})}\n${'='.repeat(50)}\nFINAL SCORE: ${passed}/5 tasks (${pct}%)\n${'='.repeat(50)}\n\n${TASKS.map(t=>{const r=taskResults[t.id];return `TASK ${t.id}: ${t.title}\nResult: ${r&&r.pass?'PASSED ✓':'Not passed'}\nPoints: ${r&&r.pass?t.points:0}/${t.points}\nOutput:\n${r?r.output:'(not attempted)'}\n${'-'.repeat(40)}`;}).join('\n\n')}`;
+  const content=`WEEK 1 PRACTICAL ASSESSMENT\nComputer Fundamentals and Programming\nInstructor: DEBULGADO, S.M.G\n${'='.repeat(50)}\nStudent: ${stuName}\nSection: ${stuSection}\nDate: ${new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'})}\n${'='.repeat(50)}\nFINAL SCORE: ${passed}/2 tasks (${pct}%)\n${'='.repeat(50)}\n\n${TASKS.map(t=>{const r=taskResults[t.id];return `TASK ${t.id}: ${t.title}\nResult: ${r&&r.pass?'PASSED ✓':'Not passed'}\nPoints: ${r&&r.pass?t.points:0}/${t.points}\nOutput:\n${r?r.output:'(not attempted)'}\n${'-'.repeat(40)}`;}).join('\n\n')}`;
   const blob=new Blob([content],{type:'text/plain'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
