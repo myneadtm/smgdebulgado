@@ -2,11 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Admin Dashboard — SMGDecode</title>
-<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>SMGDecode — Database Viewer</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#040810;--s1:#08101c;--s2:#0d1626;--s3:#131e30;
@@ -24,1999 +22,407 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     linear-gradient(90deg,rgba(59,130,246,0.02) 1px,transparent 1px);
   background-size:48px 48px;}
 
-/* LOGIN */
-#gate{position:fixed;inset:0;z-index:9000;background:var(--bg);
-  display:flex;align-items:center;justify-content:center;padding:20px;}
-.lg-box{background:var(--s1);border:1.5px solid var(--border2);border-radius:20px;
-  padding:40px 32px;width:100%;max-width:380px;text-align:center;
-  position:relative;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.6);}
-.lg-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--red),var(--purple),var(--blue));}
-.lg-icon{font-size:2.8rem;margin-bottom:14px;}
-.lg-title{font-size:1.2rem;font-weight:800;margin-bottom:4px;}
-.lg-sub{font-size:0.78rem;color:var(--muted);margin-bottom:26px;line-height:1.6;}
-.lg-input{width:100%;background:var(--s2);border:1.5px solid var(--border2);
-  border-radius:10px;padding:12px 16px;color:var(--text);font-family:var(--font);
-  font-size:0.92rem;outline:none;text-align:center;letter-spacing:3px;
-  margin-bottom:10px;transition:border-color 0.2s;}
-.lg-input:focus{border-color:var(--purple);}
-.lg-btn{width:100%;background:linear-gradient(135deg,var(--purple),var(--blue));
-  color:#fff;border:none;border-radius:10px;padding:13px;font-family:var(--font);
-  font-weight:800;font-size:0.92rem;cursor:pointer;transition:all 0.2s;}
-.lg-btn:hover{transform:translateY(-2px);}
-.lg-err{font-size:0.78rem;color:var(--red);margin-top:8px;min-height:18px;}
-.lg-note{font-size:0.68rem;color:var(--dim);margin-top:14px;line-height:1.6;}
-
 /* TOPBAR */
-#admin-main{display:none;}
 .topbar{position:sticky;top:0;z-index:200;background:rgba(4,8,16,0.96);
   backdrop-filter:blur(20px);border-bottom:1px solid var(--border);
   padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:60px;}
 .tb-left{display:flex;align-items:center;gap:12px;}
-.tb-badge{background:linear-gradient(135deg,var(--red),var(--purple));
+.tb-badge{background:linear-gradient(135deg,var(--blue),var(--cyan));
   color:#fff;font-size:0.58rem;font-weight:800;letter-spacing:2px;
   text-transform:uppercase;padding:3px 10px;border-radius:20px;}
-.tb-title{font-weight:800;font-size:0.86rem;}
+.tb-title{font-weight:800;font-size:0.9rem;}
 .tb-sub{font-size:0.6rem;color:var(--muted);}
 .tb-right{display:flex;align-items:center;gap:10px;}
-#last-refresh{font-size:0.64rem;color:var(--dim);}
 .btn-sm{padding:6px 14px;border-radius:8px;font-family:var(--font);font-weight:700;
   font-size:0.74rem;cursor:pointer;transition:all 0.2s;border:1.5px solid var(--border2);
   background:var(--s2);color:var(--text);}
 .btn-sm:hover{border-color:var(--blue);color:var(--blue);}
-.btn-logout{border-color:rgba(249,58,122,0.3);color:var(--red);background:transparent;}
-.btn-logout:hover{background:rgba(249,58,122,0.08);}
+.spin{display:inline-block;animation:sp 0.8s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
 
 /* PAGE */
-.page{max-width:1200px;margin:0 auto;padding:28px 28px 80px;position:relative;z-index:1;}
+.page{max-width:1400px;margin:0 auto;padding:28px 28px 80px;position:relative;z-index:1;}
 
-/* FILTER CARD */
-.filter-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:18px;
-  padding:22px 24px;margin-bottom:24px;position:relative;overflow:hidden;}
-.filter-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent));}
-.fc-title{font-size:0.64rem;font-weight:800;color:var(--purple);letter-spacing:2px;
-  text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
-.fc-row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;}
-.fc-group{display:flex;flex-direction:column;gap:5px;flex:1;min-width:160px;}
-.fc-label{font-size:0.62rem;font-weight:700;color:var(--muted);letter-spacing:0.5px;}
-.fc-select{background:var(--s2);border:1.5px solid var(--border2);border-radius:10px;
-  padding:10px 13px;color:var(--text);font-family:var(--font);font-size:0.86rem;
-  outline:none;cursor:pointer;transition:border-color 0.2s;width:100%;}
-.fc-select:focus{border-color:var(--purple);}
-.fc-select option{background:var(--s2);}
-.btn-search{background:linear-gradient(135deg,var(--purple),var(--blue));
-  color:#fff;border:none;border-radius:10px;padding:10px 22px;
-  font-family:var(--font);font-weight:800;font-size:0.86rem;cursor:pointer;
-  transition:all 0.2s;flex-shrink:0;align-self:flex-end;
-  box-shadow:0 4px 16px rgba(168,85,247,0.3);}
-.btn-search:hover{transform:translateY(-2px);}
-
-/* STAT CARDS */
-.stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
+/* STAT STRIP */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
 .stat-box{background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;
-  padding:16px;position:relative;overflow:hidden;text-align:center;}
+  padding:16px 18px;position:relative;overflow:hidden;text-align:center;}
 .stat-box::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
-.sb-tot::after{background:linear-gradient(90deg,var(--blue),var(--cyan));}
 .sb-q1::after{background:linear-gradient(90deg,var(--accent),#f0a84b);}
 .sb-q2::after{background:linear-gradient(90deg,var(--purple),var(--cyan));}
 .sb-p1::after{background:linear-gradient(90deg,var(--green),var(--blue));}
 .sb-p2::after{background:linear-gradient(90deg,var(--orange),var(--red));}
-.sb-icon{font-size:1.3rem;margin-bottom:6px;}
-.sb-val{font-size:1.8rem;font-weight:900;font-family:var(--mono);line-height:1;margin-bottom:3px;}
-.sb-lbl{font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
-.sb-sub{font-size:0.66rem;color:var(--dim);margin-top:2px;}
+.sb-val{font-size:2rem;font-weight:900;font-family:var(--mono);line-height:1;margin-bottom:4px;}
+.sb-lbl{font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;}
+.sb-sub{font-size:0.66rem;color:var(--dim);margin-top:3px;}
 
-/* SECTION HEADING */
-.sec-hd{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
-.sec-hd-txt{font-size:0.62rem;font-weight:800;color:var(--muted);
-  letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
-.sec-hd-ln{flex:1;height:1px;background:var(--border);}
+/* TABS */
+.tab-row{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.tab{padding:9px 20px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:0.82rem;
+  cursor:pointer;border:1.5px solid var(--border2);background:var(--s2);color:var(--muted);
+  transition:all 0.18s;user-select:none;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--text);background:var(--s1);}
+.tab.t-q1.active{border-color:var(--accent);color:var(--accent);}
+.tab.t-q2.active{border-color:var(--purple);color:var(--purple);}
+.tab.t-p1.active{border-color:var(--green);color:var(--green);}
+.tab.t-p2.active{border-color:var(--orange);color:var(--orange);}
+.tab.t-all.active{border-color:var(--blue);color:var(--cyan);}
 
-/* CONTROLS */
-.ctrl-bar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+/* CONTROLS BAR */
+.ctrl-bar{display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap;}
 .search-in{flex:1;min-width:200px;background:var(--s1);border:1.5px solid var(--border2);
   border-radius:10px;padding:9px 14px;color:var(--text);font-family:var(--font);
   font-size:0.84rem;outline:none;transition:border-color 0.2s;}
 .search-in:focus{border-color:var(--blue);}
 .search-in::placeholder{color:var(--dim);}
 .filt-sel{background:var(--s1);border:1.5px solid var(--border2);border-radius:10px;
-  padding:9px 13px;color:var(--text);font-family:var(--font);font-size:0.8rem;outline:none;cursor:pointer;}
-.cnt-badge{font-size:0.72rem;color:var(--muted);padding:4px 0;}
+  padding:9px 13px;color:var(--text);font-family:var(--font);font-size:0.8rem;
+  outline:none;cursor:pointer;}
+.filt-sel option{background:var(--s2);}
+.cnt-badge{font-size:0.72rem;color:var(--muted);white-space:nowrap;}
 
-/* STUDENT GRID */
-.student-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
-.student-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;
-  padding:18px;cursor:pointer;transition:all 0.22s;position:relative;overflow:hidden;}
-.student-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--purple),var(--cyan));}
-.student-card:hover{transform:translateY(-3px);border-color:rgba(168,85,247,0.4);
-  box-shadow:0 12px 36px rgba(0,0,0,0.4);}
-.sc-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-.sc-av{width:44px;height:44px;border-radius:50%;
-  background:linear-gradient(135deg,var(--purple),var(--blue));
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.1rem;font-weight:800;color:#fff;flex-shrink:0;
-  border:2px solid rgba(168,85,247,0.3);}
-.sc-info{flex:1;min-width:0;}
-.sc-name{font-size:0.88rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sc-email{font-size:0.7rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sc-id{font-size:0.66rem;color:var(--dim);font-family:var(--mono);}
-.sc-badges{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
-.scb{font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:8px;}
-.scb-done{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.2);}
-.scb-miss{background:rgba(90,116,153,0.1);color:var(--muted);border:1px solid var(--border);}
-.sc-progress{display:flex;align-items:center;gap:8px;}
-.sc-prog-bar{flex:1;background:var(--s3);border-radius:4px;height:5px;overflow:hidden;}
-.sc-prog-fill{height:100%;border-radius:4px;transition:width 0.6s ease;}
-.sc-prog-lbl{font-size:0.68rem;color:var(--muted);white-space:nowrap;}
+/* TABLE */
+.tbl-wrap{background:var(--s1);border:1.5px solid var(--border2);border-radius:16px;overflow:hidden;}
+.tbl-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.tbl-head-title{font-size:0.72rem;font-weight:800;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+.tbl-head-line{flex:1;height:1px;background:var(--border);}
+table{width:100%;border-collapse:collapse;}
+thead tr{background:var(--s2);}
+th{padding:11px 14px;font-size:0.68rem;font-weight:800;color:var(--muted);
+  letter-spacing:1.5px;text-transform:uppercase;text-align:left;white-space:nowrap;}
+th.num{text-align:right;}
+tbody tr{border-top:1px solid var(--border);transition:background 0.15s;}
+tbody tr:hover{background:rgba(59,130,246,0.04);}
+td{padding:11px 14px;font-size:0.82rem;color:var(--text);}
+td.num{text-align:right;font-family:var(--mono);font-size:0.78rem;}
+.td-name{font-weight:700;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.td-id{font-family:var(--mono);font-size:0.72rem;color:var(--muted);}
+.td-email{color:var(--muted);font-size:0.76rem;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pct-cell{display:flex;align-items:center;gap:8px;justify-content:flex-end;}
+.pct-bar{width:60px;height:5px;background:var(--s3);border-radius:3px;overflow:hidden;flex-shrink:0;}
+.pct-fill{height:100%;border-radius:3px;}
+.pct-txt{font-family:var(--mono);font-size:0.8rem;font-weight:600;min-width:40px;text-align:right;}
+.pf-p{color:var(--green);}
+.pf-m{color:var(--accent);}
+.pf-f{color:var(--red);}
+.badge{font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:8px;}
+.b-pass{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.2);}
+.b-fail{background:rgba(249,58,122,0.1);color:var(--red);border:1px solid rgba(249,58,122,0.2);}
+.b-mid {background:rgba(249,195,58,0.1);color:var(--accent);border:1px solid rgba(249,195,58,0.2);}
+.col-tag{font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:8px;}
+.ct-q1{background:rgba(249,195,58,0.12);color:var(--accent);}
+.ct-q2{background:rgba(168,85,247,0.12);color:var(--purple);}
+.ct-p1{background:rgba(58,249,195,0.12);color:var(--green);}
+.ct-p2{background:rgba(251,146,60,0.12);color:var(--orange);}
+.ts-txt{font-size:0.7rem;color:var(--dim);}
 
-/* EMPTY STATE */
+/* EMPTY / LOADING */
 .empty-st{text-align:center;padding:60px 20px;color:var(--muted);}
 .empty-ic{font-size:3rem;margin-bottom:12px;opacity:0.3;}
-.empty-t{font-size:0.92rem;font-weight:700;margin-bottom:5px;}
-.empty-s{font-size:0.78rem;color:var(--dim);}
+.empty-t{font-size:0.9rem;font-weight:700;margin-bottom:5px;}
+.empty-s{font-size:0.76rem;color:var(--dim);}
 
-/* LOADING */
-.ld{text-align:center;padding:50px;color:var(--muted);font-size:0.86rem;}
-.spin{display:inline-block;animation:sp 0.85s linear infinite;}
-@keyframes sp{to{transform:rotate(360deg);}}
-
-/* ── MODAL ── */
-#modal-ov{display:none;position:fixed;inset:0;z-index:5000;
-  background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);
-  align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;}
-#modal-ov.show{display:flex;}
-.modal{background:var(--s1);border:1.5px solid var(--border2);border-radius:20px;
-  width:100%;max-width:680px;overflow:hidden;margin:auto;
-  box-shadow:0 32px 100px rgba(0,0,0,0.7);}
-.modal-top{height:4px;background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent));}
-.modal-head{padding:20px 24px 14px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;}
-.modal-title{font-size:1rem;font-weight:800;}
-.modal-close{background:var(--s2);border:1px solid var(--border);border-radius:8px;
-  width:30px;height:30px;cursor:pointer;color:var(--muted);font-size:1rem;
-  display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;}
-.modal-close:hover{color:var(--red);border-color:var(--red);}
-.modal-body{padding:22px 24px;max-height:75vh;overflow-y:auto;}
-
-/* Modal profile */
-/* Modal name-row action buttons */
-.mp-actions{display:flex;gap:8px;margin-left:auto;flex-shrink:0;align-items:center;}
-.inline-del-strip{display:none;margin-top:14px;background:rgba(249,58,122,0.06);
-  border:1.5px solid rgba(249,58,122,0.3);border-radius:12px;padding:14px 16px;}
-.inline-del-strip.show{display:block;}
-.idel-title{font-size:0.78rem;font-weight:800;color:var(--red);margin-bottom:4px;}
-.idel-sub{font-size:0.72rem;color:var(--muted);line-height:1.6;margin-bottom:12px;}
-.idel-btns{display:flex;gap:8px;}
-.btn-idel-cancel{flex:1;background:var(--s2);color:var(--muted);
-  border:1px solid var(--border2);border-radius:8px;padding:9px;
-  font-family:var(--font);font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s;}
-.btn-idel-cancel:hover{color:var(--text);}
-.btn-idel-confirm{flex:2;background:linear-gradient(135deg,var(--red),#a855f7);
-  color:#fff;border:none;border-radius:8px;padding:9px;
-  font-family:var(--font);font-weight:800;font-size:0.8rem;cursor:pointer;transition:all 0.2s;}
-.btn-idel-confirm:hover{box-shadow:0 4px 16px rgba(249,58,122,0.4);}
-.btn-idel-confirm:disabled{opacity:0.5;cursor:not-allowed;}
-
-.btn-modal-cancel{background:var(--s2);color:var(--muted);
-  border:1.5px solid var(--border2);border-radius:10px;
-  padding:8px 18px;font-family:var(--font);font-weight:700;
-  font-size:0.8rem;cursor:pointer;transition:all 0.2s;}
-.btn-modal-cancel:hover{color:var(--text);border-color:var(--border);background:var(--s3);}
-.btn-modal-delete{background:linear-gradient(135deg,rgba(249,58,122,0.15),rgba(168,85,247,0.1));
-  color:var(--red);border:1.5px solid rgba(249,58,122,0.5);border-radius:10px;
-  padding:8px 18px;font-family:var(--font);font-weight:800;
-  font-size:0.8rem;cursor:pointer;transition:all 0.2s;
-  box-shadow:0 2px 12px rgba(249,58,122,0.15);}
-.btn-modal-delete:hover{background:rgba(249,58,122,0.22);border-color:var(--red);
-  box-shadow:0 4px 18px rgba(249,58,122,0.3);transform:translateY(-1px);}
-
-.mp-row{display:flex;align-items:center;gap:14px;margin-bottom:20px;
-  background:var(--s2);border-radius:12px;padding:14px;}
-.mp-av{width:52px;height:52px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(135deg,var(--purple),var(--blue));
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.4rem;font-weight:800;color:#fff;border:2px solid rgba(168,85,247,0.35);}
-.mp-name{font-size:1rem;font-weight:800;margin-bottom:2px;}
-.mp-email{font-size:0.74rem;color:var(--muted);}
-.mp-meta{font-size:0.7rem;color:var(--dim);margin-top:2px;}
-
-/* Section title */
-.ms-title{font-size:0.62rem;font-weight:800;color:var(--purple);
-  letter-spacing:2px;text-transform:uppercase;margin:18px 0 10px;
-  display:flex;align-items:center;gap:8px;}
-.ms-title::after{content:'';flex:1;height:1px;background:rgba(168,85,247,0.2);}
-
-/* Status grid */
-.status-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;}
-
-/* PERIOD POPUP MODAL (admin) */
-#admin-period-modal{display:none;position:fixed;inset:0;z-index:9000;
-  background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);
-  align-items:center;justify-content:center;padding:16px;}
-#admin-period-modal.show{display:flex;}
-.apm-box{background:var(--s1);border:1.5px solid var(--border2);border-radius:20px;
-  width:100%;max-width:560px;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;
-  box-shadow:0 24px 80px rgba(0,0,0,0.7);}
-.apm-top{height:3px;}
-.apm-head{padding:18px 22px 14px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.apm-title{font-size:1rem;font-weight:800;}
-.apm-close{background:var(--s2);border:1px solid var(--border);border-radius:8px;
-  width:28px;height:28px;cursor:pointer;color:var(--muted);
-  display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all 0.2s;}
-.apm-close:hover{color:var(--red);border-color:var(--red);}
-.apm-body{padding:18px 22px;overflow-y:auto;flex:1;}
-
-/* Period tabs */
-.apm-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
-.apm-tab{padding:7px 16px;border-radius:8px;font-size:0.78rem;font-weight:700;
-  cursor:pointer;border:1.5px solid var(--border2);background:var(--s2);
-  color:var(--muted);transition:all 0.18s;user-select:none;}
-.apm-tab:hover{color:var(--text);}
-.apm-tab.active{color:var(--text);border-color:var(--accent);background:rgba(249,195,58,0.08);}
-
-/* Week section */
-.apm-week{margin-bottom:16px;}
-.apm-week-title{font-size:0.62rem;font-weight:800;color:var(--purple);
-  letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;
-  display:flex;align-items:center;gap:8px;}
-.apm-week-title::after{content:'';flex:1;height:1px;background:rgba(168,85,247,0.2);}
-.apm-rows{display:flex;flex-direction:column;gap:6px;}
-.apm-row{display:flex;align-items:center;justify-content:space-between;
-  background:var(--s2);border-radius:10px;padding:10px 14px;}
-.apm-row-left{display:flex;align-items:center;gap:10px;}
-.apm-row-icon{font-size:1rem;width:22px;text-align:center;flex-shrink:0;}
-.apm-row-lbl{font-size:0.82rem;color:var(--muted);}
-.apm-row-right{display:flex;align-items:center;gap:8px;}
-.apm-score{font-size:0.88rem;font-weight:800;font-family:var(--mono);}
-.apm-pct{font-size:0.76rem;font-weight:700;font-family:var(--mono);}
-.as-hi{color:var(--green);}.as-mid{color:var(--accent);}.as-lo{color:var(--red);}.as-na{color:var(--dim);}
-.apm-badge{font-size:0.62rem;font-weight:700;padding:2px 8px;border-radius:10px;}
-.ab-pass{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.2);}
-.ab-fail{background:rgba(249,58,122,0.1);color:var(--red);border:1px solid rgba(249,58,122,0.2);}
-.ab-na{background:rgba(90,116,153,0.1);color:var(--muted);border:1px solid var(--border);}
-.apm-lesson-row{background:rgba(59,130,246,0.04);border:1px dashed rgba(59,130,246,0.15);}
-
-/* Period buttons in status grid */
-.period-btn-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:4px;}
-.period-btn{background:var(--s2);border:1.5px solid var(--border2);border-radius:12px;
-  padding:14px 10px;text-align:center;cursor:pointer;transition:all 0.22s;position:relative;overflow:hidden;}
-.period-btn::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
-.pb-prelim::after{background:linear-gradient(90deg,var(--blue),var(--cyan));}
-.pb-mid::after{background:linear-gradient(90deg,var(--purple),var(--cyan));}
-.pb-finals::after{background:linear-gradient(90deg,var(--green),var(--blue));}
-.period-btn:hover{transform:translateY(-2px);border-color:rgba(168,85,247,0.4);}
-.pb-icon{font-size:1.2rem;margin-bottom:6px;}
-.pb-name{font-size:0.62rem;font-weight:800;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;}
-.pb-count{font-size:0.7rem;color:var(--dim);margin-top:3px;}
-.status-cell{background:var(--s2);border-radius:10px;padding:12px 14px;}
-.sc-lbl{font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
-.sc-val{font-size:0.9rem;font-weight:800;font-family:var(--mono);}
-.sc-ts{font-size:0.66rem;color:var(--dim);margin-top:2px;}
-.sv-hi{color:var(--green);}.sv-mid{color:var(--accent);}.sv-lo{color:var(--red);}.sv-na{color:var(--dim);}
-
-/* Score bar inside modal */
-.sc-bar-wrap{margin-top:5px;}
-.sc-bar-track{background:var(--s3);border-radius:4px;height:5px;overflow:hidden;margin-top:3px;}
-.sc-bar-fill{height:100%;border-radius:4px;}
-
-/* Pass/Fail badge */
-.pf-p{color:var(--green);font-size:0.72rem;font-weight:700;}
-.pf-f{color:var(--red);font-size:0.72rem;font-weight:700;}
-.pf-n{color:var(--dim);font-size:0.72rem;}
-
-/* Feedback row */
-.fb-row{background:var(--s2);border-radius:10px;padding:12px 14px;margin-bottom:6px;}
-.fb-rl{font-size:0.62rem;color:var(--purple);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
-.fb-rv{font-size:0.82rem;color:var(--text);}
-
-/* GRADE FORM */
-/* Subject step in modal */
-.ms-subj-list{display:flex;flex-direction:column;gap:8px;margin-bottom:4px;}
-.ms-subj-item{display:flex;align-items:center;gap:12px;
-  background:var(--s2);border:1.5px solid var(--border2);border-radius:12px;
-  padding:13px 16px;cursor:pointer;transition:all 0.2s;}
-.ms-subj-item:hover{border-color:rgba(168,85,247,0.5);transform:translateY(-1px);}
-.msi-icon{font-size:1.4rem;flex-shrink:0;}
-.msi-body{flex:1;min-width:0;}
-.msi-code{font-family:var(--mono);font-size:0.66rem;color:var(--muted);margin-bottom:3px;}
-.msi-name{font-size:0.86rem;font-weight:800;}
-.msi-meta{font-size:0.7rem;color:var(--dim);margin-top:2px;}
-.msi-status{font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:20px;flex-shrink:0;}
-.msi-ok{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.2);}
-.msi-no{background:rgba(90,116,153,0.1);color:var(--muted);border:1px solid var(--border);}
-.btn-back-step{background:var(--s2);border:1.5px solid var(--border2);border-radius:8px;
-  padding:6px 14px;color:var(--muted);font-family:var(--font);font-weight:700;
-  font-size:0.76rem;cursor:pointer;transition:all 0.2s;margin-bottom:14px;display:inline-block;}
-.btn-back-step:hover{color:var(--text);}
-.grade-form{background:var(--s2);border:1.5px solid var(--border2);
-  border-radius:12px;padding:18px;margin-top:6px;}
-.gf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
-.gf-group{display:flex;flex-direction:column;gap:5px;}
-.gf-label{font-size:0.68rem;font-weight:700;color:var(--muted);letter-spacing:0.5px;}
-.gf-input{background:var(--s1);border:1.5px solid var(--border2);border-radius:8px;
-  padding:9px 12px;color:var(--text);font-family:var(--mono);font-size:0.88rem;
-  outline:none;transition:border-color 0.2s;width:100%;}
-.gf-input:focus{border-color:var(--accent);}
-.gf-input::placeholder{color:var(--dim);}
-.gf-semestral{background:var(--s3);border:1.5px solid rgba(249,195,58,0.3);
-  border-radius:8px;padding:9px 12px;color:var(--accent);font-family:var(--mono);
-  font-size:0.96rem;font-weight:800;text-align:center;width:100%;
-  grid-column:1/-1;}
-.btn-save-grades{width:100%;background:linear-gradient(135deg,var(--accent),#f0a84b);
-  color:#000;border:none;border-radius:10px;padding:12px;font-family:var(--font);
-  font-weight:800;font-size:0.9rem;cursor:pointer;transition:all 0.2s;
-  box-shadow:0 4px 16px rgba(249,195,58,0.3);margin-top:4px;}
-.btn-save-grades:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(249,195,58,0.5);}
-.btn-save-grades:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-.save-msg{text-align:center;font-size:0.78rem;margin-top:8px;min-height:18px;}
-.save-ok{color:var(--green);}.save-err{color:var(--red);}
+/* SECTION LABEL */
+.sec-label{font-size:0.62rem;font-weight:800;color:var(--purple);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.sec-label::after{content:'';flex:1;height:1px;background:rgba(168,85,247,0.2);}
 
 /* EXPORT BTN */
-.btn-export{border-color:rgba(58,249,195,0.35);color:var(--green);background:rgba(58,249,195,0.05);}
-.btn-export:hover{background:rgba(58,249,195,0.1);}
+.btn-export{background:linear-gradient(135deg,var(--blue),var(--cyan));color:#fff;border:none;}
+.btn-export:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(59,130,246,0.3);}
 
-/* MERGE PANEL */
-.merge-strip{background:rgba(34,211,238,0.05);border:1.5px solid rgba(34,211,238,0.25);
-  border-radius:12px;padding:14px 16px;margin-top:10px;}
-.merge-strip-title{font-size:0.7rem;font-weight:800;color:var(--cyan);
-  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
-.merge-search-row{display:flex;gap:8px;margin-bottom:10px;}
-.merge-search-in{flex:1;background:var(--s1);border:1.5px solid var(--border2);border-radius:8px;
-  padding:8px 12px;color:var(--text);font-family:var(--font);font-size:0.82rem;outline:none;
-  transition:border-color 0.2s;}
-.merge-search-in:focus{border-color:var(--cyan);}
-.merge-search-in::placeholder{color:var(--dim);}
-.btn-merge-search{background:var(--s2);border:1.5px solid var(--border2);border-radius:8px;
-  padding:8px 14px;color:var(--text);font-family:var(--font);font-weight:700;
-  font-size:0.78rem;cursor:pointer;transition:all 0.2s;flex-shrink:0;}
-.btn-merge-search:hover{border-color:var(--cyan);color:var(--cyan);}
-.merge-results{display:flex;flex-direction:column;gap:5px;max-height:160px;overflow-y:auto;margin-bottom:8px;}
-.merge-result-item{display:flex;align-items:center;gap:10px;background:var(--s2);
-  border:1.5px solid var(--border2);border-radius:8px;padding:8px 12px;
-  cursor:pointer;transition:all 0.18s;font-size:0.8rem;}
-.merge-result-item:hover{border-color:var(--cyan);background:rgba(34,211,238,0.05);}
-.merge-result-item.selected{border-color:var(--cyan);background:rgba(34,211,238,0.08);}
-.mri-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--blue));
-  display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:#fff;flex-shrink:0;}
-.mri-info{flex:1;min-width:0;}
-.mri-name{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.mri-sub{font-size:0.68rem;color:var(--muted);}
-.mri-badges{display:flex;gap:3px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
-.mrib{font-size:0.55rem;font-weight:700;padding:1px 5px;border-radius:5px;}
-.mrib-y{background:rgba(58,249,195,0.12);color:var(--green);border:1px solid rgba(58,249,195,0.2);}
-.mrib-n{background:rgba(90,116,153,0.1);color:var(--dim);border:1px solid var(--border);}
-.merge-preview{background:var(--s1);border:1.5px solid rgba(34,211,238,0.2);border-radius:10px;
-  padding:12px 14px;margin-bottom:8px;}
-.mp-preview-title{font-size:0.62rem;font-weight:800;color:var(--cyan);letter-spacing:1.5px;
-  text-transform:uppercase;margin-bottom:8px;}
-.mp-check-row{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
-.mp-check-item{display:flex;align-items:center;gap:8px;font-size:0.8rem;}
-.mp-check-item input[type=checkbox]{accent-color:var(--cyan);width:14px;height:14px;cursor:pointer;}
-.mp-check-label{flex:1;}
-.mp-check-badge{font-size:0.62rem;font-weight:700;padding:1px 7px;border-radius:6px;}
-.mp-check-has{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.2);}
-.mp-check-no{background:rgba(90,116,153,0.1);color:var(--dim);border:1px solid var(--border);}
-.btn-do-merge{width:100%;background:linear-gradient(135deg,var(--cyan),var(--blue));
-  color:#000;border:none;border-radius:8px;padding:10px;font-family:var(--font);
-  font-weight:800;font-size:0.82rem;cursor:pointer;transition:all 0.2s;margin-top:4px;}
-.btn-do-merge:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(34,211,238,0.3);}
-.btn-do-merge:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-.merge-msg{font-size:0.76rem;text-align:center;margin-top:6px;min-height:16px;}
-.btn-merge-toggle{background:rgba(34,211,238,0.07);border:1.5px solid rgba(34,211,238,0.3);
-  border-radius:8px;padding:6px 14px;color:var(--cyan);font-family:var(--font);font-weight:700;
-  font-size:0.74rem;cursor:pointer;transition:all 0.2s;margin-top:2px;width:100%;}
-.btn-merge-toggle:hover{background:rgba(34,211,238,0.12);}
-
-/* COURSE CARDS */
-.course-card{background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;
-  padding:16px 14px 14px;cursor:pointer;transition:all 0.22s;
-  position:relative;overflow:hidden;text-align:center;}
-.course-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
-.course-card.active{border-color:var(--purple)!important;background:rgba(168,85,247,0.06);}
-.course-card:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(0,0,0,0.4);}
-.cc-icon{font-size:1.6rem;margin-bottom:8px;}
-.cc-count{font-size:2rem;font-weight:900;font-family:var(--mono);line-height:1;margin-bottom:4px;}
-.cc-name{font-size:0.62rem;font-weight:700;color:var(--muted);letter-spacing:0.5px;
-  line-height:1.4;text-transform:uppercase;}
-.cc-sub{font-size:0.62rem;color:var(--dim);margin-top:3px;}
-
-/* ── CURRICULUM MANAGER ── */
-.cm-panel{background:var(--s1);border:1.5px solid var(--border2);border-radius:18px;
-  padding:24px;margin-bottom:28px;position:relative;overflow:hidden;}
-.cm-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent));}
-.cm-title{font-size:0.64rem;font-weight:800;color:var(--purple);letter-spacing:2px;
-  text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
-
-/* Curriculum selectors row */
-.cm-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:18px;}
-.cm-group{display:flex;flex-direction:column;gap:5px;flex:1;min-width:150px;}
-.cm-label{font-size:0.62rem;font-weight:700;color:var(--muted);letter-spacing:0.5px;}
-.cm-select{background:var(--s2);border:1.5px solid var(--border2);border-radius:10px;
-  padding:10px 13px;color:var(--text);font-family:var(--font);font-size:0.84rem;
-  outline:none;cursor:pointer;transition:border-color 0.2s;width:100%;}
-.cm-select:focus{border-color:var(--purple);}
-.cm-select option{background:var(--s2);}
-
-/* Drop zone */
-.cm-dropzone{border:2px dashed var(--border2);border-radius:14px;
-  padding:32px 20px;text-align:center;cursor:pointer;
-  transition:all 0.25s;background:var(--s2);margin-bottom:16px;}
-.cm-dropzone:hover,.cm-dropzone.drag{border-color:var(--purple);
-  background:rgba(168,85,247,0.06);}
-.cm-dz-icon{font-size:2.4rem;margin-bottom:10px;}
-.cm-dz-t{font-size:0.88rem;font-weight:700;margin-bottom:4px;}
-.cm-dz-s{font-size:0.72rem;color:var(--muted);}
-.cm-file-input{display:none;}
-.cm-selected-files{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
-.cm-sf-item{display:flex;align-items:center;gap:10px;
-  background:var(--s3);border-radius:8px;padding:8px 12px;}
-.cm-sf-icon{font-size:1rem;flex-shrink:0;}
-.cm-sf-name{flex:1;font-size:0.78rem;font-weight:600;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.cm-sf-size{font-size:0.68rem;color:var(--muted);flex-shrink:0;}
-.cm-sf-rm{background:rgba(249,58,122,0.12);color:var(--red);border:none;
-  border-radius:6px;padding:3px 8px;font-size:0.72rem;cursor:pointer;flex-shrink:0;}
-.cm-sf-rm:hover{background:rgba(249,58,122,0.22);}
-
-/* Upload progress */
-.cm-prog-wrap{margin-bottom:10px;}
-.cm-prog-label{font-size:0.72rem;color:var(--muted);margin-bottom:4px;}
-.cm-prog-track{background:var(--s3);border-radius:4px;height:6px;overflow:hidden;}
-.cm-prog-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--purple),var(--cyan));
-  transition:width 0.3s ease;width:0%;}
-
-.btn-upload{background:linear-gradient(135deg,var(--purple),var(--blue));
-  color:#fff;border:none;border-radius:10px;padding:11px 26px;
-  font-family:var(--font);font-weight:800;font-size:0.86rem;cursor:pointer;
-  transition:all 0.2s;box-shadow:0 4px 16px rgba(168,85,247,0.3);}
-.btn-upload:hover{transform:translateY(-2px);}
-.btn-upload:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-.cm-msg{font-size:0.78rem;margin-top:8px;min-height:18px;font-weight:600;}
-.cm-ok{color:var(--green);}.cm-err{color:var(--red);}
-
-/* Uploaded files list */
-.cm-files-hd{display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:10px;margin-top:4px;}
-.cm-files-title{font-size:0.62rem;font-weight:800;color:var(--cyan);
-  letter-spacing:2px;text-transform:uppercase;}
-.btn-cm-refresh{background:var(--s2);border:1.5px solid var(--border2);border-radius:8px;
-  padding:5px 12px;color:var(--muted);font-family:var(--font);font-weight:700;
-  font-size:0.72rem;cursor:pointer;transition:all 0.2s;}
-.btn-cm-refresh:hover{color:var(--cyan);border-color:rgba(34,211,238,0.4);}
-
-.cm-file-list{display:flex;flex-direction:column;gap:7px;max-height:360px;overflow-y:auto;}
-.cm-fl-item{display:flex;align-items:center;gap:12px;
-  background:var(--s2);border:1.5px solid var(--border2);border-radius:10px;padding:10px 14px;
-  transition:border-color 0.2s;}
-.cm-fl-item:hover{border-color:rgba(168,85,247,0.35);}
-.cm-fl-thumb{width:40px;height:40px;border-radius:8px;flex-shrink:0;
-  object-fit:cover;background:var(--s3);
-  display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
-.cm-fl-thumb img{width:40px;height:40px;border-radius:8px;object-fit:cover;}
-.cm-fl-info{flex:1;min-width:0;}
-.cm-fl-name{font-size:0.8rem;font-weight:700;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.cm-fl-meta{font-size:0.65rem;color:var(--muted);margin-top:2px;}
-.cm-fl-badges{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;}
-.cm-fl-badge{font-size:0.58rem;font-weight:700;padding:2px 7px;border-radius:8px;}
-.cb-course{background:rgba(168,85,247,0.1);color:var(--purple);border:1px solid rgba(168,85,247,0.2);}
-.cb-subj{background:rgba(34,211,238,0.1);color:var(--cyan);border:1px solid rgba(34,211,238,0.2);}
-.cb-term{background:rgba(249,195,58,0.1);color:var(--accent);border:1px solid rgba(249,195,58,0.2);}
-.btn-cm-del{background:rgba(249,58,122,0.1);color:var(--red);border:1px solid rgba(249,58,122,0.25);
-  border-radius:7px;padding:5px 10px;font-family:var(--font);font-weight:700;
-  font-size:0.7rem;cursor:pointer;transition:all 0.2s;flex-shrink:0;}
-.btn-cm-del:hover{background:rgba(249,58,122,0.22);}
-.cm-empty-files{font-size:0.78rem;color:var(--dim);text-align:center;
-  padding:20px;font-style:italic;}
-
-/* Admin tab nav */
-.admin-tabs{display:flex;gap:8px;margin-bottom:24px;border-bottom:1px solid var(--border);
-  padding-bottom:0;}
-.admin-tab{padding:10px 20px;font-size:0.8rem;font-weight:700;cursor:pointer;
-  color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
-.admin-tab:hover{color:var(--text);}
-.admin-tab.on{color:var(--purple);border-bottom-color:var(--purple);}
-.admin-section{display:none;}
-.admin-section.on{display:block;}
-
-/* keep old stat CSS refs clean */
-@media(max-width:800px){
-  .stat-row{grid-template-columns:1fr 1fr;}
+@media(max-width:768px){
+  .stat-strip{grid-template-columns:1fr 1fr;}
+  .topbar{padding:0 16px;}
   .page{padding:16px 12px 60px;}
-  .topbar{padding:0 14px;}
-  .student-grid{grid-template-columns:1fr;}
-  .status-grid,.gf-grid{grid-template-columns:1fr;}
-  .fc-row{flex-direction:column;}
-  .btn-search{width:100%;}
 }
 </style>
 </head>
 <body>
 
-<!-- LOGIN GATE -->
-<script>
-window.onerror = function(msg, src, line, col, err) {
-  var d = document.getElementById('js-error-banner');
-  if(d) { d.style.display='block'; d.textContent = '❌ JS Error: ' + msg + ' (line ' + line + ')'; }
-  return false;
-};
-</script>
-<div id="js-error-banner" style="display:none;position:fixed;top:0;left:0;right:0;
-  background:#7f0020;color:#fff;padding:10px 16px;font-size:13px;z-index:99999;
-  font-family:monospace;"></div>
-<div id="gate">
-  <div class="lg-box">
-    <div class="lg-icon">🛡️</div>
-    <div class="lg-title">Admin Access</div>
-    <p class="lg-sub">SMGDecode · Teacher Dashboard<br>DEBULGADO, S.M.G</p>
-    <input class="lg-input" id="lg-pw" type="password" placeholder="Enter admin password"
-      onkeydown="if(event.key==='Enter')adminLogin()">
-    <button class="lg-btn" onclick="adminLogin()">🔑 Enter Dashboard</button>
-    <div class="lg-err" id="lg-err"></div>
-    <div class="lg-note">👤 Students — go to <a href="index.html" style="color:var(--cyan)">Student Portal</a></div>
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <span class="tb-badge">🗄 DB Viewer</span>
+    <div>
+      <div class="tb-title">SMGDecode — Database Viewer</div>
+      <div class="tb-sub">Week 1 &amp; Week 2 · Quiz &amp; Practical Submissions</div>
+    </div>
+  </div>
+  <div class="tb-right">
+    <span id="refresh-ts" style="font-size:0.64rem;color:var(--dim)"></span>
+    <button class="btn-sm btn-export" onclick="exportCSV()">⬇ Export CSV</button>
+    <button class="btn-sm" onclick="loadAll()">🔄 Refresh</button>
   </div>
 </div>
 
-<!-- DASHBOARD -->
-<div id="admin-main">
+<div class="page">
 
-  <!-- TOPBAR -->
-  <div class="topbar">
-    <div class="tb-left">
-      <span class="tb-badge">🛡 Admin</span>
-      <div>
-        <div class="tb-title">SMGDecode Teacher Dashboard</div>
-        <div class="tb-sub">DEBULGADO, S.M.G</div>
-      </div>
+  <!-- STATS -->
+  <div class="stat-strip">
+    <div class="stat-box sb-q1">
+      <div class="sb-val" id="cnt-q1">—</div>
+      <div class="sb-lbl">W1 Quiz</div>
+      <div class="sb-sub">quiz_submissions</div>
     </div>
-    <div class="tb-right">
-      <span id="last-refresh" style="font-size:0.64rem;color:var(--dim)">Not refreshed</span>
-      <button class="btn-sm btn-export" onclick="exportCSV()">⬇ Export CSV</button>
-      <button class="btn-sm" onclick="window.loadAll()">🔄 Refresh</button>
-      <button class="btn-sm btn-logout" onclick="adminLogout()">⏻ Logout</button>
+    <div class="stat-box sb-q2">
+      <div class="sb-val" id="cnt-q2">—</div>
+      <div class="sb-lbl">W2 Quiz</div>
+      <div class="sb-sub">quiz2_submissions</div>
+    </div>
+    <div class="stat-box sb-p1">
+      <div class="sb-val" id="cnt-p1">—</div>
+      <div class="sb-lbl">W1 Practical</div>
+      <div class="sb-sub">practical_submissions</div>
+    </div>
+    <div class="stat-box sb-p2">
+      <div class="sb-val" id="cnt-p2">—</div>
+      <div class="sb-lbl">W2 Practical</div>
+      <div class="sb-sub">practical2_submissions</div>
     </div>
   </div>
 
-  <div class="page">
-
-    <!-- ADMIN NAV TABS -->
-    <div class="admin-tabs">
-      <div class="admin-tab on" id="atab-students" onclick="switchAdminTab('students')">👥 Students</div>
-      <div class="admin-tab"    id="atab-curriculum" onclick="switchAdminTab('curriculum')">📁 Curriculum Manager</div>
-    </div>
-
-    <!-- ═══════ CURRICULUM MANAGER SECTION ═══════ -->
-    <div class="admin-section" id="asec-curriculum">
-
-      <div class="cm-panel">
-        <div class="cm-title">📁 Curriculum File Manager — Upload & Manage Student Files</div>
-
-        <!-- SELECTORS -->
-        <div class="cm-row">
-          <div class="cm-group">
-            <label class="cm-label">🎓 Course</label>
-            <select class="cm-select" id="cm-course" onchange="onCmCourseChange()">
-              <option value="">— Select Course —</option>
-              <option>BS IN ACCOUNTING INFORMATION SYSTEM</option>
-              <option>BS IN CRIMINOLOGY</option>
-              <option>BS IN HOSPITALITY MANAGEMENT</option>
-              <option>BS IN SOCIAL WORK</option>
-              <option>BS IN CIVIL ENGINEERING</option>
-              <option>BS IN SECONDARY EDUCATION</option>
-              <option>BACHELOR OF ELEMENTARY EDUCATION</option>
-            </select>
-          </div>
-          <div class="cm-group">
-            <label class="cm-label">📚 Subject</label>
-            <select class="cm-select" id="cm-subject">
-              <option value="">— Select Course First —</option>
-            </select>
-          </div>
-          <div class="cm-group">
-            <label class="cm-label">📋 Semester</label>
-            <select class="cm-select" id="cm-term">
-              <option value="">— Select Term —</option>
-              <option>1st Semester</option>
-              <option>2nd Semester</option>
-            </select>
-          </div>
-          <div class="cm-group" style="max-width:200px;">
-            <label class="cm-label">🏷 Display Name (optional)</label>
-            <input class="cm-select" id="cm-dispname" placeholder="e.g. Lecture Notes Week 1"
-              style="font-size:0.8rem;">
-          </div>
-        </div>
-
-        <!-- DROP ZONE -->
-        <div class="cm-dropzone" id="cm-dz"
-          onclick="document.getElementById('cm-file-input').click()"
-          ondragover="dzOver(event)" ondragleave="dzLeave()" ondrop="dzDrop(event)">
-          <div class="cm-dz-icon">📂</div>
-          <div class="cm-dz-t">Click to browse or drag files here</div>
-          <div class="cm-dz-s">Supports: PDF, JPG, PNG, JPEG, MP4, MOV, GIF, WEBP, DOC, DOCX, PPT, PPTX</div>
-        </div>
-        <input type="file" class="cm-file-input" id="cm-file-input" multiple
-          accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.mp4,.mov,.avi,.doc,.docx,.ppt,.pptx,.xlsx,.xls"
-          onchange="onFilesSelected(this.files)">
-
-        <!-- SELECTED FILES PREVIEW -->
-        <div class="cm-selected-files" id="cm-selected-files"></div>
-
-        <!-- PROGRESS -->
-        <div class="cm-prog-wrap" id="cm-prog-wrap" style="display:none;">
-          <div class="cm-prog-label" id="cm-prog-label">Uploading…</div>
-          <div class="cm-prog-track"><div class="cm-prog-fill" id="cm-prog-fill"></div></div>
-        </div>
-
-        <button class="btn-upload" id="btn-cm-upload" onclick="uploadCurriculumFiles()">
-          ⬆ Upload Files
-        </button>
-        <div class="cm-msg" id="cm-msg"></div>
-      </div>
-
-      <!-- UPLOADED FILES LIST -->
-      <div class="cm-panel">
-        <div class="cm-files-hd">
-          <div class="cm-files-title">📋 Uploaded Curriculum Files</div>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <select class="cm-select" id="cm-filter-course" style="font-size:0.74rem;padding:6px 10px;min-width:160px;"
-              onchange="loadExistingFiles()">
-              <option value="">All Courses</option>
-              <option>BS IN ACCOUNTING INFORMATION SYSTEM</option>
-              <option>BS IN CRIMINOLOGY</option>
-              <option>BS IN HOSPITALITY MANAGEMENT</option>
-              <option>BS IN SOCIAL WORK</option>
-              <option>BS IN CIVIL ENGINEERING</option>
-              <option>BS IN SECONDARY EDUCATION</option>
-              <option>BACHELOR OF ELEMENTARY EDUCATION</option>
-            </select>
-            <select class="cm-select" id="cm-filter-term" style="font-size:0.74rem;padding:6px 10px;min-width:130px;"
-              onchange="loadExistingFiles()">
-              <option value="">All Semesters</option>
-              <option>1st Semester</option>
-              <option>2nd Semester</option>
-            </select>
-            <button class="btn-cm-refresh" onclick="loadExistingFiles()">🔄 Refresh</button>
-          </div>
-        </div>
-        <div class="cm-file-list" id="cm-file-list">
-          <div class="cm-empty-files">Select the Curriculum Manager tab to load files.</div>
-        </div>
-      </div>
-
-    </div><!-- /asec-curriculum -->
-
-    <!-- ═══════ STUDENTS SECTION ═══════ -->
-    <div class="admin-section on" id="asec-students">
-
-    <!-- FILTER CARD -->
-    <div class="filter-card">
-      <div class="fc-title">🔍 Filter Students</div>
-      <div class="fc-row">
-        <div class="fc-group">
-          <label class="fc-label">🗓 Academic Year</label>
-          <select class="fc-select" id="f-year">
-            <option value="">All Years</option>
-            <option>2025-2026</option><option>2026-2027</option><option>2027-2028</option>
-            <option>2028-2029</option><option>2029-2030</option><option>2030-2031</option>
-            <option>2031-2032</option><option>2032-2033</option><option>2033-2034</option>
-            <option>2034-2035</option>
-          </select>
-        </div>
-        <div class="fc-group">
-          <label class="fc-label">📋 Term</label>
-          <select class="fc-select" id="f-term">
-            <option value="">All Terms</option>
-            <option>1st Semester</option><option>2nd Semester</option>
-          </select>
-        </div>
-        <div class="fc-group">
-          <label class="fc-label">🎓 Course</label>
-          <select class="fc-select" id="f-course">
-            <option value="">All Courses</option>
-            <option>BS IN ACCOUNTING INFORMATION SYSTEM</option>
-            <option>BS IN CRIMINOLOGY</option>
-            <option>BS IN HOSPITALITY MANAGEMENT</option>
-            <option>BS IN SOCIAL WORK</option>
-            <option>BS IN CIVIL ENGINEERING</option>
-            <option>BS IN SECONDARY EDUCATION</option>
-            <option>BACHELOR OF ELEMENTARY EDUCATION</option>
-          </select>
-        </div>
-        <button class="btn-search" onclick="applyFilter()">🔍 View Students</button>
-      </div>
-    </div>
-
-    <!-- STATS -->
-    <!-- COURSE BREAKDOWN CARDS -->
-    <div class="sec-hd" style="margin-bottom:12px;">
-      <span class="sec-hd-txt">🎓 Students by Course</span>
-      <div class="sec-hd-ln"></div>
-      <span id="course-filter-tag" style="font-size:0.68rem;color:var(--accent);white-space:nowrap;display:none;">
-        Filtered &nbsp;<span style="cursor:pointer;color:var(--muted);text-decoration:underline;" onclick="clearCourseFilter()">✕ Clear</span>
-      </span>
-    </div>
-    <div id="course-cards-row" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:24px;">
-      <div style="text-align:center;padding:30px;color:var(--muted);font-size:0.8rem;grid-column:1/-1">
-        <span class="spin">⟳</span> Loading...
-      </div>
-    </div>
-
-    <!-- STUDENT LIST -->
-    <div class="sec-hd">
-      <span class="sec-hd-txt">👥 Student List</span>
-      <div class="sec-hd-ln"></div>
-    </div>
-
-    <div class="ctrl-bar">
-      <input class="search-in" id="srch" placeholder="🔍 Search by name, email or student ID..." oninput="renderCards()">
-      <select class="filt-sel" id="f-status" onchange="renderCards()">
-        <option value="">All Status</option>
-        <option value="done">Has Submission</option>
-        <option value="none">No Submission</option>
-        <option value="pass">Has Passed</option>
-        <option value="fail">Has Failed</option>
-      </select>
-      <span class="cnt-badge" id="cnt">Loading...</span>
-    </div>
-
-    <div id="student-area">
-      <div class="ld"><span class="spin">⟳</span> Loading students...</div>
-    </div>
-
-  </div><!-- /asec-students -->
-  </div><!-- /page -->
-</div><!-- /admin-main -->
-
-<!-- STUDENT MODAL -->
-<div id="modal-ov" onclick="closeModalBg(event)">
-  <div class="modal" id="modal-box">
-    <div class="modal-top"></div>
-    <div class="modal-head">
-      <div class="modal-title" id="modal-ttl">Student Details</div>
-      <div class="modal-close" onclick="closeModal()">✕</div>
-    </div>
-    <div class="modal-body" id="modal-body"></div>
+  <!-- TABS -->
+  <div class="tab-row">
+    <div class="tab t-all active" onclick="switchTab('all')">📋 All Submissions</div>
+    <div class="tab t-q1"        onclick="switchTab('q1')">📝 W1 Quiz</div>
+    <div class="tab t-q2"        onclick="switchTab('q2')">📝 W2 Quiz</div>
+    <div class="tab t-p1"        onclick="switchTab('p1')">💻 W1 Practical</div>
+    <div class="tab t-p2"        onclick="switchTab('p2')">💻 W2 Practical</div>
   </div>
+
+  <!-- CONTROLS -->
+  <div class="ctrl-bar">
+    <input class="search-in" id="srch" placeholder="🔍 Search by name, email, or student ID…" oninput="renderTable()">
+    <select class="filt-sel" id="f-pass" onchange="renderTable()">
+      <option value="">All Scores</option>
+      <option value="pass">Passed (≥75%)</option>
+      <option value="mid">Average (50–74%)</option>
+      <option value="fail">Failed (&lt;50%)</option>
+    </select>
+    <span class="cnt-badge" id="row-cnt"></span>
+  </div>
+
+  <!-- TABLE AREA -->
+  <div class="tbl-wrap" id="tbl-area">
+    <div class="empty-st">
+      <div class="empty-ic"><span class="spin">⟳</span></div>
+      <div class="empty-t">Loading database…</div>
+      <div class="empty-s">Fetching all four collections from Firestore</div>
+    </div>
+  </div>
+
 </div>
 
 <!-- FIREBASE -->
 <script type="module">
-import { initializeApp }  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth }        from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, collection, getDocs, doc, getDoc, setDoc, deleteDoc, serverTimestamp, query, where }
-                          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { initializeApp }   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, collection, getDocs }
+                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-const firebaseConfig = {
-   apiKey: "AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
-  authDomain: "cfp2526-database.firebaseapp.com",
-  projectId: "cfp2526-database",
-  storageBucket: "cfp2526-database.firebasestorage.app",
-  messagingSenderId: "111042690196",
-  appId: "1:111042690196:web:cd63203bd29b350cea8881",
-  measurementId: "G-Y7CMBZM1G1"
+const cfg = {
+  apiKey:"AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
+  authDomain:"cfp2526-database.firebaseapp.com",
+  projectId:"cfp2526-database",
+  storageBucket:"cfp2526-database.firebasestorage.app",
+  messagingSenderId:"111042690196",
+  appId:"1:111042690196:web:cd63203bd29b350cea8881"
 };
 
-const app  = initializeApp(firebaseConfig);
-const db   = getFirestore(app);
+const app = initializeApp(cfg);
+const db  = getFirestore(app);
 
-const ADMIN_PASSWORD = '@Masterh7cky';
-const g = id => document.getElementById(id);
+const g   = id => document.getElementById(id);
 const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const pctN = str => parseFloat(String(str||'').replace('%','')) || 0;
+const pctN= s => parseFloat(String(s||'').replace('%',''))||0;
 
-let allData = {};
-let filtered = [];
+// All rows across collections
+let allRows = [];
+let activeTab = 'all';
 
-// ── LOGIN ──
-window.adminLogin = () => {
-  const pw = g('lg-pw').value;
-  if (pw === ADMIN_PASSWORD) {
-    sessionStorage.setItem('admin_ok','1');
-    g('gate').style.display = 'none';
-    g('admin-main').style.display = 'block';
-    window.loadAll();
-  } else {
-    g('lg-err').textContent = '❌ Incorrect password.';
-    g('lg-pw').value = '';
-    setTimeout(() => g('lg-err').textContent = '', 3000);
-  }
-};
-window.adminLogout = () => {
-  sessionStorage.removeItem('admin_ok');
-  g('admin-main').style.display = 'none';
-  g('gate').style.display = 'flex';
-  g('lg-pw').value = '';
-};
-// ── SESSION CHECK ──
-setTimeout(() => {
-  if (sessionStorage.getItem('admin_ok') === '1') {
-    g('gate').style.display = 'none';
-    g('admin-main').style.display = 'block';
-    window.loadAll && window.loadAll();
-  }
-}, 0);
-
-// ── LOAD ALL DATA ──
+// Fetch all four collections
 window.loadAll = async function() {
-  g('student-area').innerHTML = '<div class="ld"><span class="spin">⟳</span> Loading...</div>';
-  allData = {};
+  g('tbl-area').innerHTML = `<div class="empty-st"><div class="empty-ic"><span class="spin">⟳</span></div><div class="empty-t">Loading…</div><div class="empty-s">Connecting to Firestore</div></div>`;
+  g('cnt-q1').textContent = '…';
+  g('cnt-q2').textContent = '…';
+  g('cnt-p1').textContent = '…';
+  g('cnt-p2').textContent = '…';
+
   try {
-    const [profSnap,q1Snap,q2Snap,p1Snap,p2Snap,fbSnap] = await Promise.all([
-      getDocs(collection(db,'student_profiles')).catch(()=>null),
+    const [q1, q2, p1, p2] = await Promise.all([
       getDocs(collection(db,'quiz_submissions')).catch(()=>null),
       getDocs(collection(db,'quiz2_submissions')).catch(()=>null),
       getDocs(collection(db,'practical_submissions')).catch(()=>null),
       getDocs(collection(db,'practical2_submissions')).catch(()=>null),
-      getDocs(collection(db,'quiz_feedback')).catch(()=>null),
     ]);
 
-    // Load profiles first
-    if (profSnap) profSnap.forEach(d => {
-      const p = d.data();
-      allData[d.id] = {
-        uid:d.id, gmail:p.gmail||'', name:p.fullName||'',
-        firstName:p.firstName||'', surname:p.surname||'',
-        studentId:p.studentId||'', course:p.course||'',
-        academicYear:p.academicYear||'', term:p.term||'',
-        registeredAt:p.registeredAt||'',
-        q1:null,q2:null,p1:null,p2:null,fb:null,grades:null
-      };
-    });
-
-    // Merge assessment data
-    const merge = (snap,field) => {
-      if(!snap) return;
+    const collect = (snap, label, col) => {
+      if(!snap) return [];
+      const rows = [];
       snap.forEach(d => {
-        const uid=d.id, data=d.data();
-        if(!allData[uid]) allData[uid]={uid,gmail:data.gmail||'',name:data.name||'',
-          firstName:'',surname:'',studentId:data.studentNo||'',
-          course:'',academicYear:'',term:'',registeredAt:'',
-          q1:null,q2:null,p1:null,p2:null,fb:null,grades:null};
-        allData[uid][field]=data;
-        if(data.gmail&&!allData[uid].gmail) allData[uid].gmail=data.gmail;
-        if(data.name&&!allData[uid].name)   allData[uid].name=data.name;
-        if(data.studentNo&&!allData[uid].studentId) allData[uid].studentId=data.studentNo;
+        const v = d.data();
+        rows.push({
+          uid: d.id,
+          collection: col,
+          label,
+          name: v.name||v.fullName||'—',
+          gmail: v.gmail||'—',
+          studentNo: v.studentNo||v.studentId||'—',
+          score: v.score||'—',
+          percent: v.percent||'—',
+          timestamp: v.timestamp||'—',
+          timeTaken: v.timeTaken||null,
+        });
       });
+      return rows;
     };
-    merge(q1Snap,'q1'); merge(q2Snap,'q2');
-    merge(p1Snap,'p1'); merge(p2Snap,'p2');
-    merge(fbSnap,'fb');
 
-    // Load admin-entered grades
-    const gradeSnap = await getDocs(collection(db,'student_grades')).catch(()=>null);
-    if (gradeSnap) gradeSnap.forEach(d => {
-      if (allData[d.id]) allData[d.id].grades = d.data();
-    });
+    const q1r = collect(q1,'W1 Quiz','q1');
+    const q2r = collect(q2,'W2 Quiz','q2');
+    const p1r = collect(p1,'W1 Practical','p1');
+    const p2r = collect(p2,'W2 Practical','p2');
 
-    updateStats(Object.values(allData));
-    g('last-refresh').textContent = '↻ ' + new Date().toLocaleTimeString('en-PH');
+    g('cnt-q1').textContent = q1r.length;
+    g('cnt-q2').textContent = q2r.length;
+    g('cnt-p1').textContent = p1r.length;
+    g('cnt-p2').textContent = p2r.length;
 
-    // Auto-apply saved filter
-    applyFilter();
-
+    allRows = [...q1r,...q2r,...p1r,...p2r];
+    g('refresh-ts').textContent = '↻ '+new Date().toLocaleTimeString('en-PH');
+    renderTable();
   } catch(e) {
-    g('student-area').innerHTML = `<div class="empty-st">
-      <div class="empty-ic">❌</div>
-      <div class="empty-t">Firebase Error</div>
-      <p class="empty-s">${esc(e.message)}</p>
-    </div>`;
+    g('tbl-area').innerHTML = `<div class="empty-st"><div class="empty-ic">❌</div><div class="empty-t">Firebase Error</div><div class="empty-s">${esc(e.message)}</div></div>`;
   }
 };
 
-// ── COURSE CARDS ──
-const COURSES = [
-  { key:'BS IN ACCOUNTING INFORMATION SYSTEM', short:'BSAIS',      icon:'📊', color:'var(--blue)'   },
-  { key:'BS IN CRIMINOLOGY',                   short:'BSCrim',     icon:'⚖️',  color:'var(--red)'    },
-  { key:'BS IN HOSPITALITY MANAGEMENT',        short:'BSHM',       icon:'🏨', color:'var(--orange)' },
-  { key:'BS IN SOCIAL WORK',                   short:'BSSW',       icon:'🤝', color:'var(--teal,#14b8a6)'   },
-  { key:'BS IN CIVIL ENGINEERING',             short:'BSCE',       icon:'🏗️', color:'var(--accent)'  },
-  { key:'BS IN SECONDARY EDUCATION',           short:'BSEd',       icon:'📚', color:'var(--purple)'  },
-  { key:'BACHELOR OF ELEMENTARY EDUCATION',    short:'BEEd',       icon:'🎒', color:'var(--green)'   },
-];
-
-const COURSE_COLORS = [
-  'linear-gradient(90deg,var(--blue),var(--cyan))',
-  'linear-gradient(90deg,var(--red),var(--orange))',
-  'linear-gradient(90deg,var(--orange),var(--accent))',
-  'linear-gradient(90deg,var(--teal,#14b8a6),var(--green))',
-  'linear-gradient(90deg,var(--accent),#f0a84b)',
-  'linear-gradient(90deg,var(--purple),var(--cyan))',
-  'linear-gradient(90deg,var(--green),var(--blue))',
-];
-
-let activeCourseFilter = '';
-
-function renderCourseCards(rows) {
-  const container = g('course-cards-row');
-  // Count per course from ALL data (not just filtered)
-  const allRows = Object.values(allData);
-  const yr  = g('f-year')?.value || '';
-  const tm  = g('f-term')?.value || '';
-  // Pre-filter by year/term only for counts
-  const base = allRows.filter(r => {
-    if(yr && r.academicYear !== yr) return false;
-    if(tm && r.term !== tm) return false;
-    return true;
-  });
-  const total = base.length;
-
-  let html = '';
-
-  // ALL card first
-  const allActive = activeCourseFilter === '';
-  html += `<div class="course-card${allActive?' active':''}" 
-    onclick="setCourseFilter('')"
-    style="border-color:${allActive?'var(--purple)':'var(--border2)'};${allActive?'background:rgba(168,85,247,0.06)':''}">
-    <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent))"></div>
-    <div class="cc-icon">👥</div>
-    <div class="cc-count" style="color:var(--cyan)">${total}</div>
-    <div class="cc-name">All Courses</div>
-    <div class="cc-sub">Total registered</div>
-  </div>`;
-
-  COURSES.forEach((c, i) => {
-    const count = base.filter(r => r.course === c.key).length;
-    const isActive = activeCourseFilter === c.key;
-    const grad = COURSE_COLORS[i];
-    html += `<div class="course-card${isActive?' active':''}"
-      onclick="setCourseFilter('${c.key.replace(/'/g,"\\'")}')"
-      style="${isActive?'border-color:var(--purple);background:rgba(168,85,247,0.06)':''}">
-      <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:${grad}"></div>
-      <div class="cc-icon">${c.icon}</div>
-      <div class="cc-count" style="color:${c.color.startsWith('var')?c.color:'var(--text)'}">${count}</div>
-      <div class="cc-name">${c.short}</div>
-      <div class="cc-sub">${count === 1 ? '1 student' : count + ' students'}</div>
-    </div>`;
-  });
-
-  container.innerHTML = html;
-}
-
-window.setCourseFilter = function(courseKey) {
-  activeCourseFilter = courseKey;
-  const tag = g('course-filter-tag');
-  if (courseKey) {
-    const c = COURSES.find(x => x.key === courseKey);
-    tag.style.display = 'block';
-    tag.childNodes[0].textContent = (c?.short || courseKey) + ' ';
-  } else {
-    tag.style.display = 'none';
-  }
-  // Also update the dropdown to match
-  if (g('f-course')) g('f-course').value = courseKey;
-  applyFilter();
+window.switchTab = function(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.tab.t-'+tab).classList.add('active');
+  renderTable();
 };
 
-window.clearCourseFilter = function() {
-  setCourseFilter('');
-};
-
-function updateStats(rows) {
-  renderCourseCards(rows);
-}
-
-// ── FILTER ──
-window.applyFilter = function() {
-  const yr  = g('f-year').value;
-  const tm  = g('f-term').value;
-  const cr  = activeCourseFilter || g('f-course').value;
-  filtered = Object.values(allData).filter(r => {
-    if(yr && r.academicYear !== yr) return false;
-    if(tm && r.term !== tm) return false;
-    if(cr && r.course !== cr) return false;
-    return true;
-  });
-  renderCourseCards(filtered);
-  renderCards();
-};
-
-// ── RENDER CARDS ──
-window.renderCards = function() {
+window.renderTable = function() {
   const srch = (g('srch')?.value||'').toLowerCase();
-  const status = g('f-status')?.value||'';
+  const pass = g('f-pass')?.value||'';
 
-  let rows = filtered.filter(r => {
-    const txt = [r.name,r.gmail,r.studentId,r.course].join(' ').toLowerCase();
-    if(srch && !txt.includes(srch)) return false;
-    if(status==='done') return r.q1||r.q2||r.p1||r.p2;
-    if(status==='none') return !r.q1&&!r.q2&&!r.p1&&!r.p2;
-    if(status==='pass') return [r.q1,r.q2,r.p1,r.p2].some(x=>x&&pctN(x.percent)>=50);
-    if(status==='fail') return [r.q1,r.q2,r.p1,r.p2].some(x=>x&&pctN(x.percent)<50);
+  let rows = allRows.filter(r => {
+    if(activeTab !== 'all' && r.collection !== activeTab) return false;
+    if(srch){
+      const txt=[r.name,r.gmail,r.studentNo].join(' ').toLowerCase();
+      if(!txt.includes(srch)) return false;
+    }
+    if(pass){
+      const p = pctN(r.percent);
+      if(pass==='pass' && p<75) return false;
+      if(pass==='mid' && (p<50||p>=75)) return false;
+      if(pass==='fail' && p>=50) return false;
+    }
     return true;
   });
 
-  g('cnt').textContent = `Showing ${rows.length} of ${filtered.length} students`;
+  g('row-cnt').textContent = `${rows.length} record${rows.length!==1?'s':''}`;
 
-  if(!rows.length) {
-    g('student-area').innerHTML = `<div class="empty-st">
-      <div class="empty-ic">👥</div>
-      <div class="empty-t">No students found</div>
-      <p class="empty-s">Try adjusting the filters above.</p>
-    </div>`;
+  if(!rows.length){
+    g('tbl-area').innerHTML=`<div class="empty-st"><div class="empty-ic">📭</div><div class="empty-t">No records found</div><div class="empty-s">Try adjusting the search or filter.</div></div>`;
     return;
   }
 
-  const cards = rows.map(r => {
-    const done = [r.q1,r.q2,r.p1,r.p2].filter(Boolean).length;
-    const pct = done/4;
-    const barCol = pct===1?'var(--green)':pct>=0.5?'var(--accent)':'var(--red)';
-    const init = (r.firstName||r.name||'?')[0].toUpperCase();
-    const badges = [
-      r.q1 ? '<span class="scb scb-done">W1 Quiz ✓</span>' : '<span class="scb scb-miss">W1 Quiz —</span>',
-      r.q2 ? '<span class="scb scb-done">W2 Quiz ✓</span>' : '<span class="scb scb-miss">W2 Quiz —</span>',
-      r.p1 ? '<span class="scb scb-done">W1 Prac ✓</span>' : '<span class="scb scb-miss">W1 Prac —</span>',
-      r.p2 ? '<span class="scb scb-done">W2 Prac ✓</span>' : '<span class="scb scb-miss">W2 Prac —</span>',
-      r.fb ? '<span class="scb scb-done">Feedback ✓</span>' : '',
-      r.grades ? '<span class="scb scb-done">Grades ✓</span>' : '',
-    ].join('');
-    return `<div class="student-card" onclick="openModal('${r.uid}')">
-      <div class="sc-top">
-        <div class="sc-av">${esc(init)}</div>
-        <div class="sc-info">
-          <div class="sc-name">${esc(r.name||'—')}</div>
-          <div class="sc-email">${esc(r.gmail)}</div>
-          <div class="sc-id">${esc(r.studentId||'No ID')} · ${esc(r.course?r.course.split(' ').slice(-1)[0]:'—')}</div>
-        </div>
-      </div>
-      <div class="sc-badges">${badges}</div>
-      <div class="sc-progress">
-        <div class="sc-prog-bar"><div class="sc-prog-fill" style="width:${pct*100}%;background:${barCol}"></div></div>
-        <span class="sc-prog-lbl">${done}/4 assessments</span>
-      </div>
-    </div>`;
+  // Show timeTaken col only if any row has it
+  const showTime = rows.some(r=>r.timeTaken);
+  const showCol  = activeTab==='all';
+
+  const thead = `<thead><tr>
+    <th>#</th>
+    ${showCol?'<th>Collection</th>':''}
+    <th>Name</th>
+    <th>Student ID</th>
+    <th>Email</th>
+    <th class="num">Score</th>
+    <th class="num">Percent</th>
+    <th class="num">Pass / Fail</th>
+    ${showTime?'<th class="num">Time Taken</th>':''}
+    <th>Submitted</th>
+  </tr></thead>`;
+
+  const tbody = rows.map((r,i) => {
+    const p = pctN(r.percent);
+    const barCol = p>=75?'var(--green)':p>=50?'var(--accent)':'var(--red)';
+    const pfClass = p>=75?'pf-p':p>=50?'pf-m':'pf-f';
+    const badge = p>=75?'<span class="badge b-pass">Passed</span>':
+                  p>=50?'<span class="badge b-mid">Average</span>':
+                  r.percent==='—'?'<span class="badge" style="color:var(--dim);border:1px solid var(--border)">—</span>':
+                  '<span class="badge b-fail">Failed</span>';
+
+    const colTag = {
+      q1:'<span class="col-tag ct-q1">W1 Quiz</span>',
+      q2:'<span class="col-tag ct-q2">W2 Quiz</span>',
+      p1:'<span class="col-tag ct-p1">W1 Practical</span>',
+      p2:'<span class="col-tag ct-p2">W2 Practical</span>',
+    }[r.collection]||'';
+
+    const pctCell = r.percent==='—'
+      ? `<td class="num"><span style="color:var(--dim)">—</span></td>`
+      : `<td class="num"><div class="pct-cell">
+          <div class="pct-bar"><div class="pct-fill" style="width:${Math.min(p,100)}%;background:${barCol}"></div></div>
+          <span class="pct-txt ${pfClass}">${esc(r.percent)}</span>
+        </div></td>`;
+
+    const ts = r.timestamp && r.timestamp!=='—'
+      ? `<span class="ts-txt">${esc(r.timestamp.split(',')[0]||r.timestamp)}</span>`
+      : `<span style="color:var(--dim);font-size:0.72rem">—</span>`;
+
+    return `<tr>
+      <td class="td-id">${i+1}</td>
+      ${showCol?`<td>${colTag}</td>`:''}
+      <td class="td-name" title="${esc(r.name)}">${esc(r.name)}</td>
+      <td class="td-id">${esc(r.studentNo)}</td>
+      <td class="td-email" title="${esc(r.gmail)}">${esc(r.gmail)}</td>
+      <td class="num" style="font-family:var(--mono)">${esc(r.score)}</td>
+      ${pctCell}
+      <td class="num">${badge}</td>
+      ${showTime?`<td class="num"><span style="font-family:var(--mono);font-size:0.74rem;color:var(--muted)">${r.timeTaken?esc(r.timeTaken):'—'}</span></td>`:''}
+      <td>${ts}</td>
+    </tr>`;
   }).join('');
 
-  g('student-area').innerHTML = `<div class="student-grid">${cards}</div>`;
-};
+  const collectionName = {
+    all:'All Submissions (W1 Quiz · W2 Quiz · W1 Practical · W2 Practical)',
+    q1:'quiz_submissions — Week 1 Theory Quiz',
+    q2:'quiz2_submissions — Week 2 Theory Quiz',
+    p1:'practical_submissions — Week 1 Practical',
+    p2:'practical2_submissions — Week 2 Practical',
+  }[activeTab];
 
-// ── OPEN MODAL ──
-const ADMIN_SUBJECTS = [
-  { id:'BES125', code:'BES 125', name:'Computer Fundamentals and Programming',
-    icon:'💻', instructor:'DEBULGADO, S.M.G', dept:'BS Civil Engineering' },
-];
-
-let _currentModalUid = null;
-let _currentSubjectId = null;
-
-window.openModal = function(uid) {
-  const r = allData[uid];
-  if(!r) return;
-  _currentModalUid = uid;
-  _currentSubjectId = null;
-
-  g('modal-ttl').textContent = r.name || r.gmail;
-
-  // STEP 1: Show subject selection
-  const allGrades = r.grades || {};
-  const subjectRows = ADMIN_SUBJECTS.map(s => {
-    const sg = allGrades[s.id] || allGrades;
-    const hasSem = !!(allGrades[s.id] ? sg.semestral : sg.semestral);
-    const hasSome = !!(allGrades[s.id] ? (sg.prelim||sg.midterm||sg.finals) : (sg.prelim||sg.midterm||sg.finals));
-    return `<div class="ms-subj-item" onclick="selectSubjectForGrades('${uid}','${s.id}')">
-      <div class="msi-icon">${s.icon}</div>
-      <div class="msi-body">
-        <div class="msi-code">${esc(s.code)}</div>
-        <div class="msi-name">${esc(s.name)}</div>
-        <div class="msi-meta">${esc(s.instructor)} · ${esc(s.dept)}</div>
-      </div>
-      <span class="msi-status ${hasSome?'msi-ok':'msi-no'}">
-        ${hasSem?'✅ Grades Set':hasSome?'⏳ Partial':'📭 No Grades'}
-      </span>
-    </div>`;
-  }).join('');
-
-  // Profile row
-  const scoreCell = (label,d) => {
-    if(!d) return `<div class="status-cell"><div class="sc-lbl">${label}</div><div class="sc-val sv-na">Not submitted</div></div>`;
-    const p=pctN(d.percent);
-    const cls=p>=75?'sv-hi':p>=50?'sv-mid':'sv-lo';
-    const barCol=p>=75?'var(--green)':p>=50?'var(--accent)':'var(--red)';
-    return `<div class="status-cell">
-      <div class="sc-lbl">${label}</div>
-      <div class="sc-val ${cls}">${esc(d.score||'—')} <span style="font-size:0.76rem">${esc(d.percent||'—')}</span></div>
-      ${d.timeTaken?`<div class="sc-ts">⏱ ${esc(d.timeTaken)}</div>`:''}
-      <div class="sc-ts">${(d.timestamp||'').split(',')[0]||'—'}</div>
-      <div class="sc-bar-wrap"><div class="sc-bar-track">
-        <div class="sc-bar-fill" style="width:${Math.min(p,100)}%;background:${barCol}"></div>
-      </div></div>
-    </div>`;
-  };
-
-  const fb = r.fb;
-  const fbHtml = fb ? `
-    <div class="ms-title">💬 Feedback</div>
-    <div class="fb-row"><div class="fb-rl">⭐ Rating</div><div class="fb-rv">${esc(fb.starRating||'—')}</div></div>
-    <div class="fb-row"><div class="fb-rl">Difficulty</div><div class="fb-rv">${esc(fb.difficulty||'—')}</div></div>
-    <div class="fb-row"><div class="fb-rl">Comment</div><div class="fb-rv">${esc(fb.comment||'(none)')}</div></div>
-  ` : '';
-
-  g('modal-body').innerHTML = `
-    <div class="mp-row">
-      <div class="mp-av">${esc((r.firstName||r.name||'?')[0].toUpperCase())}</div>
-      <div style="flex:1;min-width:0;">
-        <div class="mp-name">${esc(r.name||'—')}</div>
-        <div class="mp-email">${esc(r.gmail)}</div>
-        <div class="mp-meta">🎓 ${esc(r.course||'—')} · 📋 ${esc(r.academicYear||'—')} ${esc(r.term||'')} · 🪪 ${esc(r.studentId||'—')}</div>
-      </div>
-      <div class="mp-actions">
-        <button class="btn-modal-cancel" onclick="closeModal()">✕ Cancel</button>
-        <button class="btn-modal-delete" id="btn-modal-del-${uid}" onclick="showInlineDeleteConfirm('${uid}')">🗑 Delete</button>
-      </div>
+  g('tbl-area').innerHTML = `
+    <div class="tbl-head">
+      <span class="tbl-head-title">${esc(collectionName)}</span>
+      <div class="tbl-head-line"></div>
     </div>
-
-    <div class="ms-title">📝 Assessment Status — Click a Period</div>
-    <div class="period-btn-grid">
-      <div class="period-btn pb-prelim" onclick="openAdminPeriod('${uid}','prelim')">
-        <div class="pb-icon">📘</div>
-        <div class="pb-name">Prelim</div>
-        <div class="pb-count">—</div>
-      </div>
-      <div class="period-btn pb-mid" onclick="openAdminPeriod('${uid}','midterm')">
-        <div class="pb-icon">📗</div>
-        <div class="pb-name">Midterm</div>
-        <div class="pb-count">${[r.q1,r.p1,r.q2,r.p2].filter(Boolean).length}/4 done</div>
-      </div>
-      <div class="period-btn pb-finals" onclick="openAdminPeriod('${uid}','finals')">
-        <div class="pb-icon">📙</div>
-        <div class="pb-name">Finals</div>
-        <div class="pb-count">—</div>
-      </div>
-    </div>
-
-    ${fbHtml}
-
-    <div class="ms-title">🔗 Copy Submissions from Another Account</div>
-    <button class="btn-merge-toggle" onclick="toggleMergePanel('${uid}')">🔗 Open Merge Tool — copy W1/W2 quiz &amp; practical from a duplicate account</button>
-    <div id="merge-panel-${uid}" style="display:none;margin-top:8px;">
-      <div class="merge-strip">
-        <div class="merge-strip-title">🔗 Merge Submissions Into This Account</div>
-        <div class="merge-search-row">
-          <input class="merge-search-in" id="merge-srch-${uid}" placeholder="Search by name or student ID…" oninput="searchMergeSource('${uid}')">
-        </div>
-        <div class="merge-results" id="merge-results-${uid}"></div>
-        <div id="merge-preview-${uid}"></div>
-        <div class="merge-msg" id="merge-msg-${uid}"></div>
-      </div>
-    </div>
-
-    <div class="ms-title">📚 Select Subject to Enter Grades</div>
-    <div class="ms-subj-list">${subjectRows}</div>
-
-    <!-- INLINE DELETE CONFIRMATION -->
-    <div class="inline-del-strip" id="inline-del-strip">
-      <div class="idel-title">⚠ Permanently delete this student?</div>
-      <div class="idel-sub">
-        All data will be removed: quiz submissions, practical submissions, feedback, grades, and profile.
-        This cannot be undone.
-      </div>
-      <div class="idel-btns">
-        <button class="btn-idel-cancel" onclick="hideInlineDeleteConfirm()">✕ Cancel</button>
-        <button class="btn-idel-confirm" id="btn-idel-confirm" onclick="executeDelete()">🗑 Yes, Delete Student</button>
-      </div>
-    </div>
-  `;
-
-  g('modal-ov').classList.add('show');
-};
-
-
-  
-// ── CLOSE MODAL ──
-  window.closeModal = function() {
-  g('modal-ov').classList.remove('show');
-  _currentModalUid = null;
-  _currentSubjectId = null;
-};
-
-// ── STEP 2: Subject selected → show grade input popup ──
-window.selectSubjectForGrades = function(uid, subjId) {
-  const r = allData[uid];
-  const s = ADMIN_SUBJECTS.find(x=>x.id===subjId);
-  if(!r||!s) return;
-  _currentSubjectId = subjId;
-
-  const allGrades = r.grades||{};
-  // Support both flat and nested grade structures
-  const sg = allGrades[subjId] || allGrades;
-  const prelim   = sg.prelim    || '';
-  const midterm  = sg.midterm   || '';
-  const finals   = sg.finals    || '';
-  const semestral= sg.semestral || '';
-
-  g('modal-body').innerHTML = `
-    <button class="btn-back-step" onclick="openModal('${uid}')">← Back to Subjects</button>
-
-    <div class="mp-row" style="margin-bottom:14px;">
-      <div class="msi-icon">${s.icon}</div>
-      <div>
-        <div class="mp-name" style="font-size:0.92rem">${esc(s.name)}</div>
-        <div class="mp-email">${esc(s.code)} · ${esc(s.instructor)}</div>
-        <div class="mp-meta">📋 ${esc(r.academicYear||'—')} · ${esc(r.term||'—')}</div>
-      </div>
-    </div>
-
-    <div class="ms-title">📊 Grade Entry — ${esc(r.name||r.gmail)}</div>
-    <div class="grade-form">
-      <div class="gf-grid">
-        <div class="gf-group">
-          <label class="gf-label">📘 Prelim Grade</label>
-          <input class="gf-input" id="gf-prelim" type="number" min="0" max="100" step="0.01"
-            placeholder="e.g. 85.50" value="${esc(prelim)}">
-        </div>
-        <div class="gf-group">
-          <label class="gf-label">📗 Midterm Grade</label>
-          <input class="gf-input" id="gf-midterm" type="number" min="0" max="100" step="0.01"
-            placeholder="e.g. 88.00" value="${esc(midterm)}">
-        </div>
-        <div class="gf-group">
-          <label class="gf-label">📙 Final Grade</label>
-          <input class="gf-input" id="gf-finals" type="number" min="0" max="100" step="0.01"
-            placeholder="e.g. 90.00" value="${esc(finals)}">
-        </div>
-        <div class="gf-group">
-          <label class="gf-label">🏆 Semestral (auto)</label>
-          <input class="gf-input" id="gf-semestral" type="number" min="0" max="100" step="0.01"
-            placeholder="Auto-computed" value="${esc(semestral)}" style="color:var(--accent)">
-        </div>
-      </div>
-      <button class="btn-save-grades" id="btn-save" onclick="saveGrades('${uid}','${subjId}')">
-        💾 Save Grades for ${esc(s.code)}
-      </button>
-      <div class="save-msg" id="save-msg"></div>
-    </div>
-  `;
-
-  ['gf-prelim','gf-midterm','gf-finals'].forEach(id => {
-    const el = g(id); if(el) el.addEventListener('input', computeSemestral);
-  });
-};
-
-function computeSemestral() {
-  const p = parseFloat(g('gf-prelim')?.value)||0;
-  const m = parseFloat(g('gf-midterm')?.value)||0;
-  const f = parseFloat(g('gf-finals')?.value)||0;
-  const count = [p,m,f].filter(n=>n>0).length;
-  if(count===3){
-    const sem = ((p+m+f)/3).toFixed(2);
-    g('gf-semestral').value = sem;
-  } else if(count>0){
-    const sem = ([p,m,f].filter(n=>n>0).reduce((a,b)=>a+b,0)/count).toFixed(2);
-    g('gf-semestral').value = sem;
-  }
-}
-
-// ── SAVE GRADES ──
-window.saveGrades = async function(uid, subjId) {
-  const btn = g('btn-save');
-  const msg = g('save-msg');
-  const prelim   = g('gf-prelim')?.value?.trim();
-  const midterm  = g('gf-midterm')?.value?.trim();
-  const finals   = g('gf-finals')?.value?.trim();
-  const semestral= g('gf-semestral')?.value?.trim();
-  const r        = allData[uid];
-  const sKey     = subjId || 'BES125';
-
-  if(!prelim && !midterm && !finals) {
-    msg.className='save-msg save-err';
-    msg.textContent='⚠ Enter at least one grade before saving.'; return;
-  }
-  btn.disabled=true; btn.textContent='⟳ Saving...'; msg.textContent='';
-
-  try {
-    // Load existing grades first to preserve other subjects
-    const existing = await getDoc(doc(db,'student_grades',uid)).catch(()=>null);
-    const existingData = existing?.exists() ? existing.data() : {};
-
-    const subjectGrades = {
-      prelim:    prelim    || null,
-      midterm:   midterm   || null,
-      finals:    finals    || null,
-      semestral: semestral || null,
-      subjectCode: sKey,
-      updatedAt: serverTimestamp(),
-    };
-
-    const gradeData = {
-      ...existingData,
-      uid, gmail: r?.gmail||'', name: r?.name||'',
-      course: r?.course||'', academicYear: r?.academicYear||'', term: r?.term||'',
-      // Save under subject key AND flat (for backward compat)
-      [sKey]: subjectGrades,
-      // Flat fields (for index.html fallback)
-      prelim:    prelim    || null,
-      midterm:   midterm   || null,
-      finals:    finals    || null,
-      semestral: semestral || null,
-      updatedBy: 'ADMIN — DEBULGADO S.M.G',
-      updatedAt: serverTimestamp(),
-    };
-
-    await setDoc(doc(db,'student_grades',uid), gradeData, {merge:true});
-    if(allData[uid]) allData[uid].grades = gradeData;
-
-    msg.className='save-msg save-ok';
-    msg.textContent='✅ Grades saved! Student can see them in their portal.';
-    btn.textContent='💾 Save Grades for '+sKey; btn.disabled=false;
-    renderCards();
-  } catch(e) {
-    msg.className='save-msg save-err'; msg.textContent='❌ '+e.message;
-    btn.textContent='💾 Save Grades'; btn.disabled=false;
-  }
-};
-
-// ── DELETE STUDENT ──
-let _deleteUid = null;
-
-window.showInlineDeleteConfirm = function(uid) {
-  _deleteUid = uid;
-  const strip = g('inline-del-strip');
-  if(strip){ strip.classList.add('show'); strip.scrollIntoView({behavior:'smooth',block:'nearest'}); }
-};
-
-window.hideInlineDeleteConfirm = function() {
-  _deleteUid = null;
-  const strip = g('inline-del-strip');
-  if(strip) strip.classList.remove('show');
-};
-
-window.executeDelete = async function() {
-  if(!_deleteUid) return;
-  const uid = _deleteUid;
-  const r   = allData[uid];
-  const btn = g('btn-idel-confirm');
-  if(btn){ btn.disabled=true; btn.textContent='⟳ Deleting...'; }
-
-  const collections = [
-    'student_profiles',
-    'quiz_submissions',
-    'quiz2_submissions',
-    'practical_submissions',
-    'practical2_submissions',
-    'quiz_feedback',
-    'student_grades',
-    'student_ids',
-  ];
-
-  await Promise.allSettled(
-    collections.map(col => deleteDoc(doc(db, col, uid)).catch(()=>null))
-  );
-
-  // Also delete student_ids by studentId key
-  if(r?.studentId) {
-    const idKey = r.studentId.toLowerCase().replace(/\s+/g,'');
-    await deleteDoc(doc(db,'student_ids',idKey)).catch(()=>null);
-  }
-
-  delete allData[uid];
-  _deleteUid = null;
-
-  closeModal();
-  applyFilter();
-
-  // Toast
-  const toast = document.createElement('div');
-  toast.textContent = '✅ Student record deleted successfully.';
-  toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);' +
-    'background:var(--s1);border:1px solid var(--green);color:var(--green);' +
-    'padding:10px 22px;border-radius:10px;font-size:0.82rem;font-weight:700;' +
-    'z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.5);animation:fadeIn 0.3s;';
-  document.body.appendChild(toast);
-  setTimeout(()=>toast.remove(), 3000);
-};
-
-// ── MERGE SUBMISSIONS ──
-let _mergeSelectedSource = {}; // uid → source record
-
-window.toggleMergePanel = function(uid) {
-  const panel = g('merge-panel-'+uid);
-  if (!panel) return;
-  const isOpen = panel.style.display !== 'none';
-  panel.style.display = isOpen ? 'none' : 'block';
-  if (!isOpen) {
-    const inp = g('merge-srch-'+uid);
-    if(inp) { inp.value=''; }
-    const res = g('merge-results-'+uid);
-    if(res) res.innerHTML='<div style="font-size:0.76rem;color:var(--muted);text-align:center;padding:6px">Type a name or student ID to search…</div>';
-    const prev = g('merge-preview-'+uid);
-    if(prev) prev.innerHTML='';
-    _mergeSelectedSource[uid]=null;
-  }
-};
-
-window.searchMergeSource = function(targetUid) {
-  const q = (g('merge-srch-'+targetUid)?.value||'').toLowerCase().trim();
-  const container = g('merge-results-'+targetUid);
-  if(!container) return;
-  if(!q) {
-    container.innerHTML='<div style="font-size:0.76rem;color:var(--muted);text-align:center;padding:6px">Type a name or student ID to search…</div>';
-    return;
-  }
-  const matches = Object.values(allData).filter(r => {
-    if(r.uid===targetUid) return false;
-    const txt=[r.name,r.gmail,r.studentId].join(' ').toLowerCase();
-    return txt.includes(q);
-  }).slice(0,8);
-  if(!matches.length){
-    container.innerHTML='<div style="font-size:0.76rem;color:var(--muted);text-align:center;padding:8px">No students found.</div>';
-    return;
-  }
-  container.innerHTML = matches.map(r => {
-    const init=(r.firstName||r.name||'?')[0].toUpperCase();
-    const badges=[
-      r.q1?'<span class="mrib mrib-y">Q1✓</span>':'<span class="mrib mrib-n">Q1—</span>',
-      r.q2?'<span class="mrib mrib-y">Q2✓</span>':'<span class="mrib mrib-n">Q2—</span>',
-      r.p1?'<span class="mrib mrib-y">P1✓</span>':'<span class="mrib mrib-n">P1—</span>',
-      r.p2?'<span class="mrib mrib-y">P2✓</span>':'<span class="mrib mrib-n">P2—</span>',
-      r.fb?'<span class="mrib mrib-y">FB✓</span>':'',
-    ].join('');
-    const selectedClass = (_mergeSelectedSource[targetUid]?.uid===r.uid)?' selected':'';
-    return `<div class="merge-result-item${selectedClass}" onclick="selectMergeSource('${targetUid}','${r.uid}')">
-      <div class="mri-av">${esc(init)}</div>
-      <div class="mri-info">
-        <div class="mri-name">${esc(r.name||r.gmail)}</div>
-        <div class="mri-sub">${esc(r.studentId||'—')} · ${esc(r.course?r.course.split(' ').slice(-1)[0]:'—')}</div>
-      </div>
-      <div class="mri-badges">${badges}</div>
-    </div>`;
-  }).join('');
-};
-
-window.selectMergeSource = function(targetUid, sourceUid) {
-  const src = allData[sourceUid];
-  const tgt = allData[targetUid];
-  if(!src||!tgt) return;
-  _mergeSelectedSource[targetUid] = src;
-
-  // Re-render results to show selection
-  searchMergeSource(targetUid);
-
-  const fields = [
-    {key:'q1', label:'W1 Theory Quiz',  col:'quiz_submissions'},
-    {key:'q2', label:'W2 Theory Quiz',  col:'quiz2_submissions'},
-    {key:'p1', label:'W1 Practical',    col:'practical_submissions'},
-    {key:'p2', label:'W2 Practical',    col:'practical2_submissions'},
-    {key:'fb', label:'Feedback',        col:'quiz_feedback'},
-  ];
-
-  const rows = fields.map(f => {
-    const srcHas = !!src[f.key];
-    const tgtHas = !!tgt[f.key];
-    const disabled = !srcHas ? 'disabled' : '';
-    const chkId = `mchk-${targetUid}-${f.key}`;
-    const badge = srcHas
-      ? `<span class="mp-check-badge mp-check-has">Source has ✓</span>`
-      : `<span class="mp-check-badge mp-check-no">Source empty</span>`;
-    const tgtBadge = tgtHas
-      ? `<span style="font-size:0.6rem;color:var(--accent);margin-left:4px;">(will overwrite)</span>`
-      : '';
-    return `<div class="mp-check-item">
-      <input type="checkbox" id="${chkId}" ${srcHas?'checked':''} ${disabled}>
-      <label class="mp-check-label" for="${chkId}">${esc(f.label)}${tgtBadge}</label>
-      ${badge}
-    </div>`;
-  }).join('');
-
-  g('merge-preview-'+targetUid).innerHTML = `
-    <div class="merge-preview">
-      <div class="mp-preview-title">📋 Select what to copy from "${esc(src.name||src.gmail)}"</div>
-      <div class="mp-check-row">${rows}</div>
-      <button class="btn-do-merge" id="btn-do-merge-${targetUid}" onclick="executeMerge('${targetUid}','${sourceUid}')">
-        ⚡ Copy Selected into This Account
-      </button>
+    <div style="overflow-x:auto;">
+      <table>${thead}<tbody>${tbody}</tbody></table>
     </div>`;
 };
 
-window.executeMerge = async function(targetUid, sourceUid) {
-  const src = allData[sourceUid];
-  const tgt = allData[targetUid];
-  if(!src||!tgt) return;
-
-  const btn = g('btn-do-merge-'+targetUid);
-  const msg = g('merge-msg-'+targetUid);
-  if(btn) { btn.disabled=true; btn.textContent='⟳ Copying…'; }
-  if(msg) msg.textContent='';
-
-  const fieldMap = [
-    {key:'q1', col:'quiz_submissions'},
-    {key:'q2', col:'quiz2_submissions'},
-    {key:'p1', col:'practical_submissions'},
-    {key:'p2', col:'practical2_submissions'},
-    {key:'fb', col:'quiz_feedback'},
-  ];
-
-  const copied=[], skipped=[];
-  try {
-    for(const f of fieldMap) {
-      const chk = document.getElementById(`mchk-${targetUid}-${f.key}`);
-      if(!chk || !chk.checked) { skipped.push(f.key); continue; }
-      if(!src[f.key]) { skipped.push(f.key); continue; }
-      const data = {...src[f.key]};
-      // Update identifiers to match target account
-      if(data.gmail !== undefined) data.gmail = tgt.gmail||data.gmail;
-      if(data.name  !== undefined) data.name  = tgt.name||data.name;
-      if(data.studentNo !== undefined) data.studentNo = tgt.studentId||data.studentNo;
-      await setDoc(doc(db, f.col, targetUid), data, {merge:true});
-      allData[targetUid][f.key] = data;
-      copied.push(f.key.toUpperCase());
-    }
-    if(msg) {
-      msg.className='merge-msg save-ok';
-      msg.textContent = copied.length
-        ? `✅ Copied: ${copied.join(', ')} → refresh to see updated cards.`
-        : '⚠ Nothing was copied — check selections.';
-    }
-    if(btn) { btn.textContent='⚡ Copy Selected into This Account'; btn.disabled=false; }
-    renderCards();
-  } catch(e) {
-    if(msg) { msg.className='merge-msg save-err'; msg.textContent='❌ '+e.message; }
-    if(btn) { btn.textContent='⚡ Copy Selected into This Account'; btn.disabled=false; }
-  }
-};
-
-// ── ADMIN PERIOD DETAIL ──
-const PERIOD_MAP = {
-  prelim:  { label:'📘 Prelim Period',   color:'linear-gradient(90deg,#3b82f6,#22d3ee)', weeks:[] },
-  midterm: { label:'📗 Midterm Period',  color:'linear-gradient(90deg,#a855f7,#22d3ee)', weeks:['Week 1','Week 2'] },
-  finals:  { label:'📙 Finals Period',   color:'linear-gradient(90deg,#3af9c3,#3b82f6)', weeks:[] },
-};
-
-// Week → data mapping
-const WEEK_DATA = (r) => ({
-  'Week 1': {
-    lesson:    { done: true,  label:'Week 1 Lesson',    link:'lesson.html' },
-    quiz:      r.q1 ? { done:true, label:'W1 Theory Quiz', score:r.q1.score, pct:r.q1.percent, ts:r.q1.timestamp } : null,
-    practical: r.p1 ? { done:true, label:'W1 Practical',   score:r.p1.score, pct:r.p1.percent, ts:r.p1.timestamp, time:r.p1.timeTaken } : null,
-  },
-  'Week 2': {
-    lesson:    { done: true,  label:'Week 2 Lesson',    link:'lesson2.html' },
-    quiz:      r.q2 ? { done:true, label:'W2 Theory Quiz', score:r.q2.score, pct:r.q2.percent, ts:r.q2.timestamp } : null,
-    practical: r.p2 ? { done:true, label:'W2 Practical',   score:r.p2.score, pct:r.p2.percent, ts:r.p2.timestamp, time:r.p2.timeTaken } : null,
-  },
-});
-
-const scoreColor = pct => {
-  const n = parseFloat((pct||'0').replace('%',''));
-  return n>=75?'as-hi':n>=50?'as-mid':n>0?'as-lo':'as-na';
-};
-const scoreBadge = pct => {
-  const n = parseFloat((pct||'0').replace('%',''));
-  return n>=75?'<span class="apm-badge ab-pass">Passed</span>':
-         n>0  ?'<span class="apm-badge ab-fail">Failed</span>':
-               '<span class="apm-badge ab-na">Not submitted</span>';
-};
-
-window.openAdminPeriod = function(uid, period) {
-  const r = allData[uid];
-  if(!r) return;
-  const pm  = PERIOD_MAP[period];
-  if(!pm) return;
-  const wd  = WEEK_DATA(r);
-
-  g('apm-title').textContent = pm.label;
-  g('apm-top-bar').style.background = pm.color;
-
-  let html = '';
-  pm.weeks.forEach(wk => {
-    const w = wd[wk];
-    if(!w) return;
-    html += `<div class="apm-week">
-      <div class="apm-week-title">${wk}</div>
-      <div class="apm-rows">`;
-
-    // Lesson row
-    html += `<div class="apm-row apm-lesson-row">
-      <div class="apm-row-left">
-        <span class="apm-row-icon">📖</span>
-        <span class="apm-row-lbl">${esc(w.lesson.label)}</span>
-      </div>
-      <span class="apm-badge" style="background:rgba(59,130,246,0.1);color:var(--blue);border:1px solid rgba(59,130,246,0.2);">Available</span>
-    </div>`;
-
-    // Quiz row
-    if(w.quiz) {
-      const sc = scoreColor(w.quiz.pct);
-      html += `<div class="apm-row">
-        <div class="apm-row-left">
-          <span class="apm-row-icon">📝</span>
-          <div>
-            <div class="apm-row-lbl">${esc(w.quiz.label)}</div>
-            <div style="font-size:0.68rem;color:var(--dim)">${(w.quiz.ts||'').split(',')[0]||'—'}</div>
-          </div>
-        </div>
-        <div class="apm-row-right">
-          <span class="apm-score ${sc}">${esc(w.quiz.score||'—')}</span>
-          <span class="apm-pct ${sc}">${esc(w.quiz.pct||'—')}</span>
-          ${scoreBadge(w.quiz.pct)}
-        </div>
-      </div>`;
-    } else {
-      html += `<div class="apm-row">
-        <div class="apm-row-left">
-          <span class="apm-row-icon">📝</span>
-          <span class="apm-row-lbl">${wk} Theory Quiz</span>
-        </div>
-        <span class="apm-badge ab-na">Not submitted</span>
-      </div>`;
-    }
-
-    // Practical row
-    if(w.practical) {
-      const sc = scoreColor(w.practical.pct);
-      html += `<div class="apm-row">
-        <div class="apm-row-left">
-          <span class="apm-row-icon">💻</span>
-          <div>
-            <div class="apm-row-lbl">${esc(w.practical.label)}</div>
-            <div style="font-size:0.68rem;color:var(--dim)">${w.practical.time?'⏱ '+esc(w.practical.time)+' · ':''} ${(w.practical.ts||'').split(',')[0]||'—'}</div>
-          </div>
-        </div>
-        <div class="apm-row-right">
-          <span class="apm-score ${sc}">${esc(w.practical.score||'—')}</span>
-          <span class="apm-pct ${sc}">${esc(w.practical.pct||'—')}</span>
-          ${scoreBadge(w.practical.pct)}
-        </div>
-      </div>`;
-    } else {
-      html += `<div class="apm-row">
-        <div class="apm-row-left">
-          <span class="apm-row-icon">💻</span>
-          <span class="apm-row-lbl">${wk} Practical</span>
-        </div>
-        <span class="apm-badge ab-na">Not submitted</span>
-      </div>`;
-    }
-
-    html += `</div></div>`;
-  });
-
-  g('apm-body').innerHTML = html;
-  g('admin-period-modal').classList.add('show');
-};
-
-window.closeAdminPeriod = function() {
-  g('admin-period-modal').classList.remove('show');
-};
-
-// ── ADMIN TAB SWITCHING ──
-window.switchAdminTab = function(tab) {
-  ['students','curriculum'].forEach(t => {
-    g('atab-'+t)?.classList.toggle('on', t===tab);
-    g('asec-'+t)?.classList.toggle('on', t===tab);
-  });
-  if(tab==='curriculum') loadExistingFiles();
-};
-
-// ── SUBJECTS BY COURSE (matches curriculum.html) ──
-const CM_SUBJECTS = {
-  'BS IN CIVIL ENGINEERING': [
-    { id:'BSCE-MATH1', code:'MATH 1', name:'Mathematics in the Modern World' },
-    { id:'BSCE-PHYS1', code:'PHYS 1', name:'Physics for Engineers' },
-    { id:'BSCE-CE1',   code:'CE 1',   name:'Surveying' },
-    { id:'BSCE-DRAW1', code:'DRAW 1', name:'Engineering Drawing' },
-    { id:'BSCE-CE2',   code:'CE 2',   name:'Hydraulics' },
-  ],
-  'BS IN ACCOUNTING INFORMATION SYSTEM': [
-    { id:'BSAIS-ACC1', code:'ACC 1',  name:'Accounting Fundamentals' },
-    { id:'BSAIS-IT1',  code:'IT 1',   name:'Information Systems' },
-    { id:'BSAIS-FIN1', code:'FIN 1',  name:'Financial Accounting' },
-    { id:'BSAIS-BES',  code:'BES 125',name:'Computer Fundamentals' },
-  ],
-  'BS IN CRIMINOLOGY': [
-    { id:'BSCrim-CRIM1', code:'CRIM 1', name:'Introduction to Criminology' },
-    { id:'BSCrim-LAW1',  code:'LAW 1',  name:'Criminal Law' },
-    { id:'BSCrim-FOR1',  code:'FOR 1',  name:'Forensic Science' },
-  ],
-  'BS IN HOSPITALITY MANAGEMENT': [
-    { id:'BSHM-HM1', code:'HM 1', name:'Introduction to Hospitality' },
-    { id:'BSHM-FC1', code:'FC 1', name:'Food and Beverage Service' },
-    { id:'BSHM-HK1', code:'HK 1', name:'Housekeeping Operations' },
-  ],
-  'BS IN SOCIAL WORK': [
-    { id:'BSSW-SW1', code:'SW 1', name:'Introduction to Social Work' },
-    { id:'BSSW-SW2', code:'SW 2', name:'Social Welfare Administration' },
-  ],
-  'BS IN SECONDARY EDUCATION': [
-    { id:'BSEd-EDU1',  code:'EDU 1',  name:'Foundations of Education' },
-    { id:'BSEd-TCH1',  code:'TCH 1',  name:'Teaching Principles' },
-    { id:'BSEd-CURR1', code:'CURR 1', name:'Curriculum Development' },
-  ],
-  'BACHELOR OF ELEMENTARY EDUCATION': [
-    { id:'BEEd-EDU1',  code:'EDU 1',  name:'Child Development' },
-    { id:'BEEd-TCH1',  code:'TCH 1',  name:'Principles of Teaching' },
-    { id:'BEEd-MATH1', code:'MATH 1', name:'Elementary Mathematics' },
-  ],
-};
-
-window.onCmCourseChange = function() {
-  const course = g('cm-course').value;
-  const subj   = g('cm-subject');
-  const subjects = CM_SUBJECTS[course] || [];
-  if(!subjects.length){
-    subj.innerHTML = '<option value="">— Select Course First —</option>';
-    return;
-  }
-  subj.innerHTML = '<option value="">— Select Subject —</option>'
-    + subjects.map(s => `<option value="${esc(s.id)}">${esc(s.code)} — ${esc(s.name)}</option>`).join('');
-};
-
-// ── DROP ZONE ──
-let selectedFiles = [];
-
-window.dzOver = function(e) {
-  e.preventDefault();
-  g('cm-dz').classList.add('drag');
-};
-window.dzLeave = function() { g('cm-dz').classList.remove('drag'); };
-window.dzDrop  = function(e) {
-  e.preventDefault();
-  g('cm-dz').classList.remove('drag');
-  onFilesSelected(e.dataTransfer.files);
-};
-
-window.onFilesSelected = function(fileList) {
-  const newFiles = Array.from(fileList);
-  newFiles.forEach(f => {
-    if(!selectedFiles.find(x=>x.name===f.name && x.size===f.size)) selectedFiles.push(f);
-  });
-  renderSelectedFiles();
-  g('cm-file-input').value = '';
-};
-
-function renderSelectedFiles() {
-  const cont = g('cm-selected-files');
-  if(!selectedFiles.length){ cont.innerHTML=''; return; }
-  const fileTypeIcon = f => {
-    const ext = f.name.split('.').pop().toLowerCase();
-    if(f.type.startsWith('image/')) return '🖼️';
-    if(f.type.startsWith('video/')) return '🎬';
-    if(ext==='pdf') return '📄';
-    if(['doc','docx'].includes(ext)) return '📝';
-    if(['ppt','pptx'].includes(ext)) return '📊';
-    return '📎';
-  };
-  cont.innerHTML = selectedFiles.map((f,i) => `
-    <div class="cm-sf-item">
-      <span class="cm-sf-icon">${fileTypeIcon(f)}</span>
-      <span class="cm-sf-name">${esc(f.name)}</span>
-      <span class="cm-sf-size">${(f.size/1024/1024).toFixed(2)} MB</span>
-      <button class="cm-sf-rm" onclick="removeSelectedFile(${i})">✕</button>
-    </div>`).join('');
-}
-
-window.removeSelectedFile = function(idx) {
-  selectedFiles.splice(idx,1);
-  renderSelectedFiles();
-};
-
-// ── UPLOAD ──
-window.uploadCurriculumFiles = async function() {
-  const course   = g('cm-course').value;
-  const subjectId= g('cm-subject').value;
-  const term     = g('cm-term').value;
-  const dispName = g('cm-dispname').value.trim();
-  const msg      = g('cm-msg');
-
-  if(!course){ msg.className='cm-msg cm-err'; msg.textContent='⚠ Please select a course.'; return; }
-  if(!subjectId){ msg.className='cm-msg cm-err'; msg.textContent='⚠ Please select a subject.'; return; }
-  if(!term){ msg.className='cm-msg cm-err'; msg.textContent='⚠ Please select a semester.'; return; }
-  if(!selectedFiles.length){ msg.className='cm-msg cm-err'; msg.textContent='⚠ Please select at least one file.'; return; }
-
-  const btn = g('btn-cm-upload');
-  btn.disabled = true;
-  const progWrap = g('cm-prog-wrap');
-  const progFill = g('cm-prog-fill');
-  const progLbl  = g('cm-prog-label');
-  progWrap.style.display = 'block';
-  msg.textContent = '';
-
-  let uploaded = 0;
-  const errors = [];
-
-  for(let i=0; i<selectedFiles.length; i++){
-    const file = selectedFiles[i];
-    progLbl.textContent = `Uploading ${i+1}/${selectedFiles.length}: ${file.name}`;
-    progFill.style.width = `${Math.round(((i)/selectedFiles.length)*100)}%`;
-
-    try {
-      // Upload to Firebase Storage via REST API (no SDK import needed)
-      const bucket  = 'cfp2526-database.firebasestorage.app';
-      const path    = encodeURIComponent(`curriculum/${course}/${subjectId}/${term}/${Date.now()}_${file.name}`);
-      const upUrl   = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o?uploadType=media&name=${path}`;
-
-      const upRes = await fetch(upUrl, {
-        method:'POST',
-        headers:{'Content-Type': file.type || 'application/octet-stream'},
-        body: file
-      });
-      if(!upRes.ok) throw new Error(`Storage upload failed: ${upRes.status}`);
-      const upData = await upRes.json();
-
-      // Build public download URL
-      const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${path}?alt=media`;
-
-      // Save metadata to Firestore
-      await setDoc(doc(db,'curriculum_files', `${subjectId}_${term}_${Date.now()}_${i}`), {
-        course,
-        subjectId,
-        term,
-        fileName:    file.name,
-        displayName: dispName || file.name.replace(/\.[^.]+$/,''),
-        fileType:    file.type || '',
-        fileSize:    file.size,
-        url:         downloadUrl,
-        storagePath: decodeURIComponent(path),
-        uploadedAt:  serverTimestamp(),
-        uploadedBy:  'ADMIN — DEBULGADO S.M.G',
-      });
-
-      uploaded++;
-    } catch(e) {
-      errors.push(`${file.name}: ${e.message}`);
-    }
-  }
-
-  progFill.style.width = '100%';
-  btn.disabled = false;
-
-  if(uploaded > 0){
-    msg.className = 'cm-msg cm-ok';
-    msg.textContent = `✅ ${uploaded} file(s) uploaded successfully!${errors.length?' ('+errors.length+' failed)':''}`;
-    selectedFiles = [];
-    renderSelectedFiles();
-    g('cm-dispname').value = '';
-    setTimeout(() => { progWrap.style.display='none'; progFill.style.width='0'; }, 1500);
-    loadExistingFiles();
-  } else {
-    msg.className = 'cm-msg cm-err';
-    msg.textContent = '❌ Upload failed: ' + errors.join('; ');
-    progWrap.style.display='none';
-  }
-};
-
-// ── LOAD EXISTING FILES ──
-let _cmFiles = [];
-
-window.loadExistingFiles = async function() {
-  const listEl = g('cm-file-list');
-  if(!listEl) return;
-  listEl.innerHTML = '<div class="cm-empty-files"><span class="spin">⟳</span> Loading…</div>';
-
-  try {
-    const filterCourse = g('cm-filter-course')?.value || '';
-    const filterTerm   = g('cm-filter-term')?.value   || '';
-
-    let q2 = collection(db,'curriculum_files');
-    const snaps = await getDocs(q2);
-    _cmFiles = [];
-    snaps.forEach(d => _cmFiles.push({id:d.id,...d.data()}));
-
-    // Filter
-    let rows = _cmFiles;
-    if(filterCourse) rows = rows.filter(f=>f.course===filterCourse);
-    if(filterTerm)   rows = rows.filter(f=>f.term===filterTerm);
-
-    // Sort newest first
-    rows.sort((a,b)=>(b.uploadedAt?.seconds||0)-(a.uploadedAt?.seconds||0));
-
-    if(!rows.length){
-      listEl.innerHTML = '<div class="cm-empty-files">No curriculum files uploaded yet.</div>';
-      return;
-    }
-
-    listEl.innerHTML = rows.map(f => {
-      const ext  = (f.fileName||'').split('.').pop().toLowerCase();
-      const type = f.fileType||'';
-      const dt   = f.uploadedAt ? new Date(f.uploadedAt.seconds*1000).toLocaleDateString('en-PH',
-        {year:'numeric',month:'short',day:'numeric'}) : '—';
-
-      let ico = '📎';
-      let thumbInner = '';
-      if(type.startsWith('image/')){
-        ico = '🖼️';
-        thumbInner = `<img src="${esc(f.url)}" alt="" style="width:40px;height:40px;border-radius:8px;object-fit:cover;">`;
-      } else if(type.startsWith('video/')){
-        ico = '🎬';
-      } else if(ext==='pdf'){ ico='📄'; }
-      else if(['doc','docx'].includes(ext)){ ico='📝'; }
-      else if(['ppt','pptx'].includes(ext)){ ico='📊'; }
-
-      const thumb = thumbInner
-        ? `<div class="cm-fl-thumb">${thumbInner}</div>`
-        : `<div class="cm-fl-thumb">${ico}</div>`;
-
-      const courseShort = {'BS IN ACCOUNTING INFORMATION SYSTEM':'BSAIS','BS IN CRIMINOLOGY':'BSCrim',
-        'BS IN HOSPITALITY MANAGEMENT':'BSHM','BS IN SOCIAL WORK':'BSSW',
-        'BS IN CIVIL ENGINEERING':'BSCE','BS IN SECONDARY EDUCATION':'BSEd',
-        'BACHELOR OF ELEMENTARY EDUCATION':'BEEd'}[f.course]||f.course||'—';
-
-      // Find subject name
-      const subjList = CM_SUBJECTS[f.course]||[];
-      const subjInfo = subjList.find(s=>s.id===f.subjectId);
-      const subjLabel = subjInfo ? `${subjInfo.code}` : (f.subjectId||'—');
-
-      return `<div class="cm-fl-item">
-        ${thumb}
-        <div class="cm-fl-info">
-          <div class="cm-fl-name" title="${esc(f.fileName)}">${esc(f.displayName||f.fileName)}</div>
-          <div class="cm-fl-meta">${esc(ext.toUpperCase())} · ${(f.fileSize/1024/1024).toFixed(2)} MB · ${dt}</div>
-          <div class="cm-fl-badges">
-            <span class="cm-fl-badge cb-course">${esc(courseShort)}</span>
-            <span class="cm-fl-badge cb-subj">${esc(subjLabel)}</span>
-            <span class="cm-fl-badge cb-term">${esc(f.term||'—')}</span>
-          </div>
-        </div>
-        <button class="btn-cm-del" onclick="deleteCurriculumFile('${esc(f.id)}','${esc(f.storagePath||'')}','${esc(f.fileName)}')">🗑 Delete</button>
-      </div>`;
-    }).join('');
-
-  } catch(e){
-    listEl.innerHTML = `<div class="cm-empty-files" style="color:var(--red)">❌ ${esc(e.message)}</div>`;
-  }
-};
-
-// ── DELETE FILE ──
-window.deleteCurriculumFile = async function(docId, storagePath, fileName) {
-  if(!confirm(`Delete "${fileName}"? This cannot be undone.`)) return;
-  try {
-    // Delete from Firestore
-    await deleteDoc(doc(db,'curriculum_files',docId));
-
-    // Delete from Storage if path available
-    if(storagePath){
-      const bucket = 'cfp2526-database.firebasestorage.app';
-      const encoded = encodeURIComponent(storagePath);
-      await fetch(`https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encoded}`,
-        {method:'DELETE'}).catch(()=>{});
-    }
-
-    // Toast
-    const t=document.createElement('div');
-    t.textContent='✅ File deleted.';
-    t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--s1);border:1px solid var(--green);color:var(--green);padding:10px 22px;border-radius:10px;font-size:0.82rem;font-weight:700;z-index:9999;';
-    document.body.appendChild(t); setTimeout(()=>t.remove(),2500);
-    loadExistingFiles();
-  } catch(e){
-    alert('Delete failed: '+e.message);
-  }
-};
-
-window.closeModalBg = e => { if(e.target===g('modal-ov')) closeModal(); };
-
-// ── EXPORT CSV ──
+// EXPORT CSV
 window.exportCSV = function() {
-  const rows = filtered.length ? filtered : Object.values(allData);
-  const header = ['Name','Gmail','Student ID','Course','Acad Year','Term',
-    'W1 Quiz Score','W1 Quiz %','W2 Quiz Score','W2 Quiz %',
-    'W1 Prac Score','W1 Prac %','W2 Prac Score','W2 Prac %',
-    'Prelim','Midterm','Finals','Semestral','Submissions'];
-  const csv = [header,...rows.map(r=>[
-    r.name,r.gmail,r.studentId,r.course,r.academicYear,r.term,
-    r.q1?.score||'',r.q1?.percent||'',r.q2?.score||'',r.q2?.percent||'',
-    r.p1?.score||'',r.p1?.percent||'',r.p2?.score||'',r.p2?.percent||'',
-    r.grades?.prelim||'',r.grades?.midterm||'',r.grades?.finals||'',r.grades?.semestral||'',
-    [r.q1,r.q2,r.p1,r.p2].filter(Boolean).length+'/4'
-  ])].map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const rows = allRows;
+  if(!rows.length){alert('No data loaded yet.');return;}
+  const h = ['Collection','Name','Student ID','Gmail','Score','Percent','Pass/Fail','Time Taken','Timestamp'];
+  const body = rows.map(r=>{
+    const p=pctN(r.percent);
+    const pf=p>=75?'Passed':p>=50?'Average':r.percent==='—'?'—':'Failed';
+    return [r.label,r.name,r.studentNo,r.gmail,r.score,r.percent,pf,r.timeTaken||'',r.timestamp];
+  });
+  const csv=[h,...body].map(r=>r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(',')).join('\n');
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download='SMGDecode_Students_'+new Date().toLocaleDateString('en-PH').replace(/\//g,'-')+'.csv';
+  a.download='SMGDecode_Database_'+new Date().toLocaleDateString('en-PH').replace(/\//g,'-')+'.csv';
   a.click();
 };
+
+// Auto-load on start
+loadAll();
 </script>
-<!-- ADMIN PERIOD DETAIL MODAL -->
-<div id="admin-period-modal" onclick="if(event.target===this)closeAdminPeriod()">
-  <div class="apm-box">
-    <div class="apm-top" id="apm-top-bar"></div>
-    <div class="apm-head">
-      <div class="apm-title" id="apm-title">Assessment Details</div>
-      <div class="apm-close" onclick="closeAdminPeriod()">✕</div>
-    </div>
-    <div class="apm-body" id="apm-body"></div>
-  </div>
-</div>
 </body>
 </html>
