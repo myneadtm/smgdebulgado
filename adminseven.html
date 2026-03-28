@@ -22,7 +22,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     linear-gradient(90deg,rgba(59,130,246,0.02) 1px,transparent 1px);
   background-size:48px 48px;}
 
-/* TOPBAR */
 .topbar{position:sticky;top:0;z-index:200;background:rgba(4,8,16,0.96);
   backdrop-filter:blur(20px);border-bottom:1px solid var(--border);
   padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:60px;}
@@ -37,30 +36,48 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   font-size:0.74rem;cursor:pointer;transition:all 0.2s;border:1.5px solid var(--border2);
   background:var(--s2);color:var(--text);}
 .btn-sm:hover{border-color:var(--blue);color:var(--blue);}
+.btn-export{background:linear-gradient(135deg,var(--blue),var(--cyan));color:#fff;border:none;}
+.btn-export:hover{transform:translateY(-1px);}
 .spin{display:inline-block;animation:sp 0.8s linear infinite;}
 @keyframes sp{to{transform:rotate(360deg);}}
 
-/* PAGE */
 .page{max-width:1400px;margin:0 auto;padding:28px 28px 80px;position:relative;z-index:1;}
 
-/* STAT STRIP */
 .stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
 .stat-box{background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;
-  padding:16px 18px;position:relative;overflow:hidden;text-align:center;}
+  padding:16px 18px;position:relative;overflow:hidden;text-align:center;transition:border-color 0.2s;}
 .stat-box::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
 .sb-q1::after{background:linear-gradient(90deg,var(--accent),#f0a84b);}
 .sb-q2::after{background:linear-gradient(90deg,var(--purple),var(--cyan));}
 .sb-p1::after{background:linear-gradient(90deg,var(--green),var(--blue));}
 .sb-p2::after{background:linear-gradient(90deg,var(--orange),var(--red));}
+.stat-box.err-box{border-color:rgba(249,58,122,0.5);}
 .sb-val{font-size:2rem;font-weight:900;font-family:var(--mono);line-height:1;margin-bottom:4px;}
 .sb-lbl{font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;}
-.sb-sub{font-size:0.66rem;color:var(--dim);margin-top:3px;}
+.sb-sub{font-size:0.62rem;color:var(--dim);margin-top:3px;}
+.sb-err{font-size:0.6rem;color:var(--red);margin-top:4px;line-height:1.4;}
+
+/* DEBUG */
+.debug-panel{background:var(--s1);border:1.5px solid rgba(249,195,58,0.3);border-radius:14px;
+  padding:16px 20px;margin-bottom:20px;display:none;}
+.debug-panel.show{display:block;}
+.debug-title{font-size:0.62rem;font-weight:800;color:var(--accent);letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:12px;}
+.debug-rows{display:flex;flex-direction:column;gap:6px;}
+.debug-row{display:flex;align-items:center;gap:10px;padding:8px 12px;
+  background:var(--s2);border-radius:8px;flex-wrap:wrap;}
+.debug-col{font-family:var(--mono);font-size:0.76rem;color:var(--cyan);min-width:220px;}
+.debug-status{font-size:0.74rem;font-weight:700;}
+.ds-ok{color:var(--green);}
+.ds-err{color:var(--red);}
+.ds-empty{color:var(--accent);}
+.debug-msg{font-size:0.7rem;color:var(--muted);font-family:var(--mono);}
 
 /* TABS */
 .tab-row{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
 .tab{padding:9px 20px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:0.82rem;
   cursor:pointer;border:1.5px solid var(--border2);background:var(--s2);color:var(--muted);
-  transition:all 0.18s;user-select:none;}
+  transition:all 0.18s;user-select:none;position:relative;}
 .tab:hover{color:var(--text);}
 .tab.active{color:var(--text);background:var(--s1);}
 .tab.t-q1.active{border-color:var(--accent);color:var(--accent);}
@@ -68,8 +85,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .tab.t-p1.active{border-color:var(--green);color:var(--green);}
 .tab.t-p2.active{border-color:var(--orange);color:var(--orange);}
 .tab.t-all.active{border-color:var(--blue);color:var(--cyan);}
+.err-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;
+  background:var(--red);border-radius:50%;display:none;}
+.err-dot.show{display:block;}
 
-/* CONTROLS BAR */
+/* CONTROLS */
 .ctrl-bar{display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap;}
 .search-in{flex:1;min-width:200px;background:var(--s1);border:1.5px solid var(--border2);
   border-radius:10px;padding:9px 14px;color:var(--text);font-family:var(--font);
@@ -109,7 +129,7 @@ td.num{text-align:right;font-family:var(--mono);font-size:0.78rem;}
 .badge{font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:8px;}
 .b-pass{background:rgba(58,249,195,0.1);color:var(--green);border:1px solid rgba(58,249,195,0.2);}
 .b-fail{background:rgba(249,58,122,0.1);color:var(--red);border:1px solid rgba(249,58,122,0.2);}
-.b-mid {background:rgba(249,195,58,0.1);color:var(--accent);border:1px solid rgba(249,195,58,0.2);}
+.b-mid{background:rgba(249,195,58,0.1);color:var(--accent);border:1px solid rgba(249,195,58,0.2);}
 .col-tag{font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:8px;}
 .ct-q1{background:rgba(249,195,58,0.12);color:var(--accent);}
 .ct-q2{background:rgba(168,85,247,0.12);color:var(--purple);}
@@ -117,19 +137,22 @@ td.num{text-align:right;font-family:var(--mono);font-size:0.78rem;}
 .ct-p2{background:rgba(251,146,60,0.12);color:var(--orange);}
 .ts-txt{font-size:0.7rem;color:var(--dim);}
 
-/* EMPTY / LOADING */
 .empty-st{text-align:center;padding:60px 20px;color:var(--muted);}
 .empty-ic{font-size:3rem;margin-bottom:12px;opacity:0.3;}
 .empty-t{font-size:0.9rem;font-weight:700;margin-bottom:5px;}
 .empty-s{font-size:0.76rem;color:var(--dim);}
 
-/* SECTION LABEL */
-.sec-label{font-size:0.62rem;font-weight:800;color:var(--purple);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.sec-label::after{content:'';flex:1;height:1px;background:rgba(168,85,247,0.2);}
-
-/* EXPORT BTN */
-.btn-export{background:linear-gradient(135deg,var(--blue),var(--cyan));color:#fff;border:none;}
-.btn-export:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(59,130,246,0.3);}
+/* NOTICE BOX */
+.notice-box{margin:20px;padding:20px 24px;border-radius:12px;text-align:center;}
+.nb-warn{background:rgba(249,195,58,0.06);border:1.5px solid rgba(249,195,58,0.25);}
+.nb-err {background:rgba(249,58,122,0.06);border:1.5px solid rgba(249,58,122,0.25);}
+.nb-ico{font-size:1.8rem;margin-bottom:8px;}
+.nb-title{font-size:0.9rem;font-weight:800;margin-bottom:6px;}
+.nb-warn .nb-title{color:var(--accent);}
+.nb-err  .nb-title{color:var(--red);}
+.nb-sub{font-size:0.78rem;color:var(--muted);line-height:1.7;margin-bottom:10px;}
+.nb-code{font-family:var(--mono);font-size:0.78rem;color:var(--cyan);
+  background:var(--s2);border-radius:6px;padding:6px 14px;display:inline-block;}
 
 @media(max-width:768px){
   .stat-strip{grid-template-columns:1fr 1fr;}
@@ -140,7 +163,6 @@ td.num{text-align:right;font-family:var(--mono);font-size:0.78rem;}
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <div class="tb-left">
     <span class="tb-badge">🗄 DB Viewer</span>
@@ -151,6 +173,7 @@ td.num{text-align:right;font-family:var(--mono);font-size:0.78rem;}
   </div>
   <div class="tb-right">
     <span id="refresh-ts" style="font-size:0.64rem;color:var(--dim)"></span>
+    <button class="btn-sm" onclick="toggleDebug()">🔍 Debug</button>
     <button class="btn-sm btn-export" onclick="exportCSV()">⬇ Export CSV</button>
     <button class="btn-sm" onclick="loadAll()">🔄 Refresh</button>
   </div>
@@ -158,42 +181,56 @@ td.num{text-align:right;font-family:var(--mono);font-size:0.78rem;}
 
 <div class="page">
 
-  <!-- STATS -->
   <div class="stat-strip">
-    <div class="stat-box sb-q1">
+    <div class="stat-box sb-q1" id="box-q1">
       <div class="sb-val" id="cnt-q1">—</div>
       <div class="sb-lbl">W1 Quiz</div>
       <div class="sb-sub">quiz_submissions</div>
+      <div class="sb-err" id="err-q1"></div>
     </div>
-    <div class="stat-box sb-q2">
+    <div class="stat-box sb-q2" id="box-q2">
       <div class="sb-val" id="cnt-q2">—</div>
       <div class="sb-lbl">W2 Quiz</div>
       <div class="sb-sub">quiz2_submissions</div>
+      <div class="sb-err" id="err-q2"></div>
     </div>
-    <div class="stat-box sb-p1">
+    <div class="stat-box sb-p1" id="box-p1">
       <div class="sb-val" id="cnt-p1">—</div>
       <div class="sb-lbl">W1 Practical</div>
       <div class="sb-sub">practical_submissions</div>
+      <div class="sb-err" id="err-p1"></div>
     </div>
-    <div class="stat-box sb-p2">
+    <div class="stat-box sb-p2" id="box-p2">
       <div class="sb-val" id="cnt-p2">—</div>
       <div class="sb-lbl">W2 Practical</div>
       <div class="sb-sub">practical2_submissions</div>
+      <div class="sb-err" id="err-p2"></div>
+    </div>
+  </div>
+
+  <!-- DEBUG PANEL -->
+  <div class="debug-panel" id="debug-panel">
+    <div class="debug-title">🔍 Collection Diagnostic</div>
+    <div class="debug-rows" id="debug-rows">
+      <div style="color:var(--muted);font-size:0.78rem">Run a refresh to see results…</div>
     </div>
   </div>
 
   <!-- TABS -->
   <div class="tab-row">
-    <div class="tab t-all active" onclick="switchTab('all')">📋 All Submissions</div>
-    <div class="tab t-q1"        onclick="switchTab('q1')">📝 W1 Quiz</div>
-    <div class="tab t-q2"        onclick="switchTab('q2')">📝 W2 Quiz</div>
-    <div class="tab t-p1"        onclick="switchTab('p1')">💻 W1 Practical</div>
-    <div class="tab t-p2"        onclick="switchTab('p2')">💻 W2 Practical</div>
+    <div class="tab t-all active" onclick="switchTab('all')">📋 All</div>
+    <div class="tab t-q1" onclick="switchTab('q1')">📝 W1 Quiz
+      <span class="err-dot" id="dot-q1"></span></div>
+    <div class="tab t-q2" onclick="switchTab('q2')">📝 W2 Quiz
+      <span class="err-dot" id="dot-q2"></span></div>
+    <div class="tab t-p1" onclick="switchTab('p1')">💻 W1 Practical
+      <span class="err-dot" id="dot-p1"></span></div>
+    <div class="tab t-p2" onclick="switchTab('p2')">💻 W2 Practical
+      <span class="err-dot" id="dot-p2"></span></div>
   </div>
 
-  <!-- CONTROLS -->
   <div class="ctrl-bar">
-    <input class="search-in" id="srch" placeholder="🔍 Search by name, email, or student ID…" oninput="renderTable()">
+    <input class="search-in" id="srch" placeholder="🔍 Search name, email, student ID…" oninput="renderTable()">
     <select class="filt-sel" id="f-pass" onchange="renderTable()">
       <option value="">All Scores</option>
       <option value="pass">Passed (≥75%)</option>
@@ -203,22 +240,19 @@ td.num{text-align:right;font-family:var(--mono);font-size:0.78rem;}
     <span class="cnt-badge" id="row-cnt"></span>
   </div>
 
-  <!-- TABLE AREA -->
   <div class="tbl-wrap" id="tbl-area">
     <div class="empty-st">
       <div class="empty-ic"><span class="spin">⟳</span></div>
-      <div class="empty-t">Loading database…</div>
-      <div class="empty-s">Fetching all four collections from Firestore</div>
+      <div class="empty-t">Connecting to Firestore…</div>
     </div>
   </div>
 
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
-import { initializeApp }   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { initializeApp }  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getFirestore, collection, getDocs }
-                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+                          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const cfg = {
   apiKey:"AIzaSyBPXF8GpjJhNCkNzkkz-kkGVH2cx3XXBjs",
@@ -228,76 +262,92 @@ const cfg = {
   messagingSenderId:"111042690196",
   appId:"1:111042690196:web:cd63203bd29b350cea8881"
 };
-
 const app = initializeApp(cfg);
 const db  = getFirestore(app);
-
 const g   = id => document.getElementById(id);
 const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const pctN= s => parseFloat(String(s||'').replace('%',''))||0;
 
-// All rows across collections
-let allRows = [];
+let allRows   = [];
 let activeTab = 'all';
+let debugInfo = {};
 
-// Fetch all four collections
+const COLS = [
+  { key:'q1', col:'quiz_submissions',        label:'W1 Quiz'      },
+  { key:'q2', col:'quiz2_submissions',       label:'W2 Quiz'      },
+  { key:'p1', col:'practical_submissions',   label:'W1 Practical' },
+  { key:'p2', col:'practical2_submissions',  label:'W2 Practical' },
+];
+
 window.loadAll = async function() {
-  g('tbl-area').innerHTML = `<div class="empty-st"><div class="empty-ic"><span class="spin">⟳</span></div><div class="empty-t">Loading…</div><div class="empty-s">Connecting to Firestore</div></div>`;
-  g('cnt-q1').textContent = '…';
-  g('cnt-q2').textContent = '…';
-  g('cnt-p1').textContent = '…';
-  g('cnt-p2').textContent = '…';
+  g('tbl-area').innerHTML=`<div class="empty-st"><div class="empty-ic"><span class="spin">⟳</span></div><div class="empty-t">Fetching collections…</div></div>`;
+  allRows=[]; debugInfo={};
+  COLS.forEach(c=>{
+    g('cnt-'+c.key).textContent='…';
+    g('err-'+c.key).textContent='';
+    g('box-'+c.key).classList.remove('err-box');
+    g('dot-'+c.key).classList.remove('show');
+  });
 
-  try {
-    const [q1, q2, p1, p2] = await Promise.all([
-      getDocs(collection(db,'quiz_submissions')).catch(()=>null),
-      getDocs(collection(db,'quiz2_submissions')).catch(()=>null),
-      getDocs(collection(db,'practical_submissions')).catch(()=>null),
-      getDocs(collection(db,'practical2_submissions')).catch(()=>null),
-    ]);
-
-    const collect = (snap, label, col) => {
-      if(!snap) return [];
+  const results = await Promise.all(COLS.map(async c => {
+    try {
+      const snap = await getDocs(collection(db, c.col));
       const rows = [];
       snap.forEach(d => {
         const v = d.data();
         rows.push({
-          uid: d.id,
-          collection: col,
-          label,
-          name: v.name||v.fullName||'—',
-          gmail: v.gmail||'—',
+          uid:d.id, collection:c.key, label:c.label, col:c.col,
+          name:      v.name||v.fullName||'—',
+          gmail:     v.gmail||'—',
           studentNo: v.studentNo||v.studentId||'—',
-          score: v.score||'—',
-          percent: v.percent||'—',
+          score:     v.score!==undefined?String(v.score):'—',
+          percent:   v.percent||'—',
           timestamp: v.timestamp||'—',
           timeTaken: v.timeTaken||null,
         });
       });
+      debugInfo[c.key] = { status: rows.length?'ok':'empty', count:rows.length, error:null };
       return rows;
-    };
+    } catch(e) {
+      debugInfo[c.key] = { status:'error', count:0, error:e.message };
+      return [];
+    }
+  }));
 
-    const q1r = collect(q1,'W1 Quiz','q1');
-    const q2r = collect(q2,'W2 Quiz','q2');
-    const p1r = collect(p1,'W1 Practical','p1');
-    const p2r = collect(p2,'W2 Practical','p2');
+  COLS.forEach((c,i) => {
+    const info = debugInfo[c.key];
+    g('cnt-'+c.key).textContent = info.count;
+    if(info.status==='error'){
+      g('err-'+c.key).textContent = '⚠ '+info.error;
+      g('box-'+c.key).classList.add('err-box');
+      g('dot-'+c.key).classList.add('show');
+    } else if(info.status==='empty'){
+      g('err-'+c.key).textContent = 'No submissions yet';
+    }
+    allRows = allRows.concat(results[i]);
+  });
 
-    g('cnt-q1').textContent = q1r.length;
-    g('cnt-q2').textContent = q2r.length;
-    g('cnt-p1').textContent = p1r.length;
-    g('cnt-p2').textContent = p2r.length;
-
-    allRows = [...q1r,...q2r,...p1r,...p2r];
-    g('refresh-ts').textContent = '↻ '+new Date().toLocaleTimeString('en-PH');
-    renderTable();
-  } catch(e) {
-    g('tbl-area').innerHTML = `<div class="empty-st"><div class="empty-ic">❌</div><div class="empty-t">Firebase Error</div><div class="empty-s">${esc(e.message)}</div></div>`;
-  }
+  g('refresh-ts').textContent='↻ '+new Date().toLocaleTimeString('en-PH');
+  updateDebug();
+  renderTable();
 };
+
+function updateDebug() {
+  g('debug-rows').innerHTML = COLS.map(c => {
+    const info = debugInfo[c.key]||{};
+    let st='';
+    if(info.status==='ok')    st=`<span class="debug-status ds-ok">✓ OK — ${info.count} record${info.count!==1?'s':''}</span>`;
+    if(info.status==='empty') st=`<span class="debug-status ds-empty">⚠ Empty — 0 documents found</span>`;
+    if(info.status==='error') st=`<span class="debug-status ds-err">✕ Error — ${esc(info.error||'')}</span>`;
+    return `<div class="debug-row"><span class="debug-col">${esc(c.col)}</span>${st}</div>`;
+  }).join('');
+}
+
+window.toggleDebug = function() { g('debug-panel').classList.toggle('show'); };
 
 window.switchTab = function(tab) {
   activeTab = tab;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelector('.tab.t-'+tab).classList.add('active');
   renderTable();
 };
@@ -306,75 +356,96 @@ window.renderTable = function() {
   const srch = (g('srch')?.value||'').toLowerCase();
   const pass = g('f-pass')?.value||'';
 
+  // Show notice for problem tabs
+  if(activeTab!=='all'){
+    const info = debugInfo[activeTab]||{};
+    if(info.status==='error'){
+      g('row-cnt').textContent='';
+      g('tbl-area').innerHTML=`<div class="notice-box nb-err">
+        <div class="nb-ico">❌</div>
+        <div class="nb-title">Firestore Read Error</div>
+        <div class="nb-sub">Firebase returned an error for this collection. This is usually a <strong>Firestore Security Rules</strong> issue — the collection exists but read access is blocked for unauthenticated requests.<br><br>Open your Firebase Console → Firestore → Rules and allow reads, or open this viewer from the same session as the admin dashboard.</div>
+        <div class="nb-code">${esc(info.error||'Permission denied')}</div>
+      </div>`;
+      return;
+    }
+    if(info.status==='empty'){
+      g('row-cnt').textContent='0 records';
+      g('tbl-area').innerHTML=`<div class="notice-box nb-warn">
+        <div class="nb-ico">📭</div>
+        <div class="nb-title">Collection is Empty — 0 Documents</div>
+        <div class="nb-sub">Firebase was reached successfully but the collection returned <strong>no documents</strong>. This means either:<br>
+        1. No students have completed this assessment yet.<br>
+        2. The collection name in Firebase is slightly different.<br><br>
+        Click <strong>🔍 Debug</strong> above to verify all four collection names and their status.</div>
+        <div class="nb-code">${esc(COLS.find(c=>c.key===activeTab)?.col||activeTab)}</div>
+      </div>`;
+      return;
+    }
+  }
+
   let rows = allRows.filter(r => {
-    if(activeTab !== 'all' && r.collection !== activeTab) return false;
-    if(srch){
-      const txt=[r.name,r.gmail,r.studentNo].join(' ').toLowerCase();
-      if(!txt.includes(srch)) return false;
-    }
-    if(pass){
-      const p = pctN(r.percent);
-      if(pass==='pass' && p<75) return false;
-      if(pass==='mid' && (p<50||p>=75)) return false;
-      if(pass==='fail' && p>=50) return false;
-    }
+    if(activeTab!=='all' && r.collection!==activeTab) return false;
+    if(srch){ const t=[r.name,r.gmail,r.studentNo].join(' ').toLowerCase(); if(!t.includes(srch)) return false; }
+    const p=pctN(r.percent);
+    if(pass==='pass' && p<75) return false;
+    if(pass==='mid' && (p<50||p>=75)) return false;
+    if(pass==='fail' && p>=50) return false;
     return true;
   });
 
-  g('row-cnt').textContent = `${rows.length} record${rows.length!==1?'s':''}`;
+  g('row-cnt').textContent=`${rows.length} record${rows.length!==1?'s':''}`;
 
   if(!rows.length){
-    g('tbl-area').innerHTML=`<div class="empty-st"><div class="empty-ic">📭</div><div class="empty-t">No records found</div><div class="empty-s">Try adjusting the search or filter.</div></div>`;
+    g('tbl-area').innerHTML=`<div class="empty-st"><div class="empty-ic">📭</div><div class="empty-t">No records match</div><div class="empty-s">Adjust search or filter above.</div></div>`;
     return;
   }
 
-  // Show timeTaken col only if any row has it
   const showTime = rows.some(r=>r.timeTaken);
   const showCol  = activeTab==='all';
+  const colTagMap = {
+    q1:`<span class="col-tag ct-q1">W1 Quiz</span>`,
+    q2:`<span class="col-tag ct-q2">W2 Quiz</span>`,
+    p1:`<span class="col-tag ct-p1">W1 Practical</span>`,
+    p2:`<span class="col-tag ct-p2">W2 Practical</span>`,
+  };
+  const colLabel = {
+    all:'All Submissions',
+    q1:'quiz_submissions — Week 1 Theory Quiz',
+    q2:'quiz2_submissions — Week 2 Theory Quiz',
+    p1:'practical_submissions — Week 1 Practical',
+    p2:'practical2_submissions — Week 2 Practical',
+  }[activeTab];
 
-  const thead = `<thead><tr>
+  const thead=`<thead><tr>
     <th>#</th>
     ${showCol?'<th>Collection</th>':''}
-    <th>Name</th>
-    <th>Student ID</th>
-    <th>Email</th>
-    <th class="num">Score</th>
-    <th class="num">Percent</th>
-    <th class="num">Pass / Fail</th>
+    <th>Name</th><th>Student ID</th><th>Email / Gmail</th>
+    <th class="num">Score</th><th class="num">Percent</th><th class="num">Result</th>
     ${showTime?'<th class="num">Time Taken</th>':''}
     <th>Submitted</th>
   </tr></thead>`;
 
-  const tbody = rows.map((r,i) => {
-    const p = pctN(r.percent);
-    const barCol = p>=75?'var(--green)':p>=50?'var(--accent)':'var(--red)';
-    const pfClass = p>=75?'pf-p':p>=50?'pf-m':'pf-f';
-    const badge = p>=75?'<span class="badge b-pass">Passed</span>':
-                  p>=50?'<span class="badge b-mid">Average</span>':
-                  r.percent==='—'?'<span class="badge" style="color:var(--dim);border:1px solid var(--border)">—</span>':
-                  '<span class="badge b-fail">Failed</span>';
-
-    const colTag = {
-      q1:'<span class="col-tag ct-q1">W1 Quiz</span>',
-      q2:'<span class="col-tag ct-q2">W2 Quiz</span>',
-      p1:'<span class="col-tag ct-p1">W1 Practical</span>',
-      p2:'<span class="col-tag ct-p2">W2 Practical</span>',
-    }[r.collection]||'';
-
-    const pctCell = r.percent==='—'
-      ? `<td class="num"><span style="color:var(--dim)">—</span></td>`
-      : `<td class="num"><div class="pct-cell">
+  const tbody=rows.map((r,i)=>{
+    const p=pctN(r.percent);
+    const barCol=p>=75?'var(--green)':p>=50?'var(--accent)':'var(--red)';
+    const pfCls=p>=75?'pf-p':p>=50?'pf-m':'pf-f';
+    const badge=p>=75?'<span class="badge b-pass">Passed</span>':
+                p>=50?'<span class="badge b-mid">Average</span>':
+                r.percent==='—'?`<span style="color:var(--dim);font-size:0.72rem">—</span>`:
+                '<span class="badge b-fail">Failed</span>';
+    const pctCell=r.percent==='—'
+      ?`<td class="num"><span style="color:var(--dim)">—</span></td>`
+      :`<td class="num"><div class="pct-cell">
           <div class="pct-bar"><div class="pct-fill" style="width:${Math.min(p,100)}%;background:${barCol}"></div></div>
-          <span class="pct-txt ${pfClass}">${esc(r.percent)}</span>
+          <span class="pct-txt ${pfCls}">${esc(r.percent)}</span>
         </div></td>`;
-
-    const ts = r.timestamp && r.timestamp!=='—'
-      ? `<span class="ts-txt">${esc(r.timestamp.split(',')[0]||r.timestamp)}</span>`
-      : `<span style="color:var(--dim);font-size:0.72rem">—</span>`;
-
+    const ts=r.timestamp&&r.timestamp!=='—'
+      ?`<span class="ts-txt">${esc(r.timestamp.split(',')[0]||r.timestamp)}</span>`
+      :`<span style="color:var(--dim);font-size:0.72rem">—</span>`;
     return `<tr>
       <td class="td-id">${i+1}</td>
-      ${showCol?`<td>${colTag}</td>`:''}
+      ${showCol?`<td>${colTagMap[r.collection]||''}</td>`:''}
       <td class="td-name" title="${esc(r.name)}">${esc(r.name)}</td>
       <td class="td-id">${esc(r.studentNo)}</td>
       <td class="td-email" title="${esc(r.gmail)}">${esc(r.gmail)}</td>
@@ -386,42 +457,29 @@ window.renderTable = function() {
     </tr>`;
   }).join('');
 
-  const collectionName = {
-    all:'All Submissions (W1 Quiz · W2 Quiz · W1 Practical · W2 Practical)',
-    q1:'quiz_submissions — Week 1 Theory Quiz',
-    q2:'quiz2_submissions — Week 2 Theory Quiz',
-    p1:'practical_submissions — Week 1 Practical',
-    p2:'practical2_submissions — Week 2 Practical',
-  }[activeTab];
-
-  g('tbl-area').innerHTML = `
+  g('tbl-area').innerHTML=`
     <div class="tbl-head">
-      <span class="tbl-head-title">${esc(collectionName)}</span>
+      <span class="tbl-head-title">${esc(colLabel)}</span>
       <div class="tbl-head-line"></div>
     </div>
-    <div style="overflow-x:auto;">
-      <table>${thead}<tbody>${tbody}</tbody></table>
-    </div>`;
+    <div style="overflow-x:auto;"><table>${thead}<tbody>${tbody}</tbody></table></div>`;
 };
 
-// EXPORT CSV
 window.exportCSV = function() {
-  const rows = allRows;
-  if(!rows.length){alert('No data loaded yet.');return;}
-  const h = ['Collection','Name','Student ID','Gmail','Score','Percent','Pass/Fail','Time Taken','Timestamp'];
-  const body = rows.map(r=>{
+  if(!allRows.length){alert('No data yet — refresh first.');return;}
+  const h=['Collection','Name','Student ID','Gmail','Score','Percent','Result','Time Taken','Timestamp'];
+  const body=allRows.map(r=>{
     const p=pctN(r.percent);
     const pf=p>=75?'Passed':p>=50?'Average':r.percent==='—'?'—':'Failed';
-    return [r.label,r.name,r.studentNo,r.gmail,r.score,r.percent,pf,r.timeTaken||'',r.timestamp];
+    return[r.label,r.name,r.studentNo,r.gmail,r.score,r.percent,pf,r.timeTaken||'',r.timestamp];
   });
   const csv=[h,...body].map(r=>r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(',')).join('\n');
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download='SMGDecode_Database_'+new Date().toLocaleDateString('en-PH').replace(/\//g,'-')+'.csv';
+  a.download='SMGDecode_DB_'+new Date().toLocaleDateString('en-PH').replace(/\//g,'-')+'.csv';
   a.click();
 };
 
-// Auto-load on start
 loadAll();
 </script>
 </body>
